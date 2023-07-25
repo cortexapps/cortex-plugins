@@ -1,8 +1,5 @@
 import type React from "react";
 import {
-  Box,
-  // Badge,
-  // Button,
   Logo,
   PluginProvider,
   Stack,
@@ -21,11 +18,6 @@ const App: React.FC = () => {
           <Title level={1}>My Awesome Cortex Plugin</Title>
         </Stack>
         <PluginContext />
-        <Box justifyContent="center" alignItems="center">
-          Hello
-        </Box>
-        {/* <Badge>test</Badge> */}
-        {/* <Button onClick={() => {console.log("Hello World!")}}>Click me</Button> */}
       </PluginProvider>
     </ErrorBoundary>
   );
