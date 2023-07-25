@@ -11,5 +11,14 @@
   "repository": "git@github.com:cortexapps/cortex-plugins.git",
   "author": "foodproduct <dcbarnez@gmail.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "turbo": "^1.10.11"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "lint": "turbo run lint",
+    "test": "turbo run test"
+  }
 }
