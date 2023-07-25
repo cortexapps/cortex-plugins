@@ -18,6 +18,7 @@
   "scripts": {
     "build": "turbo run build",
     "clean": "turbo run clean",
+    "fix": "turbo run fix",
     "lint": "turbo run lint",
     "test": "turbo run test"
   }
