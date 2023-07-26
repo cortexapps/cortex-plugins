@@ -2,7 +2,7 @@
 This is a monorepo housing Cortex-maintained plugins for Cortex.
 
 ### Adding a plugin
-1. Use Scaffolder to create a new plugin inside the `plugins` directory.
+1. Use Scaffolder to create a new plugin inside the `plugins` directory. **IMPORTANT**: use the "Plugin in cortex-plugins" template on tenant `cortex` in prod or staging and point it at this repo with the subdirectory `plugins/{plugin-name}` (replace "{plugin-name}" with the name of your plugin).
 2. Update the `tsconfig.json` file `typeRoots` property to include types at the root of the repo, 1.e.
    ```json
    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"],
