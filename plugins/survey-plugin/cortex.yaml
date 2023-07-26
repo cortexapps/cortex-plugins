@@ -1,0 +1,12 @@
+openapi: 3.0.1
+info:
+  title: Plugins Survey Plugin
+  description: ""
+  x-cortex-tag: plugins-survey-plugin
+  x-cortex-git:
+    github:
+      repository: cortexapps/cortex-plugins
+      basepath: plugins/survey-plugin
+  x-cortex-custom-metadata:
+    cortex-template-version: 0.1.0
+    cortex-generated-timestamp: 2023-07-26T22:11:16.749153197
