@@ -8,5 +8,5 @@ info:
   x-cortex-tag: cortex-plugin-example
   x-cortex-type: service
   x-cortex-owners:
-  - type: EMAIL
-    email: david.barnes@cortex.io
+    - type: EMAIL
+      email: david.barnes@cortex.io
