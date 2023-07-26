@@ -1,0 +1,12 @@
+openapi: 3.0.1
+info:
+  title: New Plugin
+  description: ""
+  x-cortex-tag: cortex-plugin-new-plugin
+  x-cortex-git:
+    github:
+      repository: cortexapps/cortex-plugins
+      basepath: plugins/new-plugin
+  x-cortex-custom-metadata:
+    cortex-template-version: 0.1.0
+    cortex-generated-timestamp: 2023-07-26T15:04:16.977196
