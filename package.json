@@ -1,25 +1,61 @@
 {
-  "name": "root",
-  "description": "Monorepo for Cortex-maintained plugins",
-  "engines": {
-    "npm": "please-use-yarn",
-    "yarn": ">=1.22.18"
-  },
-  "workspaces": [
-    "plugins/**/*"
-  ],
-  "repository": "git@github.com:cortexapps/cortex-plugins.git",
-  "author": "foodproduct <dcbarnez@gmail.com>",
+  "name": "new-plugin",
+  "version": "0.1.0",
   "license": "MIT",
-  "private": true,
   "dependencies": {
-    "turbo": "^1.10.11"
+    "@cortexapps/plugin-core": "^2.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.3",
+    "@babel/plugin-syntax-jsx": "^7.18.6",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.21.0",
+    "@popperjs/core": "^2.11.8",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "babel-jest": "^29.5.0",
+    "css-loader": "^6.7.3",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-config-standard-with-typescript": "^34.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "html-webpack-plugin": "^5.5.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.4",
+    "prop-types": "^15.8.1",
+    "react-dev-utils": "^12.0.1",
+    "style-loader": "^3.3.1",
+    "terser-webpack-plugin": "^5.3.7",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.5",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.76.1",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.15.0"
   },
   "scripts": {
-    "build": "turbo run build",
-    "clean": "turbo run clean",
-    "fix": "turbo run fix",
-    "lint": "turbo run lint",
-    "test": "turbo run test"
+    "build": "webpack --mode=production",
+    "clean": "rm -r ./dist",
+    "dev": "webpack serve --mode=development",
+    "fix": "run-p formatfix lintfix",
+    "formatfix": "yarn prettier . --write",
+    "formatcheck": "yarn prettier . --check",
+    "lint": "run-p formatcheck lintcheck",
+    "lintcheck": "yarn eslint src",
+    "lintfix": "yarn lintcheck --fix",
+    "test": "jest"
   }
 }
