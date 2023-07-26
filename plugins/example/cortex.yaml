@@ -1,0 +1,12 @@
+openapi: 3.0.1
+info:
+  title: Cortex Example Plugin
+  x-cortex-git:
+    github:
+      alias: example-plugin
+      repository: cortexapps/cortex-plugins
+  x-cortex-tag: cortex-plugin-example
+  x-cortex-type: service
+  x-cortex-owners:
+  - type: EMAIL
+    email: david.barnes@cortex.io
