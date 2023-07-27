@@ -10,3 +10,5 @@ info:
   x-cortex-owners:
     - type: EMAIL
       email: david.barnes@cortex.io
+    - type: EMAIL
+      email: cristina.buenahora@cortex.io
