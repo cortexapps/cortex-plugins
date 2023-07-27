@@ -21,7 +21,7 @@ The plugin will also check for a specific custom data key if viewed from the Ent
 This plugin requires no secrets or proxy set.
 Register a new plugin and set the following fields:
 
-- name (*i.e., Feedback*)
+- name (_i.e., Feedback_)
 - Include it in global context
 - Add another context for the entity types that could have a custom data key, like a service, domain, etc...
 - Add the ui.html file compiled from this plugin
@@ -37,9 +37,9 @@ import "../baseStyles.css";
 import { PluginContextLocation } from "@cortexapps/plugin-core";
 
 // Update this with your default/Global Survey Form
-const defaultSurvey = "https://my-great-survey.com/form1"
-
+const defaultSurvey = "https://my-great-survey.com/form1";
 ```
+
 ### How to add specific survey url to an entity
 
 If the plugin is running within an entity, it will look for a key named **survey** in the custom data associated to this entity. If it finds they key, it will use its value as the survey url.
@@ -48,8 +48,9 @@ The survey url for an entity can be set via the [Custom Data API](https://docs.c
 
 ```yaml
 x-cortex-custom-metadata:
-    survey: "https://my-great-survey.com/form2"
+  survey: "https://my-great-survey.com/form2"
 ```
+
 Please refer to our [documentation](https://docs.cortex.io/docs/reference/basics/custom-data) for more details on using custom data.
 
 # Setting up your Dev environment
