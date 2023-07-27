@@ -1,25 +1,16 @@
 import type React from "react";
-import {
-  Logo,
-  PluginProvider,
-  Stack,
-  Title,
-} from "@cortexapps/plugin-core/components";
+import { PluginProvider } from "@cortexapps/plugin-core/components";
 import "../baseStyles.css";
-import ErrorBoundary from "./ErrorBoundary";
-import PluginContext from "./PluginContext";
+// import ErrorBoundary from "./ErrorBoundary";
+import Survey from "./Survey";
 
 const App: React.FC = () => {
+  const url = new URL("https://forms.gle/kMaARQLAgJZ5C8qr9");
+  url.searchParams.append("embed", "true");
   return (
-    <ErrorBoundary>
-      <PluginProvider>
-        <Stack>
-          <Logo />
-          <Title level={1}>My Awesome Cortex Plugin</Title>
-        </Stack>
-        <PluginContext />
-      </PluginProvider>
-    </ErrorBoundary>
+    <PluginProvider>
+      <Survey />
+    </PluginProvider>
   );
 };
 
