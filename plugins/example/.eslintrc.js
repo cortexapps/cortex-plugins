@@ -20,6 +20,7 @@ module.exports = {
   rules: {
     // conflicts with no-extra-boolean-cast
     "@typescript-eslint/strict-boolean-expressions": "off",
+    "no-console": ["error", { allow: ["warn", "error"] }],
   },
   settings: {
     react: {
