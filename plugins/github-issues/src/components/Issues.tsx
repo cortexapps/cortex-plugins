@@ -42,7 +42,8 @@ const Issues: React.FC = () => {
           const jResult = await iResult.json();
           console.log({ jResult });
           setPosts(jResult);
-        } else {
+        } 
+        else {
           console.log("Doesn't have basepath");
           const iResult = await CortexApi.proxyFetch(
             `${ghURL}repos/${ghRepo}/issues?direction=asc`
