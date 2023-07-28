@@ -28,9 +28,9 @@ If you get the following message:
 
 This means that the plugin did not find a GitHub repository defined as described [here](https://docs.cortex.io/docs/reference/integrations/github#catalog-descriptor).
 
-### Getting a blank page
+### Getting a generic error message
 
-If you are getting a blank page with no errors at all, you may want to look the browser's console and track where the plugin is breaking down based on which `console.log` output is displayed in the console. 
+If you are getting a generic "Oops! There was a runtime error" message, you may want to look the browser's console and track where the plugin is breaking down based on which `console.log` output is displayed in the console. 
 
 One issue observed during testing was that if your Personal Access Token does not have access to private repos it will cause this behavior. If you are getting this behavior against a private repo, try it against a service that has a public repo defined to verify if this is the issue.
 
