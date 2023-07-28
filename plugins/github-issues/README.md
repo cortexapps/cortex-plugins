@@ -18,6 +18,23 @@ This plugin requires a proxy to GitHub. The API that the plugin uses is document
     * This plan will not work on the Global context.
     * Select the entity that will have the GitHub repo in its `cortex.yaml`
 
+## Troubleshooting
+
+### Getting a message that "This service does not have a GitHub Repo defined"
+
+If you get the following message:
+
+<div align="center"><img src="img/no-repo-defined.png" width="540" /></div>
+
+This means that the plugin did not find a GitHub repository defined as described [here](https://docs.cortex.io/docs/reference/integrations/github#catalog-descriptor).
+
+### Getting a blank page
+
+If you are getting a blank page with no errors at all, you may want to look the browser's console and track where the plugin is breaking down based on which `console.log` output is displayed in the console. 
+
+One issue observed during testing was that if your Personal Access Token does not have access to private repos it will cause this behavior. If you are getting this behavior against a private repo, try it against a service that has a public repo defined to verify if this is the issue.
+
+
 # Setting up your dev environment
 
 GitHub Issues Cortex Plugin is a [Cortex](https://www.cortex.io/) plugin. To see how to run the plugin inside of Cortex, see [our docs](https://docs.cortex.io/docs/plugins).
