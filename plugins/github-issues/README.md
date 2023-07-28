@@ -10,13 +10,13 @@ The GitHub Issues shows the open GitHub issues associated to the GitHup reposito
 
 This plugin requires a proxy to GitHub. The API that the plugin uses is documented [here](https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#list-repository-issues), which details the type of headers you need defined.
 
-* Define a secret that contains your GitHub Personal Access Token
-* Define a proxy that is pointed to your GitHub instance with the headers mentioned in the docs. Here is a screenshot of how your proxy may look like:
+- Define a secret that contains your GitHub Personal Access Token
+- Define a proxy that is pointed to your GitHub instance with the headers mentioned in the docs. Here is a screenshot of how your proxy may look like:
 <div align="center"><img src="img/gh-proxy.png" width="400" /></div>
 
-* Register the plugin.
-    * This plan will not work on the Global context.
-    * Select the entity that will have the GitHub repo in its `cortex.yaml`
+- Register the plugin.
+  - This plan will not work on the Global context.
+  - Select the entity that will have the GitHub repo in its `cortex.yaml`
 
 ## Troubleshooting
 
@@ -30,10 +30,9 @@ This means that the plugin did not find a GitHub repository defined as described
 
 ### Getting a generic error message
 
-If you are getting a generic "Oops! There was a runtime error" message, you may want to look the browser's console and track where the plugin is breaking down based on which `console.log` output is displayed in the console. 
+If you are getting a generic "Oops! There was a runtime error" message, you may want to look the browser's console and track where the plugin is breaking down based on which `console.log` output is displayed in the console.
 
 One issue observed during testing was that if your Personal Access Token does not have access to private repos it will cause this behavior. If you are getting this behavior against a private repo, try it against a service that has a public repo defined to verify if this is the issue.
-
 
 # Setting up your dev environment
 
