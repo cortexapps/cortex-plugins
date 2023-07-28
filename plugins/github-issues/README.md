@@ -1,5 +1,24 @@
 # GitHub Issues Cortex Plugin
 
+View GitHub Issues associated to your services!
+
+The GitHub Issues shows the open GitHub issues associated to the GitHup repository specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a `basepath` defined in its `x-cortex-git` configuration, it will query for issues filtering by a label that matches to tag of the entity.
+
+<img src="img/ghplugins.png" width="400" />
+
+## SetUp
+
+This plugin requires a proxy to GitHub. The API that the plugin uses is documented [here](https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#list-repository-issues), which details the type of headers you need defined.
+
+- Define a secret that contains your GitHub Personal Access Token
+- Define a proxy that is pointed to your GitHub instance with the headers mentioned in the docs. Here is a screenshot of how your proxy may look like:
+  ![Proxy](img/gh-proxy.png)
+- Register the plugin.
+  - This plan will not work on the Global context.
+  - Select the entity that will have the GitHub repo in its `cortex.yaml`
+
+# Setting up your dev environment
+
 GitHub Issues Cortex Plugin is a [Cortex](https://www.cortex.io/) plugin. To see how to run the plugin inside of Cortex, see [our docs](https://docs.cortex.io/docs/plugins).
 
 ### Prerequisites
