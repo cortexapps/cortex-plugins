@@ -1,0 +1,12 @@
+openapi: 3.0.1
+info:
+  title: Gitlab Issues Plugin
+  description: ""
+  x-cortex-tag: gitlab-issues-plugin
+  x-cortex-git:
+    github:
+      repository: cortexapps/cortex-plugins
+      basepath: plugins/gitlab-issues-plugin
+  x-cortex-custom-metadata:
+    cortex-template-version: 0.1.0
+    cortex-generated-timestamp: 2023-08-14T19:37:03.645550612
