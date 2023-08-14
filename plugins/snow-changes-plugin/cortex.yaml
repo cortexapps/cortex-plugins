@@ -1,0 +1,12 @@
+openapi: 3.0.1
+info:
+  title: Plugins Snow Changes Plugin
+  description: ""
+  x-cortex-tag: plugins-snow-changes-plugin
+  x-cortex-git:
+    github:
+      repository: cortexapps/cortex-plugins
+      basepath: plugins/snow-changes-plugin
+  x-cortex-custom-metadata:
+    cortex-template-version: 0.1.0
+    cortex-generated-timestamp: 2023-08-14T20:46:27.750549215
