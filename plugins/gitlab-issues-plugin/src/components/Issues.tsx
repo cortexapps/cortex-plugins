@@ -37,7 +37,7 @@ const Issues: React.FC = () => {
           const jResult = await iResult.json();
           setPosts(jResult);
         } else {
-          const apiURL = `${glURL}api/v4/projects/${encodedRepo}/issues`;
+          const apiURL = `${glURL}api/v4/projects/${encodedRepo}/issues?sort=asc`;
           const iResult = await CortexApi.proxyFetch(apiURL);
           const jResult = await iResult.json();
           setPosts(jResult);
