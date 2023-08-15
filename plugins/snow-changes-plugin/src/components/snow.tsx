@@ -58,7 +58,7 @@ const Snow: React.FC = () => {
       },
       {
         Cell: (state: string) => (
-          <Box flex justifyContent={"center"}>
+          <Box>
             <Text>{state}</Text>
           </Box>
         ),

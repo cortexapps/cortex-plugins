@@ -1,5 +1,27 @@
 # ServiceNow Changes Plugin
 
+View Change requests associated to a Cortex service!
+
+<div align="center"><img src="img/change_requests_cortex.png" width="550" /></div>
+
+The ServiceNow Changes plugin shows you open Change Requests that have been filed against a given service in Cortex.
+
+The plugin uses the service name in Cortex to find a corresponding service with the same name in the CMDB. In this plugin, it is specifically looking at the `cmdb_ci_service` table, but could be modified to check a different table.
+
+<div align="center"><img src="img/change_requests_snow.png" width="550" /></div>
+
+## Setup
+
+This plugin will require a proxy to ServiceNow.
+* Define a Secret that is a 64base encoding of 'username:password'. You can use a tool similar to this to convert this.
+* Define a proxy that is pointed at your ServiceNow instance with the nescessary headers. For help figuring out which headers to use, refer to the REST API explorer in your servicenow instance. 
+
+- Register the plugin.
+  - This plan will not work on the Global context.
+  - Select the entity that will have a corresponding entity in the `cmdb_ci_service` table.
+
+# Setting up your dev environment
+
 ServiceNow Changes Plugin is a [Cortex](https://www.cortex.io/) plugin. To see how to run the plugin inside of Cortex, see [our docs](https://docs.cortex.io/docs/plugins).
 
 ### Prerequisites
