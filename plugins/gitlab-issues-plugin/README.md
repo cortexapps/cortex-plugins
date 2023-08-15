@@ -2,7 +2,7 @@
 
 View GitLab Issues associated to your services!
 
-<div align="center"><img src="img/gl-issues-cortex.png" width="550" /></div>
+<div align="center"><img src="img/gl-issues-cortex.png" width="650" /></div>
 
 The GitLab Issues shows the open GitLab issues associated to the GitLab repository specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a `basepath` defined in its `x-cortex-git` configuration, it will query for issues filtering by a label that matches the tag of the entity.
 
@@ -12,7 +12,7 @@ This plugin requires a proxy to GitLab. The API that the plugin uses is document
 
 - Define a secret that contains your GitLab Access Token. To determine which type of token to use, check the [docs](https://docs.gitlab.com/ee/api/rest/index.html#authentication).
 - Define a proxy that is pointed to your GitHub instance with the headers mentioned in the docs. Here is a screenshot of how your proxy may look like:
-<div align="center"><img src="img/gl-proxy.png" width="400" /></div>
+<div align="center"><img src="img/gl-proxy.png" width="600" /></div>
 
 - Register the plugin.
   - This plan will not work on the Global context.
@@ -24,7 +24,7 @@ This plugin requires a proxy to GitLab. The API that the plugin uses is document
 
 If you get the following message:
 
-<div align="center"><img src="img/gl-no-repo-defined.png" width="540" /></div>
+<div align="center"><img src="img/gl-no-repo-defined.png" width="640" /></div>
 
 This means that the plugin did not find a GitHub repository defined as described [here](https://docs.cortex.io/docs/reference/integrations/github#catalog-descriptor).
 
