@@ -17,12 +17,18 @@ const Snow: React.FC = () => {
     const fetchData = async (): Promise<void> => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const cortexService = context.entity!.name as string;
+      //url encoding the servicename in case it contains spaces
       const serviceURLName: string = encodeURIComponent(cortexService);
+      //Here we are looking at the cmdb_ci_service table. 
+      //If you want to use a different table, change the url below
       const result = await CortexApi.proxyFetch(
         `${snURL}/api/now/table/cmdb_ci_service?sysparm_query=name%3D${serviceURLName}`
       );
       const resultJson = await result.json();
       const sysId: string = resultJson.result[0].sys_id;
+      //Calling the change_requests table using the cmdb_ci_service related field
+      //If you modified the Url above to use a different table you will also need
+      //to modify the url below
       const iResult = await CortexApi.proxyFetch(
         snURL +
           `/api/now/table/change_request?sysparm_display_value=true&sysparm_query=business_service%3D${sysId}`

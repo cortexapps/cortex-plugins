@@ -1,10 +1,10 @@
 # ServiceNow Changes Plugin
 
-View Change requests associated to a Cortex service!
+View ServiceNow change requests associated to a Cortex service!
 
 <div align="center"><img src="img/change_requests_cortex.png" width="550" /></div>
 
-The ServiceNow Changes plugin shows you open Change Requests that have been filed against a given service in Cortex.
+The ServiceNow Changes plugin shows you open change requests that have been filed against a given service in Cortex.
 
 The plugin uses the service name in Cortex to find a corresponding service with the same name in the CMDB. In this plugin, it is specifically looking at the `cmdb_ci_service` table, but could be modified to check a different table.
 
@@ -12,17 +12,20 @@ The plugin uses the service name in Cortex to find a corresponding service with 
 
 ## Setup
 
-This plugin will require a proxy to ServiceNow.
-* Define a Secret that is a 64base encoding of 'username:password'. You can use a tool similar to this to convert this.
-* Define a proxy that is pointed at your ServiceNow instance with the nescessary headers. For help figuring out which headers to use, refer to the REST API explorer in your servicenow instance. 
+To see how to run the plugin inside of Cortex, see [our docs](https://docs.cortex.io/docs/plugins). This plugin will require a proxy to ServiceNow.
+* Define a Secret that is a 64base encoding of 'username:password'. You can use a tool similar to [this](https://www.debugbear.com/basic-auth-header-generator) to convert this.
+* Define a proxy that is pointed at your ServiceNow instance with the nescessary headers. For help figuring out which headers to use, refer to the REST API explorer in your servicenow instance. Here is an example of what your proxy may look like:
+ 
+<div align="center"><img src="img/proxy_changes.png" width="550" /></div>
 
 - Register the plugin.
   - This plan will not work on the Global context.
-  - Select the entity that will have a corresponding entity in the `cmdb_ci_service` table.
+  - Select the entity or entities that will have a corresponding entity in the `cmdb_ci_service` table. Below is what a configuration may look like. In this example the plugin will be available to both Services and Resources.
 
-# Setting up your dev environment
+  <div align="center"><img src="img/snow_changes_config.png" width="350" /></div>
 
-ServiceNow Changes Plugin is a [Cortex](https://www.cortex.io/) plugin. To see how to run the plugin inside of Cortex, see [our docs](https://docs.cortex.io/docs/plugins).
+## Setting up your dev environment
+
 
 ### Prerequisites
 
