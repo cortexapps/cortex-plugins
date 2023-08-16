@@ -1,0 +1,12 @@
+openapi: 3.0.1
+info:
+  title: Plugins Gitlab Registry Plugin
+  description: ""
+  x-cortex-tag: plugins-gitlab-registry-plugin
+  x-cortex-git:
+    github:
+      repository: cortexapps/cortex-plugins
+      basepath: plugins/gitlab-registry-plugin
+  x-cortex-custom-metadata:
+    cortex-template-version: 0.1.0
+    cortex-generated-timestamp: 2023-08-16T18:17:42.007642462
