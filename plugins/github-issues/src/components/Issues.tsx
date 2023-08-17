@@ -1,12 +1,15 @@
 import React from "react";
-import { CortexApi } from "@cortexapps/plugin-core";
+import { CortexApi, PluginContextLocation } from "@cortexapps/plugin-core";
 import {
   SimpleTable,
   Box,
   Text,
+  Loader,
   usePluginContext,
+  
 } from "@cortexapps/plugin-core/components";
 import "../baseStyles.css";
+
 
 // Set your Github url. Cloud is https://api.github.com
 const ghURL = `https://api.github.com/`;
@@ -16,6 +19,8 @@ const Issues: React.FC = () => {
   const context = usePluginContext();
   console.log(context);
   const [posts, setPosts] = React.useState<any[]>([]);
+  const [isLoading, setIsLoading] = React.useState(
+    context.location === PluginContextLocation.Entity );
   React.useEffect(() => {
     const fetchData = async (): Promise<void> => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -26,32 +31,40 @@ const Issues: React.FC = () => {
       const result = await fetch(`${cortexURL}/catalog/${cortexTag}/openapi`);
       const resultJson = await result.json();
       console.log({ resultJson });
-      if (resultJson.info?.["x-cortex-git"].github.repository !== undefined) {
-        hasGitHub = true;
-        // If we have a GitHub tag, we assume there is a repo defined, let's get the value
-        const ghRepo: string =
-          resultJson.info["x-cortex-git"].github.repository;
-        console.log(ghRepo);
-        // Let's check if we have a basepath defined, to check for mono repo
-        if (resultJson.info["x-cortex-git"].github.basepath !== undefined) {
-          console.log("has basepath");
-          // we are going to assume that each service is being tracked via labels
-          const url: string = `${ghURL}repos/${ghRepo}/issues?labels=${cortexTag}`;
-          console.log(url);
-          const iResult = await fetch(url);
-          const jResult = await iResult.json();
-          console.log({ jResult });
-          setPosts(jResult);
-        } else {
-          console.log("Doesn't have basepath");
-          const iResult = await CortexApi.proxyFetch(
-            `${ghURL}repos/${ghRepo}/issues?direction=asc`
-          );
-          const jResult = await iResult.json();
-          console.log({ jResult });
-          setPosts(jResult);
+      try {
+        if (resultJson.info?.["x-cortex-git"].github.repository !== undefined) {
+          hasGitHub = true;
+          // If we have a GitHub tag, we assume there is a repo defined, let's get the value
+          const ghRepo: string =
+            resultJson.info["x-cortex-git"].github.repository;
+          console.log(ghRepo);
+          // Let's check if we have a basepath defined, to check for mono repo
+          if (resultJson.info["x-cortex-git"].github.basepath !== undefined) {
+            console.log("has basepath");
+            // we are going to assume that each service is being tracked via labels
+            const url: string = `${ghURL}repos/${ghRepo}/issues?labels=${cortexTag}`;
+            console.log(url);
+            const iResult = await fetch(url);
+            const jResult = await iResult.json();
+            console.log({ jResult });
+            setPosts(jResult);
+          } else {
+            console.log("Doesn't have basepath");
+            const iResult = await CortexApi.proxyFetch(
+              `${ghURL}repos/${ghRepo}/issues?direction=asc`
+            );
+            const jResult = await iResult.json();
+            console.log({ jResult });
+            setPosts(jResult);
+          }
         }
       }
+      catch (error)
+      {
+
+      }
+      setIsLoading(false);
+      
     };
     void fetchData();
   }, []);
@@ -94,9 +107,13 @@ const Issues: React.FC = () => {
   };
 
   if (hasGitHub) {
-    return <SimpleTable config={config} items={posts} />;
+    return isLoading ? (
+      <Loader />
+    ) : (<SimpleTable config={config} items={posts} /> );
   } else {
-    return (
+    return isLoading ? (
+      <Loader />
+    ) : (
       <Box backgroundColor="light" padding={3} borderRadius={2}>
         <Text>
           This service does not have a GitHub Repo defined in the Service YAML
