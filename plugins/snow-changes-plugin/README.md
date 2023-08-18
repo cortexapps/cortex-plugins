@@ -13,19 +13,20 @@ The plugin uses the service name in Cortex to find a corresponding service with 
 ## Setup
 
 To see how to run the plugin inside of Cortex, see [our docs](https://docs.cortex.io/docs/plugins). This plugin will require a proxy to ServiceNow.
-* Define a Secret that is a 64base encoding of 'username:password'. You can use a tool similar to [this](https://www.debugbear.com/basic-auth-header-generator) to convert this.
-* Define a proxy that is pointed at your ServiceNow instance with the nescessary headers. For help figuring out which headers to use, refer to the REST API explorer in your servicenow instance. Here is an example of what your proxy may look like:
- 
+
+- Define a Secret that is a 64base encoding of 'username:password'. You can use a tool similar to [this](https://www.debugbear.com/basic-auth-header-generator) to convert this.
+- Define a proxy that is pointed at your ServiceNow instance with the nescessary headers. For help figuring out which headers to use, refer to the REST API explorer in your servicenow instance. Here is an example of what your proxy may look like:
+
 <div align="center"><img src="img/proxy_changes.png" width="550" /></div>
 
 - Register the plugin.
+
   - This plan will not work on the Global context.
   - Select the entity or entities that will have a corresponding entity in the `cmdb_ci_service` table. Below is what a configuration may look like. In this example the plugin will be available to both Services and Resources.
 
   <div align="center"><img src="img/snow_changes_config.png" width="350" /></div>
 
 ## Setting up your dev environment
-
 
 ### Prerequisites
 
