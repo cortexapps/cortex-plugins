@@ -28,13 +28,13 @@ const Changes: React.FC = () => {
       // url encoding the servicename in case it contains spaces
       const serviceURLName: string = encodeURIComponent(cortexService);
       try {
-        // Here we are looking at the cmdb_ci_service table.
+        // Here we are looking at the cmdb_ci_service table for a Configuration Item (ci) to match the service in Cortex.
         // If you want to use a different table, change the url below
-        const result = await CortexApi.proxyFetch(
+        const ciResult = await CortexApi.proxyFetch(
           `${snURL}/api/now/table/cmdb_ci_service?sysparm_query=name%3D${serviceURLName}`
         );
-        const resultJson = await result.json();
-        const resultArray = resultJson.result;
+        const ciJson = await ciResult.json();
+        const resultArray = ciJson.result;
         if (resultArray.length > 0) {
           hasCI = true;
           const ciSysid: string = resultArray[0].sys_id.toString();
@@ -44,14 +44,14 @@ const Changes: React.FC = () => {
           // If you modified the Url above to use a different table you will also need
           // to modify the url below
 
-          const iResult = await CortexApi.proxyFetch(
+          const changesResult = await CortexApi.proxyFetch(
             snURL +
               `/api/now/table/change_request?sysparm_display_value=true&sysparm_query=business_service%3D${ciSysid}`
           );
-          const jResult = await iResult.json();
-          if (jResult.result.length > 0) {
+          const changesJson = await changesResult.json();
+          if (changesJson.result.length > 0) {
             hasChanges = true;
-            setPosts(jResult.result);
+            setPosts(changesJson.result);
           }
         }
       } catch (error) {
