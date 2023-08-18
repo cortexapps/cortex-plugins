@@ -107,7 +107,7 @@ const Incidents: React.FC = () => {
     ) : (
       <Box backgroundColor="light" padding={3} borderRadius={2}>
         <Text>
-          We could not find any Change Requests associated to this Service
+          We could not find any Incidents associated to this Service
         </Text>
       </Box>
     );
