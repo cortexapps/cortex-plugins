@@ -32,7 +32,6 @@ This means that the plugin did not find a GitHub repository defined as described
 
 If you are getting a generic "Oops! There was a runtime error" message, you may want to look the browser's console and track where the plugin is breaking down based on which `console.log` output is displayed in the console.
 
-Make sure that you use an Access Token created for the project, not the user.
 
 # Setting up your dev environment
 
