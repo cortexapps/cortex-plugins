@@ -1,24 +1,30 @@
 import { isNil } from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import type React from "react";
-import { getCortexContext, getEntityYaml } from "../api/Cortex";
-import { Box, Stack, Text, Title } from "@cortexapps/plugin-core/components";
+import { getEntityYaml } from "../api/Cortex";
+import {
+  Box,
+  Stack,
+  Text,
+  Title,
+  usePluginContext,
+} from "@cortexapps/plugin-core/components";
 import { getGithubDetailsFromEntity } from "../lib/parseEntity";
 import GitReleases from "./GitReleases";
 
 const CortexEntity: React.FC = () => {
+  const context = usePluginContext();
   const [entityYaml, setEntityYaml] = useState<
     Record<string, any> | undefined
   >();
 
   const fetchEntityYaml = useCallback(async () => {
-    const context = await getCortexContext();
-    const entityTag = context?.entity?.tag;
+    const entityTag = context.entity?.tag;
     if (!isNil(entityTag)) {
-      const yaml = await getEntityYaml(entityTag);
+      const yaml = await getEntityYaml(context.apiBaseUrl, entityTag);
       setEntityYaml(yaml);
     }
-  }, []);
+  }, [context.apiBaseUrl, context.entity?.tag]);
 
   useEffect(() => {
     void fetchEntityYaml();

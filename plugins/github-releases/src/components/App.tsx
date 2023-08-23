@@ -15,7 +15,7 @@ const App: React.FC = () => {
       <PluginProvider>
         <Stack>
           <Logo />
-          <Title level={1}>GitHub Deploys</Title>
+          <Title level={1}>GitHub Releases</Title>
           <CortexEntity />
         </Stack>
       </PluginProvider>
