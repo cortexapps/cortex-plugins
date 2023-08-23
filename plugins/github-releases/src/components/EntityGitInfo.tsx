@@ -1,4 +1,4 @@
-import { isNil } from "lodash";
+import { isEmpty, isNil } from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import type React from "react";
 import { getEntityYaml } from "../api/Cortex";
@@ -30,21 +30,21 @@ const CortexEntity: React.FC = () => {
     void fetchEntityYaml();
   }, [fetchEntityYaml]);
 
+  const githubDetails = isEmpty(entityYaml)
+    ? undefined
+    : getGithubDetailsFromEntity(entityYaml);
+
   return (
     <div>
-      {Boolean(entityYaml) && (
+      {!isEmpty(entityYaml) && (
         <Stack spacing={3}>
           <Title level={2} noMarginBottom>
             Git info
           </Title>
           <Box backgroundColor={"gray-lighter"} padding={2}>
-            <Text>
-              {JSON.stringify(
-                getGithubDetailsFromEntity(entityYaml as Record<string, any>)
-              )}
-            </Text>
+            <Text>{JSON.stringify(githubDetails)}</Text>
           </Box>
-          <GitReleases entityYaml={entityYaml as Record<string, any>} />
+          {!isEmpty(githubDetails) && <GitReleases entityYaml={entityYaml} />}
         </Stack>
       )}
     </div>
