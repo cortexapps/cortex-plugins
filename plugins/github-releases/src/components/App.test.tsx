@@ -5,6 +5,6 @@ describe("App", () => {
   it("indicates that it's an awesome plugin", () => {
     render(<App />);
 
-    expect(screen.queryByText(/My Awesome Cortex Plugin/)).toBeInTheDocument();
+    expect(screen.queryByText("GitHub Releases")).toBeInTheDocument();
   });
 });

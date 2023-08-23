@@ -14,3 +14,11 @@ This is a monorepo housing Cortex-maintained plugins for Cortex.
    "@cortexapps/plugin-core":
       "<rootDir>/../../node_modules/@cortexapps/plugin-core/dist/index.cjs.js",
    ```
+4. Update the `jest.config.ts` static file mappings to point at mocks, i.e.
+   ```json
+   // map static asset imports to a stub file under the assumption they are not important to our tests
+   "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
+      "<rootDir>/../__mocks__/fileMock.js",
+   // map style asset imports to a stub file under the assumption they are not important to our tests
+   "\\.(css|less)$": "<rootDir>/../__mocks__/styleMock.js",
+   ```
