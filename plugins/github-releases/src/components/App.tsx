@@ -7,7 +7,7 @@ import {
 } from "@cortexapps/plugin-core/components";
 import "../baseStyles.css";
 import ErrorBoundary from "./ErrorBoundary";
-import PluginContext from "./PluginContext";
+import CortexEntity from "./EntityGitInfo";
 
 const App: React.FC = () => {
   return (
@@ -15,9 +15,9 @@ const App: React.FC = () => {
       <PluginProvider>
         <Stack>
           <Logo />
-          <Title level={1}>My Awesome Cortex Plugin</Title>
+          <Title level={1}>GitHub Deploys</Title>
+          <CortexEntity />
         </Stack>
-        <PluginContext />
       </PluginProvider>
     </ErrorBoundary>
   );
