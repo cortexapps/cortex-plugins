@@ -1,11 +1,9 @@
-import { CortexApi } from "@cortexapps/plugin-core";
-
 export const getReleases = async (
   owner: string,
   repo: string,
   { perPage = 100, page = 1 }
 ): Promise<any> => {
-  const res = await CortexApi.proxyFetch(
+  const res = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/releases?per_page=${perPage}&page=${page}`
   );
   if (res.status >= 400 && res.status < 600) {

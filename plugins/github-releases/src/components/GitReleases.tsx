@@ -88,12 +88,13 @@ const GitReleases: React.FC<GitReleasesProps> = ({ entityYaml }) => {
       </Title>
       {!isEmpty(releases) && (
         <Stack alignItems={"center"} row>
-          <Text component={"label"}>Show drafts</Text>
+          <label htmlFor={"ToggleDrafts"}>Show drafts</label>
           <Toggle
             checked={showDrafts}
             onChange={() => {
               setShowDrafts((prev) => !prev);
             }}
+            id={"ToggleDrafts"}
           />
         </Stack>
       )}
