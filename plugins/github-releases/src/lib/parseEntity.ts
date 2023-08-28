@@ -9,6 +9,7 @@ export const getGithubDetailsFromEntity = (
   }
 
   const [owner, repo] = githubDetails?.repository?.split("/");
+
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (!owner || !repo) {
     return undefined;
