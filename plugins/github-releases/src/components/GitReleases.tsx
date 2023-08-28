@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getReleases } from "../api/Github";
-import { getGithubDetailsFromEntity } from "../lib/parseEntity";
 import {
   Box,
   List,
@@ -12,8 +10,10 @@ import {
   Title,
   Toggle,
 } from "@cortexapps/plugin-core/components";
-import GitReleaseItem from "./GitReleaseItem";
 import { isEmpty } from "lodash";
+import GitReleaseItem from "./GitReleaseItem";
+import { getReleases } from "../api/Github";
+import { getGithubDetailsFromEntity } from "../lib/parseEntity";
 
 interface GitReleasesProps {
   entityYaml: Record<string, any>;
@@ -30,7 +30,7 @@ const perPage = 100;
 
 const GitReleases: React.FC<GitReleasesProps> = ({ entityYaml }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<Error | undefined | null>();
   const [releases, setReleases] = useState<Array<Record<string, any>>>([]);
   const [showDrafts, setShowDrafts] = useState<boolean>(false);
 
@@ -76,7 +76,7 @@ const GitReleases: React.FC<GitReleasesProps> = ({ entityYaml }) => {
 
     return releases
       .filter((release) => {
-        return release.draft === false && release.prerelease === false;
+        return !release.draft && !release.prerelease;
       })
       .sort(compareCreationDate);
   }, [releases, showDrafts]);

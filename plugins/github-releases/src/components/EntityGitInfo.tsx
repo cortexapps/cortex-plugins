@@ -20,6 +20,7 @@ const CortexEntity: React.FC = () => {
 
   const fetchEntityYaml = useCallback(async () => {
     const entityTag = context.entity?.tag;
+
     if (!isNil(entityTag)) {
       const yaml = await getEntityYaml(context.apiBaseUrl, entityTag);
       setEntityYaml(yaml);
