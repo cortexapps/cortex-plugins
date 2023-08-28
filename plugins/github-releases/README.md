@@ -16,4 +16,6 @@ x-cortex-git:
     repository: org/chat-service
 ```
 
+See [Cortex entity GitHub configuration docs](https://docs.cortex.io/docs/reference/integrations/github) for more info.
+
 ![example context configuration](./docs/example_context_configuration.png "Example context configuration")
