@@ -1,5 +1,5 @@
 import React from "react";
-import { CortexApi, PluginContextLocation } from "@cortexapps/plugin-core";
+import { PluginContextLocation } from "@cortexapps/plugin-core";
 import {
   SimpleTable,
   Box,
@@ -14,7 +14,7 @@ import "../baseStyles.css";
 // Set your Github url. Cloud is https://api.github.com
 const ghURL = `https://api.github.com/`;
 let hasGitHub: boolean = false;
-// function to get Cortex API Basepath
+let hasIssues: boolean = false;
 const Issues: React.FC = () => {
   const context = usePluginContext();
   console.log(context);
@@ -25,42 +25,36 @@ const Issues: React.FC = () => {
     const fetchData = async (): Promise<void> => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const cortexTag = context.entity!.tag;
-      console.log(cortexTag);
       const cortexURL = context.apiBaseUrl;
-      console.log(cortexURL);
-      const result = await fetch(`${cortexURL}/catalog/${cortexTag}/openapi`);
-      const resultJson = await result.json();
-      console.log({ resultJson });
+      const serviceResult = await fetch(`${cortexURL}/catalog/${cortexTag}/openapi`);
+      const serviceJson = await serviceResult.json();
       try {
-        if (resultJson.info?.["x-cortex-git"].github.repository !== undefined) {
+        if (serviceJson.info?.["x-cortex-git"].github.repository !== undefined) {
           hasGitHub = true;
           // If we have a GitHub tag, we assume there is a repo defined, let's get the value
           const ghRepo: string =
-            resultJson.info["x-cortex-git"].github.repository;
-          console.log(ghRepo);
+          serviceJson.info["x-cortex-git"].github.repository;
           // Let's check if we have a basepath defined, to check for mono repo
-          if (resultJson.info["x-cortex-git"].github.basepath !== undefined) {
-            console.log("has basepath");
+          let issueURL:string = "";
+          if (serviceJson.info["x-cortex-git"].github.basepath !== undefined) {
             // we are going to assume that each service is being tracked via labels
-            const url: string = `${ghURL}repos/${ghRepo}/issues?labels=${cortexTag}`;
-            console.log(url);
-            const iResult = await fetch(url);
-            const jResult = await iResult.json();
-            console.log({ jResult });
-            setPosts(jResult);
-          } else {
-            console.log("Doesn't have basepath");
-            const iResult = await CortexApi.proxyFetch(
-              `${ghURL}repos/${ghRepo}/issues?direction=asc`
-            );
-            const jResult = await iResult.json();
-            console.log({ jResult });
-            setPosts(jResult);
+            issueURL = `${ghURL}repos/${ghRepo}/issues?labels=${cortexTag}`;
           }
-        }
-      }
-      catch (error)
-      {
+          else
+          {
+            issueURL =`${ghURL}repos/${ghRepo}/issues?direction=asc`;
+          }
+          const issuesResult = await fetch(issueURL);
+          const issuesJson = await issuesResult.json();
+          if (issuesJson.length > 0)
+            {
+              hasIssues = true;
+              setPosts(issuesJson);  
+            }
+          }
+      }      
+      catch(Error){
+        alert(Error.message)
 
       }
       setIsLoading(false);
@@ -110,7 +104,17 @@ const Issues: React.FC = () => {
     return isLoading ? (
       <Loader />
     ) : (<SimpleTable config={config} items={posts} /> );
-  } else {
+  } else if (hasGitHub && !hasIssues) {
+    return isLoading ? (
+      <Loader />
+    ) : (
+      <Box backgroundColor="light" padding={3} borderRadius={2}>
+        <Text>
+          We could not find any Issues associated to this Service
+        </Text>
+      </Box>
+    );
+  }  else {
     return isLoading ? (
       <Loader />
     ) : (

@@ -13,7 +13,7 @@ describe("App", () => {
     render(<App />);
 
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.cortex.dev/catalog/inventory-planner/openapi"
+      "https://api.getcortexapp.com/catalog/inventory-planner/openapi"
     );
   });
 });
