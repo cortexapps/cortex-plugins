@@ -32,9 +32,7 @@ This means that the plugin did not find a GitHub repository defined as described
 
 If you are getting a generic "Oops! There was a runtime error" message, you may want to look the browser's console and track where the plugin is breaking down based on which `console.log` output is displayed in the console.
 
-
 # Setting up your dev environment
-
 
 GitLab Issues Plugin is a [Cortex](https://www.cortex.io/) plugin. To see how to run the plugin inside of Cortex, see [our docs](https://docs.cortex.io/docs/plugins).
 
