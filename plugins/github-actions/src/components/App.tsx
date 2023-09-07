@@ -1,24 +1,27 @@
 import type React from "react";
 import {
-  Logo,
-  PluginProvider,
-  Stack,
-  Title,
+  PluginContextProvider,
+  ThemeProvider,
 } from "@cortexapps/plugin-core/components";
+import { lightTheme } from "@backstage/theme";
+import { ThemeProvider as MaterialThemeProvider } from "@material-ui/core";
 import "../baseStyles.css";
 import ErrorBoundary from "./ErrorBoundary";
-import PluginContext from "./PluginContext";
+import EntityYamlContainer from "./EntityYamlContainer";
+import { MemoryRouter } from "react-router-dom";
 
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <PluginProvider>
-        <Stack>
-          <Logo />
-          <Title level={1}>My Awesome Cortex Plugin</Title>
-        </Stack>
-        <PluginContext />
-      </PluginProvider>
+      <ThemeProvider>
+        <MaterialThemeProvider theme={lightTheme}>
+          <PluginContextProvider>
+            <MemoryRouter>
+              <EntityYamlContainer />
+            </MemoryRouter>
+          </PluginContextProvider>
+        </MaterialThemeProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 };

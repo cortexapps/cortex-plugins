@@ -7,7 +7,7 @@ module.exports = {
     "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
     "@cortexapps/plugin-core/components":
       "<rootDir>/../../node_modules/@cortexapps/plugin-core/dist/components.cjs.js",
-   "@cortexapps/plugin-core":
+    "@cortexapps/plugin-core":
       "<rootDir>/../../node_modules/@cortexapps/plugin-core/dist/index.cjs.js",
   },
   setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
