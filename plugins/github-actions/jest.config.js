@@ -1,3 +1,13 @@
+const packagesToTransform = [
+  "@backstage/core-components",
+  "@backstage/theme",
+];
+
+// const ignorePattern = `/node_modules/(?!(${packagesToTransform.join('|')})).+\\.js$`
+// const ignorePattern = `/node_modules/(?!(${packagesToTransform.join('|')}))`
+
+// console.log({ ignorePattern });
+
 module.exports = {
   moduleNameMapper: {
     // map static asset imports to a stub file under the assumption they are not important to our tests
@@ -13,6 +23,12 @@ module.exports = {
   setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
   testEnvironment: "jsdom",
   transform: {
-    "^.+\\.tsx?$": "babel-jest",
+    "^.+\\.tsx?$": "@swc/jest",
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!@backstage)'
+  ],
+  // transformIgnorePatterns: [
+  //   ignorePattern,
+  // ],
 };
