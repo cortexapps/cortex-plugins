@@ -1,10 +1,11 @@
+import React from "react";
+import { useAsync } from "react-use";
 import {
   type CortexDomain,
   type CortexResource,
   type CortexService,
 } from "@cortexapps/plugin-core";
-import React from "react";
-import { useAsync } from "react-use";
+import { usePluginContext } from "@cortexapps/plugin-core/components";
 import { getEntityYaml } from "../api/Cortex";
 
 interface PluginContextProviderProps extends React.PropsWithChildren {
@@ -24,12 +25,11 @@ const EntityYamlProvider: React.FC<PluginContextProviderProps> = ({
   children,
   entity,
 }) => {
-  const [entityYaml, setEntityYaml] = React.useState<
-    Record<string, any> | undefined
-  >();
-  const { loading: isLoading } = useAsync(async () => {
-    const yaml = await getEntityYaml(entity.tag);
-    setEntityYaml(yaml);
+  const { apiBaseUrl } = usePluginContext();
+
+  const { value: entityYaml, loading: isLoading } = useAsync(async () => {
+    const yaml = await getEntityYaml(apiBaseUrl, entity.tag);
+    return yaml as Record<string, any>;
   });
 
   return (

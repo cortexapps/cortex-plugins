@@ -56,6 +56,7 @@ export class GithubActionsClient implements GithubActionsApi {
   }): Promise<
     RestEndpointMethodTypes["actions"]["listWorkflowRuns"]["response"]["data"]
   > {
+    console.log(`====== listWorkflowRuns`);
     const { owner, repo, pageSize = 100, page = 0, branch } = options;
 
     const octokit = await this.getOctokit();
@@ -66,6 +67,8 @@ export class GithubActionsClient implements GithubActionsApi {
       page,
       ...(branch ? { branch } : {}),
     });
+
+    console.log(`====== listWorkflowRuns`, { data: workflowRuns.data });
 
     return workflowRuns.data;
   }
@@ -78,6 +81,7 @@ export class GithubActionsClient implements GithubActionsApi {
   }): Promise<
     RestEndpointMethodTypes["actions"]["getWorkflow"]["response"]["data"]
   > {
+    console.log(`==== getWorkflow`);
     const { owner, repo, id } = options;
 
     const octokit = await this.getOctokit();
@@ -142,6 +146,7 @@ export class GithubActionsClient implements GithubActionsApi {
   }): Promise<
     RestEndpointMethodTypes["actions"]["downloadJobLogsForWorkflowRun"]["response"]["data"]
   > {
+    console.log(`=== downloadJobLogsForWorkflowRun`);
     const { owner, repo, runId } = options;
 
     const octokit = await this.getOctokit();

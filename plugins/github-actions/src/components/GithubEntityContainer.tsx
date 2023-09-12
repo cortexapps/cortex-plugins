@@ -1,5 +1,5 @@
-import { getGithubDetailsFromEntityYaml } from "../lib/parseEntity";
 import { Stack, Text } from "@cortexapps/plugin-core/components";
+import { getGithubDetailsFromEntityYaml } from "../lib/parseEntity";
 import GithubEntityProvider from "./GithubEntityProvider";
 import { Router } from "./Router";
 
@@ -10,20 +10,10 @@ interface GithubEntityContainerProps {
 const GithubEntityContainer: React.FC<GithubEntityContainerProps> = ({
   entityYaml,
 }) => {
-  if (!entityYaml) {
-    return (
-      <Stack>
-        <Text>
-          No GitHub information found for this entity. GitHub information must
-          be provided by the entity's YAML file.
-        </Text>
-      </Stack>
-    );
-  }
+  const { owner, repo } =
+    getGithubDetailsFromEntityYaml(entityYaml ?? {}) ?? {};
 
-  const { owner, repo } = getGithubDetailsFromEntityYaml(entityYaml) ?? {};
-
-  return !owner || !repo ? (
+  return !entityYaml || !owner || !repo ? (
     <Stack>
       <Text>
         No GitHub information found for this entity. GitHub information must be
