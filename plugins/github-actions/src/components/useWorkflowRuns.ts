@@ -75,10 +75,6 @@ export function useWorkflowRuns({
     retry,
     error,
   } = useAsyncRetry<WorkflowRun[]>(async () => {
-    console.log(`==== useWorkflowRuns`, {
-      fn: githubActionsClient.listWorkflowRuns,
-      githubActionsClient,
-    });
     // GitHub API pagination count starts from 1
     const workflowRunsData = await githubActionsClient.listWorkflowRuns({
       hostname,
@@ -88,8 +84,6 @@ export function useWorkflowRuns({
       page: page + 1,
       branch,
     });
-
-    console.log(`===== useWorkflowRuns found data:`, { workflowRunsData });
 
     setTotal(workflowRunsData.total_count);
     // Transformation here
