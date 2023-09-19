@@ -36,7 +36,7 @@ const useCortexEntityYaml = (): {
   const { loading: isLoadingYaml } = useAsync(async () => {
     const entityTag = context?.entity?.tag;
     if (!isNil(entityTag)) {
-      const yaml = await getEntityYaml(entityTag);
+      const yaml = await getEntityYaml(context.apiBaseUrl, entityTag);
       setEntityYaml(yaml);
     }
   }, [context]);
