@@ -12,7 +12,7 @@ const EntityYamlContainer: React.FC = () => {
   return !context?.entity ? (
     <Stack>
       <Text>
-        Invalid context for GitHub deploys -- requires an entity context, but
+        Invalid context for GitHub Actions -- requires an entity context, but
         found
       </Text>
       <pre>{JSON.stringify(context, undefined, 2)}</pre>

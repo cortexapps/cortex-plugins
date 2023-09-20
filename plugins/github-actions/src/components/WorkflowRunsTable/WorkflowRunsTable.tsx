@@ -58,11 +58,6 @@ const generatedColumns: TableColumn[] = [
           <RouterLink to={`github-actions/build/${row.id!}`}>
             {row.message}
           </RouterLink>
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
-          // @ts-ignore -- TODO: fix this type issue
-          // <Link component={RouterLink} to={`github-actions/build/${row.id!}`}>
-          //   {row.message}
-          // </Link>
         );
       };
 
