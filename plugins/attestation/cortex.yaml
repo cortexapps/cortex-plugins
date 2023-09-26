@@ -1,0 +1,11 @@
+openapi: 3.0.1
+info:
+  title: Checklist Plugin
+  description: ""
+  x-cortex-tag: checklist-plugin
+  x-cortex-git:
+    github:
+      repository: cremerica/checklist-plugin
+  x-cortex-custom-metadata:
+    cortex-template-version: 0.1.0
+    cortex-generated-timestamp: 2023-08-21T13:46:06.066843910
