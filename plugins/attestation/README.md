@@ -23,7 +23,20 @@ The plugin has three main sections:
 
 #### 1. Previous Attestation
 
-The top of the screen will show you the previous attestation. If no previous attestation has occurred a message is displayed.
+The top of the screen will show you the previous attestation. 
+
+![Previous Attestations](img/attestations.png)
+
+In its out of the box state, the table displays the following information:
+
+**Date** The date when the previous attestation was performed
+**Signed By** The logged in user that performed the attestation
+
+The remaining column map to the sample questions included out of the box
+
+If no previous attestation has occurred a message is displayed.
+
+![No Attestations](img/no_attestations.png)
 
 #### 2. Submitting a new attestation
 
@@ -32,6 +45,19 @@ Check the "Submit new attestation" to display the attestation form. Keep in mind
 #### 3. Submit Form
 
 The form contains only three select controls, each with a `<Text/>` object that contains a question. Replace this with the questions that make sense for your use cases.
+
+![Sample Form](img/sample_form.png)
+
+Once the form is successfully submitted it will display a message box
+
+![success](img/success.png)
+
+ The plugin saves the information as [custom data](https://docs.cortex.io/docs/reference/basics/custom-data) attached to the current entity.
+
+ ![Custom Data](img/custom-data.png)
+
+ Since the data is saved as custom data, this means you can write rules for it in scorecards and query results using our Query Builder and CQL Reports.
+
 
 ## Example Scorecard
 
