@@ -7,7 +7,9 @@ Provide a form for Service Owners to attest that their service is compliant and/
 
 The attestation plugin provides a starting point to provide end users with a form to attest to compliance related questions. The responses are saved as custom data, and thus available to score and report on via CQL. 
 
-The plugin comes with three sample placeholders questions that need to be replaced with questions that are relevant to you. It is expected that you will need to may need to make some moderate changes to this plugin to make it fit your use case.
+The plugin comes with three sample placeholders questions that need to be replaced with questions that are relevant to you. The sample questions are inspired by the [Secure Software Development Attestation Common From](https://www.cisa.gov/sites/default/files/2023-04/secure-software-self-attestation_common-form_508.pdf).
+
+It is expected that you will need to make some moderate changes to this plugin to make it fit your use case.
 
 ## How it works
 

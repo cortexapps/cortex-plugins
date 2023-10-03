@@ -25,14 +25,13 @@ const Attestation: React.FC = () => {
    
     const [posts, setPosts] = React.useState<any[]>([]);
     const [hasList, setHasList] = React.useState(false);
-    const [isOwner, setIsOwner] = React.useState(false);
     const [isChecked, setIsChecked] = React.useState(false);
-    const [itar, setItar] = React.useState("");
-    const [ada, setAda] = React.useState("");
-    const [pii, setPII] = React.useState("");
-   // const [date, setDate] = React.useState();
-   // const [selected, setSelected] = React.useState("");
-   // const [signedBy, setSignedBy] = React.useState("");
+    // The following variables are for the value of the questions.
+    // Add/Edit/Delete these to match your questions
+    const [secureEnv, setSecureEnv] = React.useState("");
+    const [trustedSource, setTrustedSource] = React.useState("");
+    const [provenanceData, setProvenanceData] = React.useState("");
+    const [secVuln, setSecVuln] = React.useState("");
     const [isLoading, setIsLoading] = React.useState(
         context.location === PluginContextLocation.Entity );
     
@@ -65,32 +64,8 @@ const Attestation: React.FC = () => {
             }             
             setIsLoading(false);
           };
-          // Code to figure out if current user owns the entity
-          const getOwnership = async (): Promise<void> => {
-            
-            try
-            {
-              console.log("checking for owner")
-              const userRole = context.user.role;
-
-              console.log("The current user role is " + userRole)
-            if (userRole === "OWNER") {
-                
-                  setIsOwner(true)
-              }
-        
-              
-            }
-              
-             catch(error) {
-                console.log(error.message)
-
-            }
-                       
-            setIsLoading(false);
-        
-          };
-          void getOwnership();
+          
+          
           void fetchData();
         }
       }, []);
@@ -100,18 +75,22 @@ const Attestation: React.FC = () => {
         setIsChecked(!isChecked)
       }
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const adaHandler = (ada) => {
-        setAda(ada.value);
-        console.log(ada)
+    const secureEnvHandler = (secureEnv) => {
+        setSecureEnv(secureEnv.value);
+
     };
-    const itarHandler = (itar) => {
-        setItar(itar.value);
-        console.log(itar)
+    const trustedSourceHandler = (trustedSource) => {
+        setTrustedSource(trustedSource.value);
+
     };
-    const piiHandler = (pii) => {
-        setPII(pii.value);
-        console.log(pii)
+    const provenanceDataHandler = (provenanceData) => {
+        setProvenanceData(provenanceData.value);
+
     };
+    const secVulnHandler = (secVuln) => {
+      setSecVuln(secVuln.value);
+
+  };
      // const handleSubmit = async (e) => {
         // e.preventDefault();
         
@@ -119,9 +98,6 @@ const Attestation: React.FC = () => {
           console.log(`about to do the posty post for ${cortexTag}`)
           const cdUrl = `${cortexUrl}/catalog/${cortexTag}/custom-data`;
           console.log (cdUrl)
-          console.log(itar)
-          console.log(ada)
-          console.log(pii)
           console.log(currentUser)
           try {
             const postRestult = CortexApi.proxyFetch(cdUrl, 
@@ -133,9 +109,10 @@ const Attestation: React.FC = () => {
                                [{
                                   "date": Date(),
                                   "signed_by": currentUser,
-                                  "ada": ada,
-                                  "itar": itar,
-                                  "pii": pii
+                                  "secureEnv": secureEnv,
+                                  "trustedSource": trustedSource,
+                                  "provenanceData": provenanceData,
+                                  "secVuln": secVuln
       
       
                               }]
@@ -190,35 +167,49 @@ const Attestation: React.FC = () => {
         width: "35%",
       },
       {
-        Cell: (ada: string) => (
+        Cell: (secureEnv: string) => (
           <Box>
-            <Text>{ada}</Text>
+            <Text>{secureEnv}</Text>
           </Box>
         ),
-        accessor: "ada",
-        id: "ada",
-        title: "ADA Compliant",
-        width: "15%",
+        accessor: "secureEnv",
+        id: "secureEnv",
+        title: "Secure environments",
+        width: "35%",
       },
       {
-        Cell: (itar: string) => (
+        Cell: (trustedSource: string) => (
           <Box>
-            <Text>{itar}</Text>
+            <Text>{trustedSource}</Text>
           </Box>
         ),
-        accessor: "itar",
-        id: "itar",
-        title: "ITAR Compliant",
+        accessor: "trustedSource",
+        id: "trustedSource",
+        title: "Trusted Supply Chains",
+        width: "35%"
       },
       {
-        Cell: (itar: string) => (
+        Cell: (provenanceData: string) => (
           <Box>
-            <Text>{itar}</Text>
+            <Text>{provenanceData}</Text>
           </Box>
         ),
-        accessor: "pii",
-        id: "pii",
-        title: "No PII",
+        accessor: "provenanceData",
+        id: "provenanceData",
+        title: "Maintains Provenance Data",
+        width: "35%",
+      },
+      {
+        Cell: (provenanceData: string) => (
+          <Box>
+            <Text>{provenanceData}</Text>
+          </Box>
+        ),
+        accessor: "secVuln",
+        id: "secVuln",
+        title: "Automated Vulnerability Tool",
+        width: "35%",
+        
       }
     ],
   };
@@ -236,38 +227,43 @@ return isLoading ? (
           <br/>
           <br/>
           
-          { isOwner && (
+          {  (
             <div><Input 
               type="checkbox"
               id="checkbox"
               checked={isChecked} 
               onChange={checkHandler}
-              />
-              <label htmlFor="checkbox">Submit New Attestation </label>
+              />   
+              <label htmlFor="checkbox">&ensp; Submit New Attestation </label>
+              <br/>
+              <br/>
               <br/>
             </div>)
           }  
           
           { isChecked && (
             <div>
-                <Text>This Service is ADA compliant  </Text>  
+                <Text>The software was developed and built in secure environments.</Text>  
                 <br/>
-                <div  style={{width: '100px'}}><Select  id="ada-select" options={options} onChange={adaHandler} /></div>
+                <div  style={{width: '100px'}}><Select  id="secure-env-select" options={options} onChange={secureEnvHandler} /></div>
                 <br/>
-                <Text>This Service is ITAR compliant  </Text>
+                <Text>The software producer has made a good-faith effort to maintain trusted source code supply chains</Text>
                 <br/>  
-                <div  style={{width: '100px'}}><Select  id="itar-select" options={options} onChange={itarHandler} /></div>
+                <div  style={{width: '100px'}}><Select  id="trusted-source-select" options={options} onChange={trustedSourceHandler} /></div>
                 <br/>
-                <Text>This Service does not process or use customer PII</Text>
+                <Text>The software producer maintains provenance data for internal and third-party code incorporated into the software</Text>
                 <br/>  
-                <div  style={{width: '100px'}}><Select  id="pii-select" options={options} onChange={piiHandler} /></div>
+                <div  style={{width: '100px'}}><Select  id="provenance-data-select" options={options} onChange={provenanceDataHandler} /></div>
+                <br/>
+                <Text>The software producer employed automated tools or comparable processes that check for security vulnerabilities</Text>
+                <br/>  
+                <div  style={{width: '100px'}}><Select  id="sec-vuln-select" options={options} onChange={secVulnHandler} /></div>
                 <br/>
                 <br/>
-                <Text> By clicking on the button below, I {currentUser} attest that the above information is accurate</Text>
+                <Text> By clicking on the button below, I {currentUser}  attest that the referenced software has been verified by a certified FedRAMP Third Party Assessor Organization (3PAO) or other 3PAO approved by an appropriate agency official, and the Assessor used relevant NIST Guidance, which includes all elements outlined in this form, as the assessment baseline. Relevant documentation is attache</Text>
                 <br/>
                 <br/>
-                
-                
+                               
                 
                 <Button type="submit" onClick={() => {
                   postData();
