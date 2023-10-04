@@ -15,7 +15,7 @@ This plugin requires a proxy to GitHub. The API that the plugin uses is document
 <div align="center"><img src="img/gh-proxy.png" width="400" /></div>
 
 - Register the plugin.
-  - This plan will not work on the Global context.
+  - This plugin will not work on the Global context.
   - Select the entity that will have the GitHub repo in its `cortex.yaml`
 
 ## Troubleshooting
