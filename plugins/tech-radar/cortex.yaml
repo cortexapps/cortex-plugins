@@ -1,0 +1,15 @@
+openapi: 3.0.1
+info:
+  title: Plugins Tech Radar
+  description: ""
+  x-cortex-tag: plugins-tech-radar
+  x-cortex-git:
+    github:
+      repository: cortexapps/cortex-plugins
+      basepath: plugins/tech-radar
+  x-cortex-owners:
+  - email: mike.moore@cortex.io
+    type: EMAIL
+  x-cortex-custom-metadata:
+    cortex-template-version: 0.1.0
+    cortex-generated-timestamp: 2023-10-06T21:07:06.525112212
