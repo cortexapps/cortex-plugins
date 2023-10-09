@@ -46,3 +46,17 @@ To update an existing plugin, please follow these steps:
 If you encounter any issues with cortex-plugins, please report them on the [issue tracker](https://github.com/cortexapps/plugin-core/issues).
 
 Thank you for your contributions!
+
+## FAQ
+
+### What are expectations around testing?
+
+All _major_ conditions should be tested using the existing testing tools ([Jest](https://jestjs.io/) + [testing-library](https://testing-library.com/docs/react-testing-library/intro/)). For instance, if your plugin pulls in data about an entity from a third party, at minimum the following test cases should be covered:
+
+- There is no valid mapping between the entity in Cortex and the entity in the third party system
+- There is a valid mapping between the entity in Cortex and the entity in the third party system, but the third party system does not have data for the entity
+- There is a valid mapping between the entity in Cortex and the entity in the third party system and there is data for the entity in the third party system
+
+### What does the `build` command do?
+
+The `build` command uses [webpack](https://webpack.js.org/) to compile your plugin into a single html file (in `dist/ui.html`) that can be uploaded to Cortex for use.
