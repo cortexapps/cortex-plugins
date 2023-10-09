@@ -1,11 +1,22 @@
 import { render } from "@testing-library/react";
 import App from "./App";
 
-fetchMock.mockResponse(
-  JSON.stringify({
-    value:
-      "https://docs.google.com/forms/d/e/1FAIpQLSd068wYDvfxbhB75fTx-KM7aWb9gNiLLcnjA6SQ4ulT9SLgqA/viewform?embedded=true",
-  })
+fetchMock.mockIf(
+  /^https:\/\/dev80317\.service-now\.com\/api\/now\/table\/cmdb_ci_service\/ .*/,
+  async (_req: Request) => {
+    return await Promise.resolve(JSON.stringify({}));
+  }
+);
+
+fetchMock.mockIf(
+  /^https:\/\/dev80317\.service-now\.com\/api\/now\/table\/incident\/.*/,
+  async (_req: Request) => {
+    return await Promise.resolve(
+      JSON.stringify({
+        info: {},
+      })
+    );
+  }
 );
 
 describe("App", () => {

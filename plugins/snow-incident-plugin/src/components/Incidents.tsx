@@ -28,7 +28,7 @@ const Incidents: React.FC = () => {
       const serviceURLName: string = encodeURIComponent(cortexService);
       const apiURL = `${snURL}/api/now/table/cmdb_ci_service?sysparm_query=name%3D${serviceURLName}`
       try {
-        const ciResult = await CortexApi.proxyFetch( apiURL
+        const ciResult = await fetch( apiURL
           
         );
         const ciJson = await ciResult.json();
@@ -41,7 +41,7 @@ const Incidents: React.FC = () => {
           // Calling the incidents table using the cmdb_ci_service related field (business_service)
           // If you modified the Url above to use a different table you will also need
           // to modify the url below
-          const incidentsResult = await CortexApi.proxyFetch(
+          const incidentsResult = await fetch(
             snURL +
               `/api/now/table/incident?sysparm_display_value=true&sysparm_query=business_service%3D${ciSysid}`
           );
