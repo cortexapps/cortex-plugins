@@ -24,7 +24,7 @@ describe("App", () => {
     render(<App />);
 
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.getcortexapp.com/catalog/inventory-planner/openapi"
+      "https://dev80317.service-now.com/api/now/table/cmdb_ci_service?sysparm_query=name%3DInventory%20planner"
     );
   });
 });
