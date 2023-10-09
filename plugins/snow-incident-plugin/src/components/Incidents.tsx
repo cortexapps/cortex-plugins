@@ -1,5 +1,5 @@
 import React from "react";
-import { CortexApi, PluginContextLocation } from "@cortexapps/plugin-core";
+import { PluginContextLocation } from "@cortexapps/plugin-core";
 import "../baseStyles.css";
 import {
   SimpleTable,
@@ -26,11 +26,9 @@ const Incidents: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const cortexService = context.entity!.name as string;
       const serviceURLName: string = encodeURIComponent(cortexService);
-      const apiURL = `${snURL}/api/now/table/cmdb_ci_service?sysparm_query=name%3D${serviceURLName}`
+      const apiURL = `${snURL}/api/now/table/cmdb_ci_service?sysparm_query=name%3D${serviceURLName}`;
       try {
-        const ciResult = await fetch( apiURL
-          
-        );
+        const ciResult = await fetch(apiURL);
         const ciJson = await ciResult.json();
         const resultArray = ciJson.result;
         if (resultArray.length > 0) {
@@ -52,7 +50,7 @@ const Incidents: React.FC = () => {
           }
         }
       } catch (error) {}
-      
+
       setIsLoading(false);
     };
     void fetchData();
