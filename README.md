@@ -1,18 +1,13 @@
 # cortex-plugins
 
-This is a monorepo housing Cortex-maintained plugins for Cortex.
+This is a monorepo housing Cortex-maintained plugins for Cortex. All available plugins live inside of the `plugins` directory, plus an example [Scaffolded](https://www.cortex.io/products/scaffolder) plugin. Each plugin is a separate package that can be built and deployed independently.
 
-### Adding a plugin
+## Using a plugin
 
-1. Use Scaffolder to create a new plugin inside the `plugins` directory. **IMPORTANT**: use the "Plugin in cortex-plugins" template on tenant `cortex` in prod and point it at this repo with the subdirectory `plugins/{plugin-name}` (replace "{plugin-name}" with the name of your plugin).
-2. Update the `tsconfig.json` file `typeRoots` property to include types at the root of the repo, 1.e.
-   ```js
-   "typeRoots": ["../../node_modules/@types", "./node_modules/@types"],
-   ```
-3. Update the `jest.config.js` module name mappings for `@cortexapps/plugin-core` to point at the root of the repo, i.e.
-   ```js
-   "@cortexapps/plugin-core/components":
-      "<rootDir>/../../node_modules/@cortexapps/plugin-core/dist/components.cjs.js",
-   "@cortexapps/plugin-core":
-      "<rootDir>/../../node_modules/@cortexapps/plugin-core/dist/index.cjs.js",
-   ```
+To use one or multiple of these plugins, we recommend first forking this repository. Then, in the desired plugin subdirectory, run `yarn build` to generate the plugin code that will be executed by Cortex. Finally, in Cortex, register a new plugin and upload the generated `dist/ui.html` file to serve as the plugin code.
+
+Be sure to follow any additional setup instructions in the plugin's README.md file, particularly for proxy configuration setup.
+
+## Adding or updating a plugin
+
+For information on adding or updating a plugin, see [CONTRIBUTING.md](./CONTRIBUTING.md).
