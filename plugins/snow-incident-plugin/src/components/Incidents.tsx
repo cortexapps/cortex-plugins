@@ -9,7 +9,7 @@ import {
   usePluginContext,
 } from "@cortexapps/plugin-core/components";
 
-const snURL = `https://dev67337.service-now.com`;
+const snURL = `https://dev80317.service-now.com`;
 // Will use this flag to determine what to return based on if we have a match
 // between the Service name in Cortex and a CI in the CMDB
 let hasCI: boolean = false;
@@ -26,12 +26,13 @@ const Incidents: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const cortexService = context.entity!.name as string;
       const serviceURLName: string = encodeURIComponent(cortexService);
-      try{
-        const ciResult = await CortexApi.proxyFetch(
-          `${snURL}/api/now/table/cmdb_ci_service?sysparm_query=name%3D${serviceURLName}`
+      const apiURL = `${snURL}/api/now/table/cmdb_ci_service?sysparm_query=name%3D${serviceURLName}`
+      try {
+        const ciResult = await CortexApi.proxyFetch( apiURL
+          
         );
         const ciJson = await ciResult.json();
-      const resultArray = ciJson.result;
+        const resultArray = ciJson.result;
         if (resultArray.length > 0) {
           hasCI = true;
           const ciSysid: string = resultArray[0].sys_id.toString();
@@ -48,13 +49,11 @@ const Incidents: React.FC = () => {
           if (incidentsJson.result.length > 0) {
             hasIncidents = true;
             setPosts(incidentsJson.result);
-          }    
+          }
         }
-      } catch (error) {
-        alert(error.message);
-      }
-      setIsLoading(false);
+      } catch (error) {}
       
+      setIsLoading(false);
     };
     void fetchData();
   }, []);
@@ -106,9 +105,7 @@ const Incidents: React.FC = () => {
       <Loader />
     ) : (
       <Box backgroundColor="light" padding={3} borderRadius={2}>
-        <Text>
-          We could not find any Incidents associated to this Service
-        </Text>
+        <Text>We could not find any Incidents associated to this Service</Text>
       </Box>
     );
   } else {
