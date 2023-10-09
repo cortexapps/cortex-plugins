@@ -2,9 +2,8 @@ import "@testing-library/jest-dom/extend-expect";
 import fetchMock from "jest-fetch-mock";
 
 fetchMock.enableMocks();
-
 const mockContext = {
-  apiBaseUrl: "https://api.getcortexapp.com",
+  apiBaseUrl: "https://api.cortex.dev",
   entity: {
     definition: null,
     description: null,
