@@ -1,5 +1,5 @@
 import React from "react";
-import { CortexApi, PluginContextLocation } from "@cortexapps/plugin-core";
+import { PluginContextLocation } from "@cortexapps/plugin-core";
 import "../baseStyles.css";
 import {
   SimpleTable,
@@ -9,7 +9,7 @@ import {
   usePluginContext,
 } from "@cortexapps/plugin-core/components";
 
-const snURL = `https://dev67337.service-now.com`;
+const snURL = `https://dev80317.service-now.com`;
 // Will use this flag to determine what to return based on if we have a match
 // between the Service name in Cortex and a CI in the CMDB
 let hasCI: boolean = false;
@@ -30,7 +30,7 @@ const Changes: React.FC = () => {
       try {
         // Here we are looking at the cmdb_ci_service table for a Configuration Item (ci) to match the service in Cortex.
         // If you want to use a different table, change the url below
-        const ciResult = await CortexApi.proxyFetch(
+        const ciResult = await fetch(
           `${snURL}/api/now/table/cmdb_ci_service?sysparm_query=name%3D${serviceURLName}`
         );
         const ciJson = await ciResult.json();
@@ -44,7 +44,7 @@ const Changes: React.FC = () => {
           // If you modified the Url above to use a different table you will also need
           // to modify the url below
 
-          const changesResult = await CortexApi.proxyFetch(
+          const changesResult = await fetch(
             snURL +
               `/api/now/table/change_request?sysparm_display_value=true&sysparm_query=business_service%3D${ciSysid}`
           );
@@ -54,9 +54,7 @@ const Changes: React.FC = () => {
             setPosts(changesJson.result);
           }
         }
-      } catch (error) {
-        alert(error.message);
-      }
+      } catch (error) { }
       setIsLoading(false);
     };
     void fetchData();
