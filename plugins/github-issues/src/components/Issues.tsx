@@ -20,6 +20,7 @@ const Issues: React.FC = () => {
   const [isLoading, setIsLoading] = React.useState(
     context.location === PluginContextLocation.Entity
   );
+  
   React.useEffect(() => {
     const fetchData = async (): Promise<void> => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
