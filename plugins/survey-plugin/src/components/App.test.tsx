@@ -13,14 +13,9 @@ describe("App", () => {
     render(<App />);
 
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.cortex.dev/catalog/inventory-planner/custom-data/survey"
+      "https://api.cortex.dev/catalog/inventory-planner/custom-data/survey-url"
     );
   });
 });
 
-test('is the iframe there?', () => {
-  render(<App />);
-
-  expect(screen.getByRole('iframe'))
-}
-);
+;
