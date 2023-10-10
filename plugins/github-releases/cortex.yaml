@@ -1,0 +1,12 @@
+openapi: 3.0.1
+info:
+  title: GitHub Releases Plugin
+  description: ""
+  x-cortex-tag: cortex-plugin-github-releases
+  x-cortex-git:
+    github:
+      repository: cortexapps/cortex-plugins
+      basepath: plugins
+  x-cortex-custom-metadata:
+    cortex-template-version: 0.1.0
+    cortex-generated-timestamp: 2023-08-23T16:30:46.718904321
