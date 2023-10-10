@@ -4,7 +4,7 @@ Provides a form for Service Owners to attest that their service is compliant and
 
 ## Overview
 
-The attestation plugin provides a starting point to provide end users with a form to attest to compliance related questions. The responses are saved as custom data, and thus available to score and report via CQL. 
+The attestation plugin provides a starting point to provide end users with a form to attest to compliance related questions. The responses are saved as custom data, and thus available to score and report via CQL.
 
 The plugin comes with four sample placeholder questions that need to be replaced with questions that are relevant to you. The sample questions are inspired by the [Secure Software Development Attestation Common From](https://www.cisa.gov/sites/default/files/2023-04/secure-software-self-attestation_common-form_508.pdf).
 
@@ -16,18 +16,17 @@ The plugin is meant to be used at the entity level and will not work if accessed
 
 ### Plugin Sections
 
-The plugin has three main sections: 
+The plugin has three main sections:
 
 #### 1. Previous Attestation
 
-The top of the screen will show you the previous attestation. 
+The top of the screen will show you the previous attestation.
 
 ![Previous Attestations](img/attestations.png)
 
 In its out of the box state, the table displays the following information:
 
 **Date:** The date when the previous attestation was performed.
-
 
 **Signed By:** The logged in user that performed the attestation
 
@@ -59,7 +58,6 @@ The plugin saves the information as [custom data](https://docs.cortex.io/docs/re
 
 Since the data is saved as custom data, this means you can write rules for it in scorecards and query results using our Query Builder and CQL Reports.
 
-
 ## Example Scorecard
 
 To help you get started with scorecards, we've included a sample scorecard that evaluate the questions that comes with the plugin. In this example, if the attestee answers `yes` to all questions, the service is considered `compliant`, otherwise it is considered `non-compliant`.
@@ -73,36 +71,42 @@ tag: compliance-check
 name: Compliance Check
 draft: true
 rules:
-- title: The software producer maintains provenance data for internal and third-party
-    code incorporated into the software
-  expression: "jq(custom(\"checklist\"), \".[0].\\\"provenanceData\\\"\").matches(\"\
-    Yes\") "
-  weight: 1
-  filter:
-    category: SERVICE
-- title: The software was developed and built in secure environments.
-  expression: "jq(custom(\"checklist\"), \".[0].\\\"secureEnv\\\"\").matches(\"Yes\"\
-    )"
-  weight: 1
-  filter:
-    category: SERVICE
-- title: The software producer employed automated tools or comparable processes that
-    check for security vulnerabilities
-  expression: "jq(custom(\"checklist\"), \".[0].\\\"secVuln\\\"\").matches(\"Yes\"\
-    ) "
-  weight: 1
-  filter:
-    category: SERVICE
-- title: The software producer has made a good-faith effort to maintain trusted source
-    code supply chains
-  expression: "jq(custom(\"checklist\"), \".[0].\\\"trustedSource\\\"\").matches(\"\
-    Yes\") "
-  weight: 1
-  filter:
-    category: SERVICE
+  - title:
+      The software producer maintains provenance data for internal and third-party
+      code incorporated into the software
+    expression:
+      "jq(custom(\"checklist\"), \".[0].\\\"provenanceData\\\"\").matches(\"\
+      Yes\") "
+    weight: 1
+    filter:
+      category: SERVICE
+  - title: The software was developed and built in secure environments.
+    expression:
+      "jq(custom(\"checklist\"), \".[0].\\\"secureEnv\\\"\").matches(\"Yes\"\
+      )"
+    weight: 1
+    filter:
+      category: SERVICE
+  - title:
+      The software producer employed automated tools or comparable processes that
+      check for security vulnerabilities
+    expression:
+      "jq(custom(\"checklist\"), \".[0].\\\"secVuln\\\"\").matches(\"Yes\"\
+      ) "
+    weight: 1
+    filter:
+      category: SERVICE
+  - title:
+      The software producer has made a good-faith effort to maintain trusted source
+      code supply chains
+    expression:
+      "jq(custom(\"checklist\"), \".[0].\\\"trustedSource\\\"\").matches(\"\
+      Yes\") "
+    weight: 1
+    filter:
+      category: SERVICE
 filter:
   category: SERVICE
-
 ```
 
 The sample scorecard allows to track compliance at the service level.
@@ -118,8 +122,6 @@ You can also leverage initiatives so Cortex can send weekly reminders to each se
 ## Adding your own questions
 
 The plugin comes with three select controls each with a placeholder Text control. Replace the contents with of the Text object with your own questions. Rename the variables and refactor as appropriate.
-
-
 
 ## Setting up your Dev Environment
 

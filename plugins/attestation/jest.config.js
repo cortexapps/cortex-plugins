@@ -6,9 +6,9 @@ module.exports = {
     // map style asset imports to a stub file under the assumption they are not important to our tests
     "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
     "@cortexapps/plugin-core/components":
-    "<rootDir>/../../node_modules/@cortexapps/plugin-core/dist/components.cjs.js",
-  "@cortexapps/plugin-core":
-    "<rootDir>/../../node_modules/@cortexapps/plugin-core/dist/index.cjs.js",
+      "<rootDir>/../../node_modules/@cortexapps/plugin-core/dist/components.cjs.js",
+    "@cortexapps/plugin-core":
+      "<rootDir>/../../node_modules/@cortexapps/plugin-core/dist/index.cjs.js",
   },
   setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
   testEnvironment: "jsdom",
