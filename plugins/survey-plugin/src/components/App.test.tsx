@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import App from "./App";
 
 fetchMock.mockResponse(
@@ -17,3 +17,10 @@ describe("App", () => {
     );
   });
 });
+
+test('is the iframe there?', () => {
+  render(<App />);
+
+  expect(screen.getByRole('iframe'))
+}
+);

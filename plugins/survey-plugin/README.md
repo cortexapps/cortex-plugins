@@ -48,7 +48,7 @@ The survey url for an entity can be set via the [Custom Data API](https://docs.c
 
 ```yaml
 x-cortex-custom-metadata:
-  survey: "https://my-great-survey.com/form2"
+  survey-url: "https://my-great-survey.com/form2"
 ```
 
 Please refer to our [documentation](https://docs.cortex.io/docs/reference/basics/custom-data) for more details on using custom data.

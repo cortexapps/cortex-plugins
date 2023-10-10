@@ -9,7 +9,6 @@ const defaultSurvey =
 
 const Survey: React.FC = () => {
   const context = usePluginContext();
-  console.log(context);
   const [entitySurvey, setEntitySurvey] = React.useState<any | string>();
   const [isLoading, setIsLoading] = React.useState(
     context.location === PluginContextLocation.Entity
@@ -19,16 +18,12 @@ const Survey: React.FC = () => {
       const fetchData = async (): Promise<void> => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const cortexTag = context.entity!.tag;
-        console.log(cortexTag);
         const cortexURL = context.apiBaseUrl;
-        console.log(cortexURL);
         const result = await fetch(
-          `${cortexURL}/catalog/${cortexTag}/custom-data/survey`
+          `${cortexURL}/catalog/${cortexTag}/custom-data/survey-url`
         );
         if (result.ok) {
           const resultJson = await result.json();
-          console.log({ resultJson });
-          console.log(defaultSurvey);
           setEntitySurvey(resultJson.value);
         } else {
           setEntitySurvey(defaultSurvey);
@@ -42,6 +37,8 @@ const Survey: React.FC = () => {
   return isLoading ? (
     <Loader />
   ) : (
+    // use the default survey url if the plugin is running on the global context or
+    // we can't find a survey-url custom data key
     <iframe src={entitySurvey ?? defaultSurvey} height="2967px" />
   );
 };
