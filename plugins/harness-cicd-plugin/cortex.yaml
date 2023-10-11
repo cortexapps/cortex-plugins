@@ -1,0 +1,11 @@
+openapi: 3.0.1
+info:
+  title: Harness Cicd 001
+  description: ""
+  x-cortex-tag: harness-cicd-001
+  x-cortex-git:
+    github:
+      repository: anothererikjamescorp/harness-cicd-001
+  x-cortex-custom-metadata:
+    cortex-template-version: 0.1.0
+    cortex-generated-timestamp: 2023-08-23T22:28:10.940667756
