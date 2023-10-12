@@ -14,4 +14,3 @@ export const getEntityYaml = async (
 
   return await res.json();
 };
-

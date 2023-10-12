@@ -1,4 +1,3 @@
-
 import React from "react";
 import { PluginContextLocation } from "@cortexapps/plugin-core";
 import {
@@ -14,7 +13,6 @@ import { getGithubDetailsFromEntity } from "../lib/parseEntity";
 interface GitIssuesProps {
   entityYaml: Record<string, any>;
 }
-
 
 // Set your Github url. Cloud is https://api.github.com
 const ghURL = `https://api.github.com/`;
@@ -32,36 +30,33 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
     owner: string;
     repo: string;
     basepath: string;
-  };  
-  
-  
+  };
+
   React.useEffect(() => {
-    
     const fetchData = async (): Promise<void> => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const cortexTag = context.entity!.tag;
-    try {
-          let issueURL: string = "";
-          if (basepath !== undefined) {
-            // we are going to assume that each service is being tracked via labels
-            issueURL = `${ghURL}repos/${owner}/${repo}/issues?labels=${cortexTag}`;
-          } else {
-            issueURL = `${ghURL}repos/${owner}/${repo}/issues?direction=asc`;
-          }
-          console.log(issueURL)
-          const issuesResult = await fetch(issueURL);
-          const issuesJson = await issuesResult.json();
-          if (issuesJson.length > 0) {
-            hasIssues = true;
-            setPosts(issuesJson);
-          }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const cortexTag = context.entity!.tag;
+      try {
+        let issueURL: string = "";
+        if (basepath !== undefined) {
+          // we are going to assume that each service is being tracked via labels
+          issueURL = `${ghURL}repos/${owner}/${repo}/issues?labels=${cortexTag}`;
+        } else {
+          issueURL = `${ghURL}repos/${owner}/${repo}/issues?direction=asc`;
+        }
+        console.log(issueURL);
+        const issuesResult = await fetch(issueURL);
+        const issuesJson = await issuesResult.json();
+        if (issuesJson.length > 0) {
+          hasIssues = true;
+          setPosts(issuesJson);
+        }
         // }
       } catch (Error) {}
       setIsLoading(false);
     };
     void fetchData();
   }, []);
-
 
   const config = {
     columns: [
@@ -100,14 +95,15 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
     ],
   };
 
-  
-    return isLoading ? (
-      <Loader />
-    ) : (hasIssues ? (<SimpleTable config={config} items={posts} />):(<Box backgroundColor="light" padding={3} borderRadius={2}>
-    <Text>We could not find any Issues associated to this Service</Text>
-  </Box>)
-      
-    ); 
-  }
+  return isLoading ? (
+    <Loader />
+  ) : hasIssues ? (
+    <SimpleTable config={config} items={posts} />
+  ) : (
+    <Box backgroundColor="light" padding={3} borderRadius={2}>
+      <Text>We could not find any Issues associated to this Service</Text>
+    </Box>
+  );
+};
 
 export default Issues;

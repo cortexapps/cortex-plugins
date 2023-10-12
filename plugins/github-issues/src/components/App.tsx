@@ -5,19 +5,20 @@ import ErrorBoundary from "./ErrorBoundary";
 import CortexEntity from "./EntityGitInfo";
 
 const App: React.FC = () => {
-
-
-  
   return (
-
-   
     <ErrorBoundary>
       <PluginProvider>
-      <Box flex ><img src="https://github.githubassets.com/favicons/favicon.svg" width="50" height="50"/><Title level={1}>GitHub Issues</Title></Box>
-      <CortexEntity />
+        <Box flex>
+          <img
+            src="https://github.githubassets.com/favicons/favicon.svg"
+            width="50"
+            height="50"
+          />
+          <Title level={1}>GitHub Issues</Title>
+        </Box>
+        <CortexEntity />
       </PluginProvider>
     </ErrorBoundary>
- 
   );
 };
 

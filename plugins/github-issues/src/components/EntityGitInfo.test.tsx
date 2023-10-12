@@ -17,11 +17,9 @@ describe("EntityGitInfo", () => {
     render(<EntityGitInfo />);
 
     await waitFor(() => {
-    expect(screen.queryByText("No GitHub details were found for this entity")).toBeInTheDocument();
+      expect(
+        screen.queryByText("No GitHub details were found for this entity")
+      ).toBeInTheDocument();
+    });
   });
-  });
-
-  
-
-
 });

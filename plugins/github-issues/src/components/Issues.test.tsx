@@ -1,7 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import Issues from "./Issues";
 
-
 const gitJSON = [
   {
     id: 1,
@@ -182,8 +181,6 @@ const gitJSON = [
   },
 ];
 
-
-
 const serviceYaml = {
   info: {
     "x-cortex-git": {
@@ -196,8 +193,6 @@ const serviceYaml = {
 
 describe("Issues", () => {
   beforeEach(() => {
-    
-
     fetchMock.mockResponse(async (req) => {
       console.log({ req });
       const targetUrl = req.url;
@@ -213,10 +208,13 @@ describe("Issues", () => {
   it("has Issues", async () => {
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
-    expect(screen.queryByText("This service does not have a GitHub Repo defined in the Service YAML or the GitHub Access Token does not access to the repository specified.")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "This service does not have a GitHub Repo defined in the Service YAML or the GitHub Access Token does not access to the repository specified."
+      )
+    ).not.toBeInTheDocument();
     await waitFor(() => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
-      
     });
     // expect(screen.queryByText("GitHub Issues")).not.toBeInTheDocument();
     expect(screen.queryByText("Number")).toBeInTheDocument();

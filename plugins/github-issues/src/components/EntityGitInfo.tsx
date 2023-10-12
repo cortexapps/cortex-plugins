@@ -30,25 +30,23 @@ const CortexEntity: React.FC = () => {
     void fetchEntityYaml();
   }, [fetchEntityYaml]);
 
-  
   const githubDetails = isEmpty(entityYaml)
     ? undefined
     : getGithubDetailsFromEntity(entityYaml);
-  
+
   return (
     <div>
       {!isEmpty(entityYaml) && (
         <Stack spacing={3}>
-          
           <Box padding={2}>
-          {isEmpty(githubDetails) ? 
-          (<Box backgroundColor="light" padding={3} borderRadius={2}>
-            <Text>No GitHub details were found for this entity</Text>
-           </Box>):
-        (<Issues entityYaml={entityYaml} />)}
-                   
+            {isEmpty(githubDetails) ? (
+              <Box backgroundColor="light" padding={3} borderRadius={2}>
+                <Text>No GitHub details were found for this entity</Text>
+              </Box>
+            ) : (
+              <Issues entityYaml={entityYaml} />
+            )}
           </Box>
-          
         </Stack>
       )}
     </div>
