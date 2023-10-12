@@ -1,5 +1,6 @@
-import { render } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import Issues from "./Issues";
+
 
 const gitJSON = [
   {
@@ -181,41 +182,21 @@ const gitJSON = [
   },
 ];
 
-const serviceYaml = `
-openapi: 3.0.1
-info:
-  title: Petstore
-  description: |
-    [The Petstore](http://petstore.example.com) is an example API used to show features of the OpenAPI spec.
-    - First item
-    - Second item
-  x-cortex-git:
-    github:
-      repository: cremerica/app-direct
-  x-cortex-tag: petstore
-  x-cortex-link:
-  - url: https://github.com/swagger-api/swagger-petstore
-    name: GitHub Repo
-    type: DOCUMENTATION
-  x-cortex-owners:
-  - name: team-c
-    type: GROUP
-    provider: CORTEX
-`;
+
+
+const serviceYaml = {
+  info: {
+    "x-cortex-git": {
+      github: {
+        repository: "cortexapps/plugin-core",
+      },
+    },
+  },
+};
 
 describe("Issues", () => {
   beforeEach(() => {
-    // if you have an existing `beforeEach` just add the following lines to it
-    // fetchMock.mockIf(/^https?:\/\/api.getcortexapp.com*$/, req => {
-    //     console.log("in block")
-    //     return {
-    //         body: JSON.stringify({}),
-    //         headers: {
-    //           'X-Some-Response-Header': 'Some header value'
-    //         }
-    //       }
-
-    // })
+    
 
     fetchMock.mockResponse(async (req) => {
       console.log({ req });
@@ -230,6 +211,14 @@ describe("Issues", () => {
   });
 
   it("has Issues", async () => {
-    render(<Issues />);
+    render(<Issues entityYaml={serviceYaml} />);
+    expect(screen.queryByText("Loading")).toBeInTheDocument();
+    expect(screen.queryByText("This service does not have a GitHub Repo defined in the Service YAML or the GitHub Access Token does not access to the repository specified.")).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText("Loading")).not.toBeInTheDocument();
+      
+    });
+    // expect(screen.queryByText("GitHub Issues")).not.toBeInTheDocument();
+    expect(screen.queryByText("Number")).toBeInTheDocument();
   });
 });
