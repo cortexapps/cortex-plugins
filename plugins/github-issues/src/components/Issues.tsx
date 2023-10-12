@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { PluginContextLocation } from "@cortexapps/plugin-core";
 import {
   SimpleTable,
@@ -17,11 +17,10 @@ interface GitIssuesProps {
 // Set your Github url. Cloud is https://api.github.com
 const ghURL = `https://api.github.com/`;
 
-let hasIssues: boolean = false;
-
 const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
+  const [hasIssues, setHasIssues] = useState(false);
   const context = usePluginContext();
-  console.log(context);
+
   const [posts, setPosts] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(
     context.location === PluginContextLocation.Entity
@@ -47,7 +46,7 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
         const issuesResult = await fetch(issueURL);
         const issuesJson = await issuesResult.json();
         if (issuesJson.length > 0) {
-          hasIssues = true;
+          setHasIssues(true);
           setPosts(issuesJson);
         }
         // }
@@ -97,8 +96,9 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
   return isLoading ? (
     <Loader />
   ) : hasIssues ? (
-    <div data-testid='issues'>
-    <SimpleTable config={config} items={posts} /></div>
+    <div data-testid="issues">
+      <SimpleTable config={config} items={posts} />
+    </div>
   ) : (
     <Box backgroundColor="light" padding={3} borderRadius={2}>
       <Text>We could not find any Issues associated to this Service</Text>

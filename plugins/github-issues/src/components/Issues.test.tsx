@@ -1,7 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import Issues from "./Issues";
 
-
 const mockIssue = [
   {
     id: 1,
@@ -203,11 +202,7 @@ describe("Issues", () => {
 
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        "loading"
-      )
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText("loading")).not.toBeInTheDocument();
     await waitFor(() => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
@@ -219,11 +214,14 @@ describe("Issues", () => {
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
     expect(screen.queryByText("Number")).not.toBeInTheDocument();
+
     await waitFor(() => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
-    expect(screen.queryByText(
-      "We could not find any Issues associated to this Service"
-    )).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "We could not find any Issues associated to this Service"
+      )
+    ).toBeInTheDocument();
   });
 });
