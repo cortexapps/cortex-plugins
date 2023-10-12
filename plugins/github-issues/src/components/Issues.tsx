@@ -44,7 +44,6 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
         } else {
           issueURL = `${ghURL}repos/${owner}/${repo}/issues?direction=asc`;
         }
-        console.log(issueURL);
         const issuesResult = await fetch(issueURL);
         const issuesJson = await issuesResult.json();
         if (issuesJson.length > 0) {
@@ -98,7 +97,8 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
   return isLoading ? (
     <Loader />
   ) : hasIssues ? (
-    <SimpleTable config={config} items={posts} />
+    <div data-testid='issues'>
+    <SimpleTable config={config} items={posts} /></div>
   ) : (
     <Box backgroundColor="light" padding={3} borderRadius={2}>
       <Text>We could not find any Issues associated to this Service</Text>

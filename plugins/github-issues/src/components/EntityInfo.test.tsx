@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import EntityGitInfo from "./EntityGitInfo";
+import EntityInfo from "./EntityInfo";
 
 fetchMock.mockIf(
   /^https:\/\/api\.getcortexapp\.com\/catalog\/.*/,
@@ -14,7 +14,7 @@ fetchMock.mockIf(
 
 describe("EntityGitInfo", () => {
   it("Shows message when no GitHub info found", async () => {
-    render(<EntityGitInfo />);
+    render(<EntityInfo />);
 
     await waitFor(() => {
       expect(

@@ -1,7 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import Issues from "./Issues";
 
-const gitJSON = [
+
+const mockIssue = [
   {
     id: 1,
     node_id: "MDU6SXNzdWUx",
@@ -192,25 +193,19 @@ const serviceYaml = {
 };
 
 describe("Issues", () => {
-  beforeEach(() => {
-    fetchMock.mockResponse(async (req) => {
-      console.log({ req });
-      const targetUrl = req.url;
-      if (targetUrl.startsWith("https://api.getcortexapp.com")) {
-        return await Promise.resolve(JSON.stringify(serviceYaml));
-      } else if (targetUrl.startsWith("https://api.github.com/")) {
-        return await Promise.resolve(JSON.stringify(gitJSON));
-      }
-      throw new Error("Unexpected path");
-    });
-  });
-
   it("has Issues", async () => {
+    fetchMock.mockIf(
+      /^https:\/\/api\.github\.com\/repos/,
+      async (_req: Request) => {
+        return await Promise.resolve(JSON.stringify([mockIssue]));
+      }
+    );
+
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
     expect(
       screen.queryByText(
-        "This service does not have a GitHub Repo defined in the Service YAML or the GitHub Access Token does not access to the repository specified."
+        "loading"
       )
     ).not.toBeInTheDocument();
     await waitFor(() => {
@@ -218,5 +213,17 @@ describe("Issues", () => {
     });
     // expect(screen.queryByText("GitHub Issues")).not.toBeInTheDocument();
     expect(screen.queryByText("Number")).toBeInTheDocument();
+  });
+
+  it("has no Issues", async () => {
+    render(<Issues entityYaml={serviceYaml} />);
+    expect(screen.queryByText("Loading")).toBeInTheDocument();
+    expect(screen.queryByText("Number")).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText("Loading")).not.toBeInTheDocument();
+    });
+    expect(screen.queryByText(
+      "We could not find any Issues associated to this Service"
+    )).toBeInTheDocument();
   });
 });
