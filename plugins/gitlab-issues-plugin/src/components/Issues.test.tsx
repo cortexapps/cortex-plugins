@@ -1,7 +1,7 @@
-import { render } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import Issues from "./Issues";
 
-const gitJSON = [
+const mockIssue = [
   {
     project_id: 4,
     milestone: {
@@ -92,46 +92,47 @@ const gitJSON = [
   },
 ];
 
-const serviceYaml = `
-openapi: 3.0.1
-info:
-  title: PatientConnect
-  x-cortex-git:
-    gitlab:
-      alias: main
-      repository: cremerfc/patientconnect
-  x-cortex-tag: patientconnect
-  x-cortex-type: service
-  x-cortex-groups:
-  - plugin
-  `;
+const serviceYaml = {
+  info: {
+    "x-cortex-git": {
+      gitlab: {
+        repository: "cortexapps/plugin-core",
+      },
+    },
+  },
+};
 
 describe("Issues", () => {
-  beforeEach(() => {
-    // if you have an existing `beforeEach` just add the following lines to it
-    // fetchMock.mockIf(/^https?:\/\/api.getcortexapp.com*$/, req => {
-    //     console.log("in block")
-    //     return {
-    //         body: JSON.stringify({}),
-    //         headers: {
-    //           'X-Some-Response-Header': 'Some header value'
-    //         }
-    //       }
-
-    // })
-
-    fetchMock.mockResponse(async (req) => {
-      const targetUrl = req.url;
-      if (targetUrl.startsWith("https://api.getcortexapp.com")) {
-        return await Promise.resolve(JSON.stringify(serviceYaml));
-      } else if (targetUrl.startsWith("https://gitlab.com/")) {
-        return await Promise.resolve(JSON.stringify(gitJSON));
+  it("has Issues", async () => {
+    fetchMock.mockIf(
+      /^https:\/gitlab\.com\/api/,
+      async (_req: Request) => {
+        return await Promise.resolve(JSON.stringify([mockIssue]));
       }
-      throw new Error("Unexpected path");
+    );
+
+    render(<Issues entityYaml={serviceYaml} />);
+    expect(screen.queryByText("Loading")).toBeInTheDocument();
+    expect(screen.queryByText("loading")).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
+     expect(screen.queryByText("GitHub Issues")).not.toBeInTheDocument();
+    // expect(screen.queryByText("Number")).toBeInTheDocument();
   });
 
-  it("has Issues", async () => {
-    render(<Issues />);
+  it("has no Issues", async () => {
+    render(<Issues entityYaml={serviceYaml} />);
+    expect(screen.queryByText("Loading")).toBeInTheDocument();
+    // expect(screen.queryByText("Number")).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByText("Loading")).not.toBeInTheDocument();
+    });
+    expect(
+      screen.queryByText(
+        "We could not find any Issues associated to this Service"
+      )
+    ).toBeInTheDocument();
   });
 });
