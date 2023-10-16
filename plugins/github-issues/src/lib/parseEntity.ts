@@ -24,13 +24,8 @@ export const getGithubDetailsFromEntity = (
       basepath = "";
     }
   } catch {
-    console.log("caught an error");
-  }
-
-  //  const [owner, repo] = githubDetails?.repository?.split("/");
-  //  const basepath = githubDetails?.repository?.basepath;
-
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    console.log("There was an error getting the GitHub details. Check entity to see how the GitHub repo is configured");
+  } 
 
   return { owner, repo, basepath };
 };

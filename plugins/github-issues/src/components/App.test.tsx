@@ -4,7 +4,7 @@ import App from "./App";
 
 
 describe("App", () => {
-  it("indicates that it's an awesome plugin", () => {
+  it("Tests that the plugin works", () => {
     fetchMock.mockResponse(
       JSON.stringify({
         value:

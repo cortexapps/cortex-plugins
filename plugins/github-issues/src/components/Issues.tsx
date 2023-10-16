@@ -49,7 +49,7 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
           setHasIssues(true);
           setPosts(issuesJson);
         }
-        // }
+    
       } catch (Error) {}
       setIsLoading(false);
     };
@@ -101,7 +101,7 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
     
   ) : (
     <Box backgroundColor="light" padding={3} borderRadius={2}>
-      <Text>We could not find any Issues associated to this Service</Text>
+      <Text>We could not find any Issues associated with this service</Text>
     </Box>
   );
 };
