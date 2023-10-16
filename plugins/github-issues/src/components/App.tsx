@@ -8,7 +8,7 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <PluginProvider>
-        <Box flex>
+        <Box flex alignItems="end" align-items="flex-end">
           <img
             src="https://github.githubassets.com/favicons/favicon.svg"
             width="50"

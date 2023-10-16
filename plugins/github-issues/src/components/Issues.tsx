@@ -96,9 +96,9 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
   return isLoading ? (
     <Loader />
   ) : hasIssues ? (
-    <div data-testid="issues">
+    
       <SimpleTable config={config} items={posts} />
-    </div>
+    
   ) : (
     <Box backgroundColor="light" padding={3} borderRadius={2}>
       <Text>We could not find any Issues associated to this Service</Text>
