@@ -1,7 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import EntityInfo from "./EntityInfo";
 
-
 describe("EntityInfo", () => {
   it("Shows message when no GitLab info found", async () => {
     fetchMock.mockIf(

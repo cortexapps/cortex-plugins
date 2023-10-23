@@ -104,12 +104,9 @@ const serviceYaml = {
 
 describe("Issues", () => {
   it("has Issues", async () => {
-    fetchMock.mockIf(
-      /^https:\/gitlab\.com\/api/,
-      async (_req: Request) => {
-        return await Promise.resolve(JSON.stringify([mockIssue]));
-      }
-    );
+    fetchMock.mockIf(/^https:\/gitlab\.com\/api/, async (_req: Request) => {
+      return await Promise.resolve(JSON.stringify([mockIssue]));
+    });
 
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
@@ -117,7 +114,7 @@ describe("Issues", () => {
     await waitFor(() => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
-     expect(screen.queryByText("GitHub Issues")).not.toBeInTheDocument();
+    expect(screen.queryByText("GitHub Issues")).not.toBeInTheDocument();
     // expect(screen.queryByText("Number")).toBeInTheDocument();
   });
 

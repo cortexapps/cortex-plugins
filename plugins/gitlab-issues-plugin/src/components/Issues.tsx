@@ -1,4 +1,4 @@
-import  React, {useState } from "react";
+import React, { useState } from "react";
 import { PluginContextLocation } from "@cortexapps/plugin-core";
 import {
   SimpleTable,
@@ -36,19 +36,17 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
       const cortexTag = context.entity!.tag;
       try {
         let issueUrl: string = "";
-        if ( basepath !== undefined ) {         
-          
-            issueUrl = `${glURL}api/v4/projects/${owner}%2F${repo}/issues?labels=${cortexTag}`;
-          } else {
-            issueUrl = `${glURL}api/v4/projects/${owner}%2F${repo}/issues?sort=asc`;
-          }
-          const issuesResult = await fetch(issueUrl);
-          const issuesJson = await issuesResult.json();
-          if (issuesJson.length > 0) {
-            setHasIssues(true);
-            setPosts(issuesJson);
-          }
-        
+        if (basepath !== undefined) {
+          issueUrl = `${glURL}api/v4/projects/${owner}%2F${repo}/issues?labels=${cortexTag}`;
+        } else {
+          issueUrl = `${glURL}api/v4/projects/${owner}%2F${repo}/issues?sort=asc`;
+        }
+        const issuesResult = await fetch(issueUrl);
+        const issuesJson = await issuesResult.json();
+        if (issuesJson.length > 0) {
+          setHasIssues(true);
+          setPosts(issuesJson);
+        }
       } catch (Error) {}
       setIsLoading(false);
     };
@@ -92,16 +90,15 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
     ],
   };
 
-  
   return isLoading ? (
     <Loader />
-    ) : hasIssues ? (
-      <SimpleTable config={config} items={posts} />
-    ) :(<Box backgroundColor="light" padding={3} borderRadius={2}>
-    <Text>We could not find any Issues associated to this Service</Text>
-  </Box>);
-  
-  
+  ) : hasIssues ? (
+    <SimpleTable config={config} items={posts} />
+  ) : (
+    <Box backgroundColor="light" padding={3} borderRadius={2}>
+      <Text>We could not find any Issues associated to this Service</Text>
+    </Box>
+  );
 };
 
 export default Issues;
