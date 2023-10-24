@@ -35,12 +35,13 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const cortexTag = context.entity!.tag;
       try {
-        const issueUrl = basepath ?
-          `${glURL}api/v4/projects/${owner}%2F${repo}/issues?labels=${cortexTag}` :
-          `${glURL}api/v4/projects/${owner}%2F${repo}/issues?sort=asc`;
+        const issueUrl = basepath
+          ? `${glURL}api/v4/projects/${owner}%2F${repo}/issues?labels=${cortexTag}`
+          : `${glURL}api/v4/projects/${owner}%2F${repo}/issues?sort=asc`;
 
         const issuesResult = await fetch(issueUrl);
         const issuesJson = await issuesResult.json();
+
         if (issuesJson.length > 0) {
           setHasIssues(true);
           setPosts(issuesJson);

@@ -1,8 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import Issues from "./Issues";
 
-const mockNoIssue = []
-const mockIssue = [
+const mockIssues = [
   {
     project_id: 4,
     milestone: {
@@ -103,12 +102,10 @@ const serviceYaml = {
   },
 };
 
-
-
 describe("Issues", () => {
   it("has Issues", async () => {
     fetchMock.mockIf(/^https:\/\/gitlab\.com\/api/, async (_req: Request) => {
-      return await Promise.resolve(JSON.stringify([mockIssue]));
+      return await Promise.resolve(JSON.stringify(mockIssues));
     });
 
     render(<Issues entityYaml={serviceYaml} />);
@@ -121,17 +118,16 @@ describe("Issues", () => {
   });
 
   it("has no Issues", async () => {
-    
-      fetchMock.mockIf(/^https:\/\/gitlab\.com\/api/, async (_req: Request) => {
-        return await Promise.resolve(JSON.stringify([mockNoIssue]));
-      });
+    fetchMock.mockIf(/^https:\/\/gitlab\.com\/api/, async (_req: Request) => {
+      return await Promise.resolve(JSON.stringify([]));
+    });
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
-    screen.debug();
+
     expect(
       screen.queryByText(
         "We could not find any Issues associated with this service"
