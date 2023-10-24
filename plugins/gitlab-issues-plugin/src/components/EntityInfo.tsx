@@ -41,7 +41,7 @@ const CortexEntity: React.FC = () => {
           <Box padding={2}>
             {isEmpty(gitlabDetails) ? (
               <Box backgroundColor="light" padding={3} borderRadius={2}>
-                <Text>No GitHub details were found for this entity</Text>
+                <Text>No GitLab details were found for this entity</Text>
               </Box>
             ) : (
               <Issues entityYaml={entityYaml} />

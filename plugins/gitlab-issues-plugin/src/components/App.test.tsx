@@ -8,7 +8,7 @@ fetchMock.mockResponse(
   })
 );
 describe("App", () => {
-  it("Verifies that the plugin works", () => {
+  it("verifies that the plugin works", () => {
     render(<App />);
 
     expect(fetch).toHaveBeenCalledWith(

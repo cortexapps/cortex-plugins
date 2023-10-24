@@ -17,7 +17,7 @@ describe("EntityInfo", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText("No GitHub details were found for this entity")
+        screen.queryByText("No GitLab details were found for this entity")
       ).toBeInTheDocument();
     });
   });

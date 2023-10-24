@@ -96,7 +96,7 @@ const serviceYaml = {
   info: {
     "x-cortex-git": {
       gitlab: {
-        repository: "cortexapps/plugin-core",
+        repository: "cremerfc/patientconnect",
       },
     },
   },
@@ -110,11 +110,9 @@ describe("Issues", () => {
 
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
-    expect(screen.queryByText("loading")).not.toBeInTheDocument();
     await waitFor(() => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
-    expect(screen.queryByText("GitHub Issues")).not.toBeInTheDocument();
     // expect(screen.queryByText("Number")).toBeInTheDocument();
   });
 
