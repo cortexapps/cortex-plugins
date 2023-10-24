@@ -45,7 +45,9 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
           setHasIssues(true);
           setPosts(issuesJson);
         }
-      } catch (Error) {}
+      } catch (err) {
+        console.error(`Error fetching issues:`, err);
+      }
       setIsLoading(false);
     };
     void fetchData();
