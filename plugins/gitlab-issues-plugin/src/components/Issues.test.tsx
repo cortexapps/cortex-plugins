@@ -113,6 +113,7 @@ describe("Issues", () => {
     await waitFor(() => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
+    expect(screen.queryByText("GitLab Issues")).not.toBeInTheDocument();
     // expect(screen.queryByText("Number")).toBeInTheDocument();
   });
 
