@@ -104,7 +104,7 @@ const serviceYaml = {
 
 describe("Issues", () => {
   it("has Issues", async () => {
-    fetchMock.mockIf(/^https:\/gitlab\.com\/api/, async (_req: Request) => {
+    fetchMock.mockIf(/^https:\/\/gitlab\.com\/api/, async (_req: Request) => {
       return await Promise.resolve(JSON.stringify([mockIssue]));
     });
 
