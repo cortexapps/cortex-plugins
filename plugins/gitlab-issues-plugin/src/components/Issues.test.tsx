@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import Issues from "./Issues";
 
+const mockNoIssue = []
 const mockIssue = [
   {
     project_id: 4,
@@ -102,6 +103,8 @@ const serviceYaml = {
   },
 };
 
+
+
 describe("Issues", () => {
   it("has Issues", async () => {
     fetchMock.mockIf(/^https:\/\/gitlab\.com\/api/, async (_req: Request) => {
@@ -114,20 +117,24 @@ describe("Issues", () => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
     expect(screen.queryByText("GitLab Issues")).not.toBeInTheDocument();
-    // expect(screen.queryByText("Number")).toBeInTheDocument();
+    expect(screen.queryByText("Number")).toBeInTheDocument();
   });
 
   it("has no Issues", async () => {
+    
+      fetchMock.mockIf(/^https:\/\/gitlab\.com\/api/, async (_req: Request) => {
+        return await Promise.resolve(JSON.stringify([mockNoIssue]));
+      });
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
-    // expect(screen.queryByText("Number")).not.toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
+    screen.debug();
     expect(
       screen.queryByText(
-        "We could not find any Issues associated to this Service"
+        "We could not find any Issues associated with this service"
       )
     ).toBeInTheDocument();
   });
