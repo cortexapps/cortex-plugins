@@ -24,7 +24,7 @@ export const getGitlabDetailsFromEntity = (
       basepath = "";
     }
   } catch (err: any) {
-   // console.log(`Error parsing GitLab details from entity descriptor:`, err);
+    // console.log(`Error parsing GitLab details from entity descriptor:`, err);
   }
 
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
