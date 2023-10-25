@@ -28,8 +28,6 @@ If you get the following message:
 
 This means that the plugin did not find a GitLab repository defined as described [here](https://docs.cortex.io/docs/reference/integrations/gitlab#catalog-descriptor).
 
-
-
 # Setting up your dev environment
 
 GitLab Issues Plugin is a [Cortex](https://www.cortex.io/) plugin. To see how to run the plugin inside of Cortex, see [our docs](https://docs.cortex.io/docs/plugins).
