@@ -23,7 +23,9 @@ export const getGitlabDetailsFromEntity = (
       repo = "";
       basepath = "";
     }
-  } catch {}
+  } catch (err: any) {
+    console.log(`Error parsing GitLab details from entity descriptor:`, err);
+  }
 
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   return { owner, repo, basepath };
