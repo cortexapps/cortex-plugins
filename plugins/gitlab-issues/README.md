@@ -1,22 +1,22 @@
 # GitLab Issues Cortex Plugin
 
-View GitLab Issues associated to your services!
+View GitLab issues associated with your services!
 
 <div align="center"><img src="img/gl-issues-cortex.png" width="650" /></div>
 
-The GitLab Issues shows the open GitLab issues associated to the GitLab repository specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a `basepath` defined in its `x-cortex-git` configuration, it will query for issues filtering by a label that matches the tag of the entity.
+The GitLab Issues plugin shows open GitLab issues associated to the GitLab repository specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a `basepath` defined in its `x-cortex-git` configuration, it will query for issues filtering by a label that matches the tag of the entity.
 
 ## Setup
 
 This plugin requires a proxy to GitLab. The API that the plugin uses is documented [here](https://docs.gitlab.com/ee/api/issues.html), which details the type of headers you need defined.
 
 - Define a secret that contains your GitLab Access Token. To determine which type of token to use, check the [docs](https://docs.gitlab.com/ee/api/rest/index.html#authentication).
-- Define a proxy that is pointed to your GitHub instance with the headers mentioned in the docs. Here is a screenshot of how your proxy may look like:
+- Define a proxy that is pointed to your GitLab instance with the headers mentioned in the docs. Here is a screenshot of how your proxy may look like:
 <div align="center"><img src="img/gl-proxy.png" width="600" /></div>
 
 - Register the plugin.
   - This plan will not work on the Global context.
-  - Select the entity that will have the GitHub repo in its `cortex.yaml`
+  - Select the entity that will have the GitLab repo in its `cortex.yaml`
 
 ## Troubleshooting
 
@@ -26,11 +26,9 @@ If you get the following message:
 
 <div align="center"><img src="img/gl-no-repo-defined.png" width="640" /></div>
 
-This means that the plugin did not find a GitHub repository defined as described [here](https://docs.cortex.io/docs/reference/integrations/github#catalog-descriptor).
+This means that the plugin did not find a GitLab repository defined as described [here](https://docs.cortex.io/docs/reference/integrations/gitlab#catalog-descriptor).
 
-### Getting a generic error message
 
-If you are getting a generic "Oops! There was a runtime error" message, you may want to look the browser's console and track where the plugin is breaking down based on which `console.log` output is displayed in the console.
 
 # Setting up your dev environment
 
