@@ -1,4 +1,4 @@
-export const getGitLabDetailsFromEntity = (
+export const getGitlabDetailsFromEntity = (
   entity: Record<string, any>
 ): { owner: string; repo: string; basepath: string } | undefined => {
   let owner = "";
