@@ -8,7 +8,7 @@ import {
   Text,
   usePluginContext,
 } from "@cortexapps/plugin-core/components";
-import { getGitLabDetailsFromEntity } from "../lib/parseEntity";
+import { getGitlabDetailsFromEntity } from "../lib/parseEntity";
 import Issues from "./Issues";
 
 const CortexEntity: React.FC = () => {
@@ -32,7 +32,7 @@ const CortexEntity: React.FC = () => {
 
   const gitlabDetails = isEmpty(entityYaml)
     ? undefined
-    : getGitLabDetailsFromEntity(entityYaml);
+    : getGitlabDetailsFromEntity(entityYaml);
 
   return (
     <div>

@@ -8,7 +8,7 @@ import {
   usePluginContext,
 } from "@cortexapps/plugin-core/components";
 import "../baseStyles.css";
-import { getGitLabDetailsFromEntity } from "../lib/parseEntity";
+import { getGitlabDetailsFromEntity } from "../lib/parseEntity";
 
 interface GitIssuesProps {
   entityYaml: Record<string, any>;
@@ -24,7 +24,7 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
   const [isLoading, setIsLoading] = React.useState(
     context.location === PluginContextLocation.Entity
   );
-  const { owner, repo, basepath } = getGitLabDetailsFromEntity(entityYaml) as {
+  const { owner, repo, basepath } = getGitlabDetailsFromEntity(entityYaml) as {
     owner: string;
     repo: string;
     basepath: string;

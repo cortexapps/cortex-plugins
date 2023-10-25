@@ -130,7 +130,7 @@ describe("Issues", () => {
 
     expect(
       screen.queryByText(
-        "We could not find any Issues associated with this service"
+        "We could not find any issues associated with this entity"
       )
     ).toBeInTheDocument();
   });
