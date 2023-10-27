@@ -25,7 +25,6 @@ This plugin will connect to GitLab's cloud instance out of the box. If you are s
 ```ts
 // Set your GitLab url. Cloud is https://gitlab.com
 const glURL = `https://gitlab.com/`;
-
 ```
 
 ## Troubleshooting
