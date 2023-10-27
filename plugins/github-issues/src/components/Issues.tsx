@@ -39,7 +39,7 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
         const issueUrl = basepath
           ? `${ghURL}repos/${owner}/${repo}/issues?labels=${cortexTag}`
           : `${ghURL}repos/${owner}/${repo}/issues?direction=asc`;
-                
+
         const issuesResult = await fetch(issueUrl);
         const issuesJson = await issuesResult.json();
         if (issuesJson.length > 0) {
@@ -47,7 +47,6 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
           setPosts(issuesJson);
         }
       } catch (err) {
-
         console.error(`Error fetching issues:`, err);
       }
       setIsLoading(false);

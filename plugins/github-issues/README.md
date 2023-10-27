@@ -15,6 +15,7 @@ This plugin requires a proxy to GitHub. The API that the plugin uses is document
 <div align="center"><img src="img/gh-proxy.png" width="400" /></div>
 
 - Register the plugin.
+
   - This plugin will not work on the Global context.
   - Select the entity that will have the GitHub repo in its `cortex.yaml`
 
@@ -27,7 +28,6 @@ This plugin will connect to GitLab's cloud instance out of the box. If you are s
 const ghURL = `https://api.github.com/`;
 ```
 
-
 ## Troubleshooting
 
 ### Getting a message that "This service does not have a GitHub Repo defined"
@@ -37,7 +37,6 @@ If you get the following message:
 <div align="center"><img src="img/no-repo-defined.png" width="540" /></div>
 
 This means that the plugin did not find a GitHub repository defined as described [here](https://docs.cortex.io/docs/reference/integrations/github#catalog-descriptor).
-
 
 # Setting up your dev environment
 

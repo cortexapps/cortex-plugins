@@ -209,9 +209,12 @@ describe("Issues", () => {
   });
 
   it("has no Issues", async () => {
-    fetchMock.mockIf(/^https:\/\/api\.github\.com\/repos/, async (_req: Request) => {
-      return await Promise.resolve(JSON.stringify([]));
-    });
+    fetchMock.mockIf(
+      /^https:\/\/api\.github\.com\/repos/,
+      async (_req: Request) => {
+        return await Promise.resolve(JSON.stringify([]));
+      }
+    );
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
 
