@@ -21,7 +21,7 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
   const [hasIssues, setHasIssues] = useState(false);
   const context = usePluginContext();
 
-  const [posts, setPosts] = React.useState<any[]>([]);
+  const [posts, setPosts] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(
     context.location === PluginContextLocation.Entity
   );
