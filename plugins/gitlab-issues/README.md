@@ -18,7 +18,7 @@ This plugin requires a proxy to GitLab. The API that the plugin uses is document
   - This plan will not work on the Global context.
   - Select the entity that will have the GitLab repo in its `cortex.yaml`
 
-## Connecting to an self hosted instance
+## Connecting to a self-hosted instance
 
 This plugin will connect to GitLab's cloud instance out of the box. If you are self-hosting GitLab and need to direct the plugin to a different API endpoint, update the following section of the [Issues.tsx](src/components/Issues.tsx)file:
 
