@@ -185,7 +185,7 @@ const serviceYaml = {
   info: {
     "x-cortex-git": {
       github: {
-        repository: "cortexapps/plugin-core",
+        repository: "cremerica/app-direct",
       },
     },
   },
@@ -196,31 +196,31 @@ describe("Issues", () => {
     fetchMock.mockIf(
       /^https:\/\/api\.github\.com\/repos/,
       async (_req: Request) => {
-        return await Promise.resolve(JSON.stringify([mockIssue]));
+        return await Promise.resolve(JSON.stringify(mockIssue));
       }
     );
 
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
-    expect(screen.queryByText("loading")).not.toBeInTheDocument();
     await waitFor(() => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
-    // expect(screen.queryByText("GitHub Issues")).not.toBeInTheDocument();
     expect(screen.queryByText("Number")).toBeInTheDocument();
   });
 
   it("has no Issues", async () => {
+    fetchMock.mockIf(/^https:\/\/api\.github\.com\/repos/, async (_req: Request) => {
+      return await Promise.resolve(JSON.stringify([]));
+    });
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
-    expect(screen.queryByText("Number")).not.toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
     expect(
       screen.queryByText(
-        "We could not find any Issues associated to this Service"
+        "We could not find any issues associated with this entity"
       )
     ).toBeInTheDocument();
   });

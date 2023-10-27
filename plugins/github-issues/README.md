@@ -1,10 +1,10 @@
 # GitHub Issues Cortex Plugin
 
-View GitHub Issues associated to your services!
+View GitHub Issues associated with your services!
 
 <div align="center"><img src="img/ghplugins.png" width="550" /></div>
 
-The GitHub Issues shows the open GitHub issues associated to the GitHup repository specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a `basepath` defined in its `x-cortex-git` configuration, it will query for issues filtering by a label that matches to tag of the entity.
+The GitHub Issues plugin shows open GitHub issues associated with the GitHup repository specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a `basepath` defined in its `x-cortex-git` configuration, it will query for issues filtering by a label that matches to tag of the entity.
 
 ## Setup
 
@@ -18,6 +18,16 @@ This plugin requires a proxy to GitHub. The API that the plugin uses is document
   - This plugin will not work on the Global context.
   - Select the entity that will have the GitHub repo in its `cortex.yaml`
 
+  ## Connecting to a self-hosted instance
+
+This plugin will connect to GitLab's cloud instance out of the box. If you are self-hosting GitLab and need to direct the plugin to a different API endpoint, update the following section of the [Issues.tsx](src/components/Issues.tsx)file:
+
+```ts
+// Set your Github url. Cloud is https://api.github.com
+const ghURL = `https://api.github.com/`;
+```
+
+
 ## Troubleshooting
 
 ### Getting a message that "This service does not have a GitHub Repo defined"
@@ -28,11 +38,6 @@ If you get the following message:
 
 This means that the plugin did not find a GitHub repository defined as described [here](https://docs.cortex.io/docs/reference/integrations/github#catalog-descriptor).
 
-### Getting a generic error message
-
-If you are getting a generic "Oops! There was a runtime error" message, you may want to look the browser's console and track where the plugin is breaking down based on which `console.log` output is displayed in the console.
-
-One issue observed during testing was that if your Personal Access Token does not have access to private repos it will cause this behavior. If you are getting this behavior against a private repo, try it against a service that has a public repo defined to verify if this is the issue.
 
 # Setting up your dev environment
 

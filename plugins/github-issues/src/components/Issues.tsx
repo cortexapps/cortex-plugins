@@ -36,20 +36,20 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const cortexTag = context.entity!.tag;
       try {
-        let issueURL: string = "";
-        if (basepath !== undefined) {
-          // we are going to assume that each service is being tracked via labels
-          issueURL = `${ghURL}repos/${owner}/${repo}/issues?labels=${cortexTag}`;
-        } else {
-          issueURL = `${ghURL}repos/${owner}/${repo}/issues?direction=asc`;
-        }
-        const issuesResult = await fetch(issueURL);
+        const issueUrl = basepath
+          ? `${ghURL}repos/${owner}/${repo}/issues?labels=${cortexTag}`
+          : `${ghURL}repos/${owner}/${repo}/issues?direction=asc`;
+                
+        const issuesResult = await fetch(issueUrl);
         const issuesJson = await issuesResult.json();
         if (issuesJson.length > 0) {
           setHasIssues(true);
           setPosts(issuesJson);
         }
-      } catch (Error) {}
+      } catch (err) {
+
+        console.error(`Error fetching issues:`, err);
+      }
       setIsLoading(false);
     };
     void fetchData();
@@ -98,7 +98,7 @@ const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
     <SimpleTable config={config} items={posts} />
   ) : (
     <Box backgroundColor="light" padding={3} borderRadius={2}>
-      <Text>We could not find any Issues associated with this service</Text>
+      <Text>We could not find any issues associated with this entity</Text>
     </Box>
   );
 };
