@@ -22,8 +22,8 @@ This plugin requires a proxy to GitLab. The API that the plugin uses is document
 
 This plugin will connect to GitLab's cloud instance out of the box. If you are self-hosting GitLab and need to direct the plugin to a different API endpoint, update the following section of the [Issues.tsx](src/components/Issues.tsx)file:
 
-```Typescript
-// Set your Gitlab url. Cloud is https://gitlab.com
+```ts
+// Set your GitLab url. Cloud is https://gitlab.com
 const glURL = `https://gitlab.com/`;
 
 ```
