@@ -14,7 +14,7 @@ interface GitIssuesProps {
   entityYaml: Record<string, any>;
 }
 
-// Set your Gitlab url. Cloud is https://gitlab.com
+// Set your GitLab url. Cloud is https://gitlab.com
 const glURL = `https://gitlab.com/`;
 
 const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
