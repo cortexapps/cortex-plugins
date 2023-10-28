@@ -11,16 +11,16 @@ The GitLab Issues plugin shows open GitLab issues associated with the GitLab rep
 This plugin requires a proxy to GitLab. The API that the plugin uses is documented [here](https://docs.gitlab.com/ee/api/issues.html), which details the type of headers you need defined.
 
 - Define a secret that contains your GitLab Access Token. To determine which type of token to use, check the [docs](https://docs.gitlab.com/ee/api/rest/index.html#authentication).
-- Define a proxy that is pointed to your GitLab instance with the headers mentioned in the docs. Here is a screenshot of how your proxy may look like:
+- Define a proxy that is pointed to your GitLab instance with the headers mentioned in the docs. Here is a screenshot of what your proxy may look like:
 <div align="center"><img src="img/gl-proxy.png" width="600" /></div>
 
 - Register the plugin.
-  - This plan will not work on the Global context.
-  - Select the entity that will have the GitLab repo in its `cortex.yaml`
+  - This plugin will not work on the Global context.
+  - Select an entity context (and, optionally, filter) that will have the GitLab repo in its `cortex.yaml`
 
 ## Connecting to a self-hosted instance
 
-This plugin will connect to GitLab's cloud instance out of the box. If you are self-hosting GitLab and need to direct the plugin to a different API endpoint, update the following section of the [Issues.tsx](src/components/Issues.tsx)file:
+This plugin will connect to GitLab's cloud instance out of the box. If you are self-hosting GitLab and need to direct the plugin to a different API endpoint, update the following section of the [Issues.tsx](src/components/Issues.tsx) file:
 
 ```ts
 // Set your GitLab url. Cloud is https://gitlab.com
@@ -37,7 +37,7 @@ If you get the following message:
 
 This means that the plugin did not find a GitLab repository defined as described [here](https://docs.cortex.io/docs/reference/integrations/gitlab#catalog-descriptor).
 
-# Setting up your dev environment
+# Developing this plugin
 
 GitLab Issues Plugin is a [Cortex](https://www.cortex.io/) plugin. To see how to run the plugin inside of Cortex, see [our docs](https://docs.cortex.io/docs/plugins).
 
