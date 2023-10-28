@@ -4,7 +4,7 @@ View GitLab issues associated with your services!
 
 <div align="center"><img src="img/gl-issues-cortex.png" width="650" /></div>
 
-The GitLab Issues plugin shows open GitLab issues associated to the GitLab repository specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a `basepath` defined in its `x-cortex-git` configuration, it will query for issues filtering by a label that matches the tag of the entity.
+The GitLab Issues plugin shows open GitLab issues associated with the GitLab repository specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a `basepath` defined in its `x-cortex-git` configuration, it will query for issues filtering by a label that matches the tag of the entity.
 
 ## Setup
 
