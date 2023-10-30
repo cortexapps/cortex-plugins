@@ -42,13 +42,16 @@ const Attestation: React.FC = () => {
         // Let's see if there is any previous checklist data
         try {
           const gUrl = `${cortexUrl}/catalog/${cortexTag}/custom-data/checklist`;
+          console.log(cortexUrl)
           const result = await fetch(gUrl);
           if (result.ok) {
             const resultJson = await result.json();
             setPosts(resultJson.value);
             setHasList(true);
           }
-        } catch (error) {}
+        } catch (err) {
+          console.error("error getting custom data", err)
+        }
         setIsLoading(false);
       };
 
@@ -192,7 +195,7 @@ const Attestation: React.FC = () => {
         </div>
       ) : (
         <Box backgroundColor="light" padding={3} borderRadius={2}>
-          <Text>No Attestations has been submitted to this service</Text>
+          <Text>No Attestations has been submitted to this {entityType}</Text>
         </Box>
       )}
       <br />
