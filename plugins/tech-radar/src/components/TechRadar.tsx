@@ -60,6 +60,7 @@ const getLanguageCount = async (
   language: string,
   updateData
 ): Promise<void> => {
+  // Run CQL job to get all services with language specified...
   const response = await CortexApi.proxyFetch(
     `https://api.getcortexapp.com/api/v1/queries`,
     {
@@ -73,6 +74,7 @@ const getLanguageCount = async (
   const result = await response.json();
   const jobId = result.jobId;
   let res = null;
+  // Check result for CQL query every second...
   while (res == null) {
     res = await checkResult(jobId);
     if (res == null) {
@@ -165,13 +167,15 @@ const TechRadar: React.FC = () => {
         <Loader
           centered={true}
           disableText={false}
-          size={30}
+          size={35}
           small={true}
           text={"Updating tech radar data..."}
           top={true}
         />
       )}
-      <div style={{ height: "400px" }}>
+      <div
+        style={{ height: "500px", display: "flex", justifyContent: "center" }}
+      >
         <Doughnut data={data} />
       </div>
     </ErrorBoundary>
