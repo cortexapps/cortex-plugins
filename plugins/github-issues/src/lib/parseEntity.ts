@@ -18,6 +18,6 @@ export const getGithubDetailsFromEntity = (
       repo,
     };
   } catch (err: any) {
-    console.log(`Error parsing GitLab details from entity descriptor:`, err);
+    console.log(`Error parsing GitHub details from entity descriptor:`, err);
   }
 };
