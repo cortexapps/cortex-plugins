@@ -206,6 +206,7 @@ describe("Issues", () => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
     expect(screen.queryByText("Number")).toBeInTheDocument();
+    expect(screen.queryByText("1347")).toBeInTheDocument();
   });
 
   it("has no Issues", async () => {
