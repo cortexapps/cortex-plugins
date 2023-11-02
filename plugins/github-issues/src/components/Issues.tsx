@@ -14,7 +14,7 @@ interface GitIssuesProps {
   entityYaml: Record<string, any>;
 }
 
-// Set your Github url. Cloud is https://api.github.com
+// Set your GitHub url. Cloud is https://api.github.com
 const ghURL = `https://api.github.com/`;
 
 const Issues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
