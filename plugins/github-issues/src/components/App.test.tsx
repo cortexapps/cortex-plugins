@@ -3,9 +3,7 @@ import App from "./App";
 
 fetchMock.mockResponse(
   JSON.stringify({
-    value:
-      "https://docs.google.com/forms/d/e/1FAIpQLSd068wYDvfxbhB75fTx-KM7aWb9gNiLLcnjA6SQ4ulT9SLgqA/viewform?embedded=true",
-  })
+      })
 );
 describe("App", () => {
   it("verifies that the plugin works", async () => {
