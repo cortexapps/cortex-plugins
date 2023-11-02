@@ -24,7 +24,7 @@ This plugin requires a proxy to GitHub. The API that the plugin uses is document
 This plugin will connect to GitHub's cloud instance out of the box. If you are self-hosting GitHub and need to direct the plugin to a different API endpoint, update the following section of the [Issues.tsx](src/components/Issues.tsx) file:
 
 ```ts
-// Set your Github url. Cloud is https://api.github.com
+// Set your GitHub url. Cloud is https://api.github.com
 const ghURL = `https://api.github.com/`;
 ```
 
