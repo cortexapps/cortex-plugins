@@ -4,7 +4,7 @@ View GitHub Issues associated with your services!
 
 <div align="center"><img src="img/ghplugins.png" width="550" /></div>
 
-The GitHub Issues plugin shows open GitHub issues associated with the GitHup repository specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a `basepath` defined in its `x-cortex-git` configuration, it will query for issues filtering by a label that matches to tag of the entity.
+The GitHub Issues plugin shows open GitHub issues associated with the GitHub repository specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a `basepath` defined in its `x-cortex-git` configuration, it will query for issues filtering by a label that matches to tag of the entity.
 
 ## Setup
 
