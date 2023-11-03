@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import App from "./App";
+import { waitForLoading } from '../../../testUtils/testUtils';
 
 fetchMock.mockResponse(
   JSON.stringify({
@@ -12,8 +13,6 @@ describe("App", () => {
     expect(fetch).toHaveBeenCalledWith(
       "https://api.getcortexapp.com/catalog/inventory-planner/openapi"
     );
-    await waitFor(() => {
-      expect(screen.queryByText("Loading")).not.toBeInTheDocument();
-    });
+    await waitForLoading();
   });
 });
