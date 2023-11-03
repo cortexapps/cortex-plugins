@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import Issues from "./Issues";
 import { waitForLoading } from "../../../testUtils/testUtils";
 
@@ -203,7 +203,9 @@ describe("Issues", () => {
 
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
-    await waitForLoading();
+    await waitFor(() => {
+      expect(screen.queryByText("Loading")).not.toBeInTheDocument();
+    });
     expect(screen.queryByText("Number")).toBeInTheDocument();
     expect(screen.queryByText("1347")).toBeInTheDocument();
   });
@@ -218,7 +220,9 @@ describe("Issues", () => {
     render(<Issues entityYaml={serviceYaml} />);
     expect(screen.queryByText("Loading")).toBeInTheDocument();
 
-    await waitForLoading();
+    await waitFor(() => {
+      expect(screen.queryByText("Loading")).not.toBeInTheDocument();
+    });
     expect(
       screen.queryByText(
         "We could not find any issues associated with this entity"
