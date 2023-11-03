@@ -1,11 +1,8 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import App from "./App";
-import { waitForLoading } from '../../../testUtils/testUtils';
+import { waitForLoading } from "../../../testUtils/testUtils";
 
-fetchMock.mockResponse(
-  JSON.stringify({
-      })
-);
+fetchMock.mockResponse(JSON.stringify({}));
 describe("App", () => {
   it("verifies that the plugin works", async () => {
     render(<App />);
