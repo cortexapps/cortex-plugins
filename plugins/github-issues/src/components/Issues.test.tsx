@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import Issues from "./Issues";
-import { waitForLoading } from "../../../testUtils/testUtils";
 
 const mockIssue = [
   {
