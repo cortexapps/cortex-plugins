@@ -1,8 +1,5 @@
 import type React from "react";
-import {
-  PluginProvider,
-  Stack,
-} from "@cortexapps/plugin-core/components";
+import { PluginProvider, Stack } from "@cortexapps/plugin-core/components";
 import "../baseStyles.css";
 import ErrorBoundary from "./ErrorBoundary";
 // import PluginContext from "./PluginContext";
@@ -13,9 +10,8 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <PluginProvider>
         <Stack>
-         <Stage />
+          <Stage />
         </Stack>
-       
       </PluginProvider>
     </ErrorBoundary>
   );
