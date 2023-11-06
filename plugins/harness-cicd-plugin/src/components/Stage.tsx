@@ -9,22 +9,22 @@ import {
   Button,
 } from "@cortexapps/plugin-core/components";
 import "../baseStyles.css";
+import configData = require("../assets/config.json");
 
 // let globalResult = [];
 
-const forceReloadDecorator = () => {
+const forceReloadDecorator = (): void => {
   window.location.reload();
-  console.log("nothing");
 };
 
-const nonCortexPOST = (url: string, body: string) => {
-  fetch(url, {
+const nonCortexPOST = (url: string, callBody: string): void => {
+  void fetch(url, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: body,
+    body: callBody,
   });
 };
 
@@ -32,7 +32,6 @@ let accountIDAvailable = false;
 
 const Stage: React.FC = () => {
   const context = usePluginContext();
-  console.log(context);
   const [posts, setPosts] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(
     context.location === PluginContextLocation.Entity
@@ -41,9 +40,8 @@ const Stage: React.FC = () => {
     const fetchData = async (): Promise<void> => {
       let anyRunning = false;
 
-      let configData = require("../assets/config.json");
-      const accountIdentifier: String = configData.ACCOUNT_IDENTIFIER;
-      if (accountIdentifier != null && accountIdentifier != "xxxx") {
+      const accountIdentifier: string = configData.ACCOUNT_IDENTIFIER;
+      if (accountIdentifier !== null && accountIdentifier !== "xxxx") {
         accountIDAvailable = true;
         // buttonsEnabled = true;
       }
@@ -53,11 +51,14 @@ const Stage: React.FC = () => {
         const orgRequest = await CortexApi.proxyFetch(`${harnessURL}/v1/orgs?`);
         const orgResult = await orgRequest.json();
 
-        var totalExecutions: object[] = [];
-        var iOrg;
+        const totalExecutions: object[] = [];
+        let iOrg;
 
         for (iOrg in orgResult) {
-          let orgIdentifier = orgResult[iOrg].org.identifier;
+          const orgIdentifier: string = orgResult[iOrg].org.identifier;
+          if (!orgIdentifier) {
+            continue;
+          }
 
           const projectRequest = await CortexApi.proxyFetch(
             `${harnessURL}/v1/orgs/default/projects?`
@@ -65,13 +66,15 @@ const Stage: React.FC = () => {
 
           const projectResult = await projectRequest.json();
 
-          var iProj;
+          let iProj;
 
           for (iProj in projectResult) {
-            let projectIdentifier = projectResult[iProj].project.identifier;
-            console.log(
-              ">>>>>>> >>>>>>.>>> projectIdentifier = " + projectIdentifier
-            );
+            const projectIdentifier: string =
+              projectResult[iProj].project.identifier;
+
+            if (!projectIdentifier) {
+              continue;
+            }
 
             const pipelineRequest = await CortexApi.proxyFetch(
               `${harnessURL}/v1/orgs/${orgIdentifier}/projects/${projectIdentifier}/pipelines?`
@@ -79,49 +82,58 @@ const Stage: React.FC = () => {
 
             const pipelineResult = await pipelineRequest.json();
 
-            var a;
+            let a;
 
-            var index = 1;
+            let index = 1;
 
             for (a in pipelineResult) {
               let pipelineFetchInputYamlResult;
 
               if (accountIDAvailable) {
+                const pipelineResultIdentifier: string =
+                  pipelineResult[a].identifier;
+                if (!pipelineResultIdentifier) {
+                  continue;
+                }
                 const pipelineInputSetRequest = await CortexApi.proxyFetch(
-                  `${harnessURL}/pipeline/api/inputSets?pageIndex=0&pageSize=100&accountIdentifier=${accountIdentifier}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectIdentifier}&pipelineIdentifier=${pipelineResult[a].identifier}`
+                  `${harnessURL}/pipeline/api/inputSets?pageIndex=0&pageSize=100&accountIdentifier=${accountIdentifier}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectIdentifier}&pipelineIdentifier=${pipelineResultIdentifier}`
                 );
 
                 const pipelineInputSetResult =
                   await pipelineInputSetRequest.json();
 
-                var c;
-                var pipelineInputSet;
+                let c;
+                let pipelineInputSet: string;
                 for (c in pipelineInputSetResult.data.content) {
                   pipelineInputSet =
                     pipelineInputSetResult.data.content[c].name;
                 }
 
+                if (!pipelineInputSet) {
+                  continue;
+                }
+
                 const pipelineFetchInputYamlRequest =
                   await CortexApi.proxyFetch(
-                    `${harnessURL}/pipeline/api/inputSets/${pipelineInputSet}?accountIdentifier=${accountIdentifier}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectIdentifier}&pipelineIdentifier=${pipelineResult[a].identifier}`
+                    `${harnessURL}/pipeline/api/inputSets/${pipelineInputSet}?accountIdentifier=${accountIdentifier}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectIdentifier}&pipelineIdentifier=${pipelineResultIdentifier}`
                   );
 
                 pipelineFetchInputYamlResult =
                   await pipelineFetchInputYamlRequest.json();
               }
 
-              var b;
+              let b;
               for (b in pipelineResult[a].recent_execution_info) {
-                let isRunning =
+                const isRunning =
                   pipelineResult[a].recent_execution_info[
                     b
-                  ].execution_status.toLowerCase() == "running";
+                  ].execution_status.toLowerCase() === "running";
 
                 if (isRunning) {
                   anyRunning = true;
                 }
 
-                var thisPipeline = {
+                const thisPipeline = {
                   rerun: {
                     status: "",
                     url: "",
@@ -147,10 +159,14 @@ const Stage: React.FC = () => {
 
                 thisPipeline.status =
                   pipelineResult[a].recent_execution_info[b].execution_status;
-
+                const pipelineResultIdentifier: string =
+                  pipelineResult[a].identifier;
+                if (!pipelineResultIdentifier) {
+                  continue;
+                }
                 if (accountIDAvailable) {
-                  let inputURL = `${harnessURL}/pipeline/api/pipeline/execute/${pipelineResult[a].identifier}/inputSetList?accountIdentifier=${accountIdentifier}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectIdentifier}`;
-                  let inputBody = JSON.stringify({
+                  const inputURL = `${harnessURL}/pipeline/api/pipeline/execute/${pipelineResultIdentifier}/inputSetList?accountIdentifier=${accountIdentifier}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectIdentifier}`;
+                  const inputBody = JSON.stringify({
                     inputSetReferences: [pipelineInputSet],
                     withMergedPipelineYaml: true,
                     stageIdentifiers: ["string"],
@@ -227,9 +243,9 @@ const Stage: React.FC = () => {
           <Box>
             <Text
               legacyColor={
-                status.toLowerCase() == "success"
+                status.toLowerCase() === "success"
                   ? "success"
-                  : status.toLowerCase() == "running"
+                  : status.toLowerCase() === "running"
                   ? "blue"
                   : "danger"
               }
@@ -295,7 +311,7 @@ const Stage: React.FC = () => {
               }}
               color={"primary"}
               disabled={!rerun.available || rerun.running}
-              loading={rerun.status.toLowerCase() == "running"}
+              loading={rerun.status.toLowerCase() === "running"}
             >
               {" "}
               {rerun.running
@@ -322,7 +338,7 @@ const Stage: React.FC = () => {
     useSeconds: boolean = true,
     prefix: string = "",
     postfix: string = ""
-  ) {
+  ): null {
     if (duration <= 0) {
       return "";
     }
@@ -335,31 +351,31 @@ const Stage: React.FC = () => {
       if (days > 1000) {
         return "";
       }
-      portions.push(days + "d");
+      portions.push(`${days}d`);
       duration = duration - days * msInDays;
     }
 
     const msInHour = 1000 * 60 * 60;
     const hours = Math.trunc(duration / msInHour);
     if (hours > 0) {
-      portions.push(hours + "h");
+      portions.push(`${hours}h`);
       duration = duration - hours * msInHour;
     }
 
     const msInMinute = 1000 * 60;
     const minutes = Math.trunc(duration / msInMinute);
     if (minutes > 0) {
-      portions.push(minutes + "m");
+      portions.push(`${minutes}m`);
       duration = duration - minutes * msInMinute;
     }
     if (useSeconds) {
       const seconds = Math.trunc(duration / 1000);
       if (seconds >= 0) {
-        portions.push(seconds + "s");
+        portions.push(`${seconds}s`);
       }
     }
 
-    if (portions.length == 0) {
+    if (portions.length === 0) {
       return prefix + " just now";
     }
 
