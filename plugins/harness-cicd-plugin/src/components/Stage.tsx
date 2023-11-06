@@ -156,7 +156,7 @@ const Stage: React.FC = () => {
           setPosts(totalExecutions);
 
        } catch (error) {
-          alert(error.message);
+          // alert(error.message); 
       }
 
       setIsLoading(false);
