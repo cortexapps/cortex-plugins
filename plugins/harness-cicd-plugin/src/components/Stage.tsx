@@ -45,7 +45,7 @@ const Stage: React.FC = () => {
       
       let configData = require('../assets/config.json');
       const accountIdentifier : String = configData.ACCOUNT_IDENTIFIER;
-      if (accountIdentifier != null) {
+      if (accountIdentifier != null && accountIdentifier != "xxxx") {
         accountIDAvailable = true;
         // buttonsEnabled = true;
       }
@@ -122,7 +122,7 @@ const Stage: React.FC = () => {
                     anyRunning = true;
                   }
 
-                  var thisPipeline = {rerun:{status:"", url:"", body:"", available: accountIDAvailable}, no:index++, name:{pipelineID:pipelineResult[a].identifier, pipelineName:pipelineResult[a].name, runID:pipelineResult[a].recent_execution_info[b].execution_id}, status:"", details:"", time:{start: new Date(), end:new Date(), available:!isRunning}};
+                  var thisPipeline = {rerun:{status:"", url:"", body:"", available: accountIDAvailable, running: isRunning}, no:index++, name:{pipelineID:pipelineResult[a].identifier, pipelineName:pipelineResult[a].name, runID:pipelineResult[a].recent_execution_info[b].execution_id}, status:"", details:"", time:{start: new Date(), end:new Date(), available:!isRunning}};
 
                   
                   thisPipeline.status = pipelineResult[a].recent_execution_info[b].execution_status;
@@ -137,7 +137,7 @@ const Stage: React.FC = () => {
                                lastYamlToMerge: pipelineFetchInputYamlResult.data.inputSetYaml
                             });
 
-                     thisPipeline.rerun = {status: thisPipeline.status, url:inputURL,body: inputBody, available:!isRunning};
+                     thisPipeline.rerun = {status: thisPipeline.status, url:inputURL,body: inputBody, available:accountIDAvailable , running: isRunning};
                   }
 
                   
@@ -218,7 +218,7 @@ const Stage: React.FC = () => {
         title: "PIPELINE TIME",
       },
       {
-        Cell: (rerun: {status:string, url:string, body:string, available: boolean}) => (
+        Cell: (rerun: {status:string, url:string, body:string, available: boolean, running: boolean}) => (
           <Box>
             <Button onClick={(e) => {
               if (rerun.available) {
@@ -233,7 +233,7 @@ const Stage: React.FC = () => {
 
                     alert("Please add your account ID to the config.json");
                   }
-                  }} color={"primary"} disabled={!rerun.available} loading={rerun.status.toLowerCase() == "running"}> {rerun.available ? "rerun" : "in progress"}</Button>
+                  }} color={"primary"} disabled={!rerun.available || rerun.running} loading={rerun.status.toLowerCase() == "running"}> {rerun.running ? "in progress" : rerun.available? "rerun" : "account id missing"}</Button>
           </Box>
         ),
         accessor: "rerun",
