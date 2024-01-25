@@ -1,0 +1,12 @@
+openapi: 3.0.1
+info:
+  title: confluence-plugin
+  description: ""
+  x-cortex-tag: confluence-plugin
+  x-cortex-git:
+    github:
+      repository: cortexapps/cortex-plugins
+      basepath: plugins
+  x-cortex-custom-metadata:
+    cortex-template-version: 0.1.0
+    cortex-generated-timestamp: 2024-01-25T14:40:03.811553442
