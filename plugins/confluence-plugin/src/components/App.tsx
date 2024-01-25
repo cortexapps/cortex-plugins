@@ -1,23 +1,16 @@
 import type React from "react";
 import {
-  Logo,
-  PluginProvider,
-  Stack,
-  Title,
+  PluginProvider
 } from "@cortexapps/plugin-core/components";
 import "../baseStyles.css";
 import ErrorBoundary from "./ErrorBoundary";
-import PluginContext from "./PluginContext";
+import Content from "./Content"
 
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <PluginProvider>
-        <Stack>
-          <Logo />
-          <Title level={1}>My Awesome Cortex Plugin</Title>
-        </Stack>
-        <PluginContext />
+        <Content />
       </PluginProvider>
     </ErrorBoundary>
   );
