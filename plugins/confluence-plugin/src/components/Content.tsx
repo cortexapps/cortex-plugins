@@ -37,7 +37,7 @@ const Content: React.FC = () => {
     const pageID  = isEmpty(entityYaml) ? undefined : getConfluenceDetailsFromEntity(entityYaml);
     console.log(pageID)
     if (!isNil(pageID)){
-      setEntityPage(pageID)
+      setEntityPage(pageID.pageID)
     }    
     
   }
@@ -47,6 +47,7 @@ const Content: React.FC = () => {
     }
     const pageToRender = JSON.stringify(entityPage).replace(/['"]+/g, '')
     const jiraURL = baseJIRAUrl + '/wiki/rest/api/content/'+ pageToRender +'?expand=body.view'
+    console.log(jiraURL);
     const contentResult = await fetch(jiraURL);
     const contentJSON = await contentResult.json();
     setPageContent(contentJSON.body.view.value);
