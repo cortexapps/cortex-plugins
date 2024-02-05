@@ -12,7 +12,7 @@ import {
 import { getEntityYaml } from "../api/Cortex";
 import { getConfluenceDetailsFromEntity } from "../lib/parseEntity";
 
-const EntityInfo: React.FC = () => {
+const PageContent: React.FC = () => {
   const [pageContent, setPageContent] = useState<string | undefined>();
   const [pageTitle, setPageTitle] = useState<string | undefined>();
   const [entityPage, setEntityPage] = useState<any | string>();
@@ -63,4 +63,4 @@ const EntityInfo: React.FC = () => {
   );
 };
 
-export default EntityInfo;
+export default PageContent;
