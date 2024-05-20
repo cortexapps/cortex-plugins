@@ -26,7 +26,7 @@ const PageContent: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const entityTag = context.entity?.tag;
       if (!isNil(entityTag)) {
-        try { 
+        try {
           const yaml = await getEntityYaml(context.apiBaseUrl, entityTag);
           const pageID = isEmpty(yaml)
             ? undefined
@@ -42,9 +42,8 @@ const PageContent: React.FC = () => {
           const contentJSON = await contentResult.json();
           setPageContent(contentJSON.body.view.value);
           setPageTitle(contentJSON.title);
-        }
-        catch (e) {
-            console.log("Error fetching Confluence page: " + e); 
+        } catch (e) {
+          console.log("Error fetching Confluence page: " + e);
         }
       }
     };
