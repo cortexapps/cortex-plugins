@@ -39,7 +39,6 @@ const serviceYaml = {
 };
 
 describe("PageContent", () => {
-
   beforeEach(() => {
     fetchMock.resetMocks();
   });
@@ -51,12 +50,16 @@ describe("PageContent", () => {
     );
 
     render(<PageContent />);
-    
+
     await waitFor(() => {
-      expect(screen.getByText("We could not find any Confluence Page associated with this entity")).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          "We could not find any Confluence Page associated with this entity"
+        )
+      ).toBeInTheDocument();
     });
   });
-  
+
   it("Shows a page if page is found", async () => {
     fetchMock.mockResponses(
       [JSON.stringify(serviceYaml), { status: 200 }],
@@ -65,19 +68,21 @@ describe("PageContent", () => {
 
     render(<PageContent />);
     await waitFor(() => {
-      expect(
-        screen.queryByText("AppDirect Runbook")
-      ).toBeInTheDocument();
+      expect(screen.queryByText("AppDirect Runbook")).toBeInTheDocument();
     });
   });
 
   it("Handles fetchEntityYaml failure", async () => {
     fetchMock.mockRejectOnce(new Error("Failed to fetch YAML"));
-    
+
     render(<PageContent />);
-    
+
     await waitFor(() => {
-      expect(screen.getByText("We could not find any Confluence Page associated with this entity")).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          "We could not find any Confluence Page associated with this entity"
+        )
+      ).toBeInTheDocument();
     });
   });
 
@@ -93,5 +98,4 @@ describe("PageContent", () => {
       expect(screen.getByText("EVERYBODY")).toBeInTheDocument();
     });
   });
- 
 });

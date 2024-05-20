@@ -39,7 +39,6 @@ const serviceYaml = {
 };
 
 describe("App", () => {
-
   fetchMock.mockResponses(
     [JSON.stringify(serviceYaml), { status: 200 }],
     [JSON.stringify(mockPageContent), { status: 200 }]
@@ -48,11 +47,7 @@ describe("App", () => {
   it("verifies that the plugin works", async () => {
     render(<App />);
     await waitFor(() => {
-      expect(
-        screen.queryByText("AppDirect Runbook")
-      ).toBeInTheDocument();
+      expect(screen.queryByText("AppDirect Runbook")).toBeInTheDocument();
     });
-
   });
-
- });
+});
