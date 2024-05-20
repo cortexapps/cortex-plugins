@@ -43,12 +43,12 @@ const PageContent: React.FC = () => {
           setPageContent(contentJSON.body.view.value);
           setPageTitle(contentJSON.title);
         } catch (e) {
-          console.log("Error fetching Confluence page: " + e);
+          console.error("Error fetching Confluence page: ", e);
         }
       }
     };
     void fetchEntityYaml();
-  }, []);
+  }, [context.apiBaseUrl, context.entity?.tag]);
 
   return (
     <div>

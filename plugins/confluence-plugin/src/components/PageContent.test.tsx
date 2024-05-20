@@ -46,7 +46,7 @@ describe("PageContent", () => {
   it("shows message when no page is found", async () => {
     fetchMock.mockResponses(
       [JSON.stringify(serviceYaml), { status: 200 }],
-      () => Promise.reject(new Error("Failed to fetch Confluence content"))
+      [JSON.stringify({}), { status: 500 }]
     );
 
     render(<PageContent />);
