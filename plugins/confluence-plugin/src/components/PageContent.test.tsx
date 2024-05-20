@@ -39,50 +39,59 @@ const serviceYaml = {
 };
 
 describe("PageContent", () => {
+
+  beforeEach(() => {
+    fetchMock.resetMocks();
+  });
+
   it("shows message when no page is found", async () => {
-    fetchMock.mockIf(
-      /^https:\/\/api\.getcortexapp\.com\/catalog\/.*/,
-      async (_req: Request) => {
-        return await Promise.resolve(
-          JSON.stringify({
-            info: {},
-          })
-        );
-      }
+    fetchMock.mockResponses(
+      [JSON.stringify(serviceYaml), { status: 200 }],
+      () => Promise.reject(new Error("Failed to fetch Confluence content"))
     );
+
+    render(<PageContent />);
+    
+    await waitFor(() => {
+      expect(screen.getByText("We could not find any Confluence Page associated with this entity")).toBeInTheDocument();
+    });
+  });
+  
+  it("Shows a page if page is found", async () => {
+    fetchMock.mockResponses(
+      [JSON.stringify(serviceYaml), { status: 200 }],
+      [JSON.stringify(mockPageContent), { status: 200 }]
+    );
+
     render(<PageContent />);
     await waitFor(() => {
       expect(
-        screen.queryByText(
-          "We could not find any Confluence Page associated with this entity"
-        )
+        screen.queryByText("AppDirect Runbook")
       ).toBeInTheDocument();
     });
   });
-  it("Shows a page if page is found", async () => {
-    fetchMock.mockIf(
-        /^https:\/\/api\.getcortexapp\.com\/catalog\/.*/,
-        async (_req: Request) => {
-          return await Promise.resolve(
-            JSON.stringify(serviceYaml)
-          );
-        }
-      );
-      fetchMock.mockIf(
-        /^https:\/\/cortex-se-test\.atlassian\.net\/wiki\/*/,
-        async (_req: Request) => {
-          return await Promise.resolve(JSON.stringify(mockPageContent));
-        }
-      );
-      render(<PageContent />);
-      await waitFor(() => {
-        expect(
-          screen.queryByText(
-            "AppDirect Runbook"
-          )
-        ).toBeInTheDocument();
-      });
-    });
 
+  it("Handles fetchEntityYaml failure", async () => {
+    fetchMock.mockRejectOnce(new Error("Failed to fetch YAML"));
+    
+    render(<PageContent />);
+    
+    await waitFor(() => {
+      expect(screen.getByText("We could not find any Confluence Page associated with this entity")).toBeInTheDocument();
+    });
+  });
+
+  it("Renders content with dangerouslySetInnerHTML", async () => {
+    fetchMock.mockResponses(
+      [JSON.stringify(serviceYaml), { status: 200 }],
+      [JSON.stringify(mockPageContent), { status: 200 }]
+    );
+
+    render(<PageContent />);
+    await waitFor(() => {
+      expect(screen.getByText("AppDirect Runbook")).toBeInTheDocument();
+      expect(screen.getByText("EVERYBODY")).toBeInTheDocument();
+    });
+  });
  
 });

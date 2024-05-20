@@ -12,6 +12,8 @@ import {
 import { getEntityYaml } from "../api/Cortex";
 import { getConfluenceDetailsFromEntity } from "../lib/parseEntity";
 
+const baseJIRAUrl = "https://cortex-se-test.atlassian.net";
+
 const PageContent: React.FC = () => {
   const [pageContent, setPageContent] = useState<string | undefined>();
   const [pageTitle, setPageTitle] = useState<string | undefined>();
@@ -24,22 +26,26 @@ const PageContent: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const entityTag = context.entity?.tag;
       if (!isNil(entityTag)) {
-        const yaml = await getEntityYaml(context.apiBaseUrl, entityTag);
-        const pageID = isEmpty(yaml)
-          ? undefined
-          : getConfluenceDetailsFromEntity(yaml);
-        setEntityPage(pageID?.pageID);
-        const baseJIRAUrl = "https://cortex-se-test.atlassian.net";
-        const jiraURL =
-          baseJIRAUrl +
-          "/wiki/rest/api/content/" +
-          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          pageID?.pageID +
-          "?expand=body.view";
-        const contentResult = await fetch(jiraURL);
-        const contentJSON = await contentResult.json();
-        setPageContent(contentJSON.body.view.value);
-        setPageTitle(contentJSON.title);
+        try { 
+          const yaml = await getEntityYaml(context.apiBaseUrl, entityTag);
+          const pageID = isEmpty(yaml)
+            ? undefined
+            : getConfluenceDetailsFromEntity(yaml);
+          setEntityPage(pageID?.pageID);
+          const jiraURL =
+            baseJIRAUrl +
+            "/wiki/rest/api/content/" +
+            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+            pageID?.pageID +
+            "?expand=body.view";
+          const contentResult = await fetch(jiraURL);
+          const contentJSON = await contentResult.json();
+          setPageContent(contentJSON.body.view.value);
+          setPageTitle(contentJSON.title);
+        }
+        catch (e) {
+            console.log("Error fetching Confluence page: " + e); 
+        }
       }
     };
     void fetchEntityYaml();
