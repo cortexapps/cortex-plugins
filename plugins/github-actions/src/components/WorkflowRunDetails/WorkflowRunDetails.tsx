@@ -19,6 +19,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Breadcrumbs,
   CircularProgress,
   LinearProgress,
   ListItemText,
@@ -40,7 +41,7 @@ import { WorkflowRunStatus } from "../WorkflowRunStatus";
 import { useWorkflowRunJobs } from "./useWorkflowRunJobs";
 import { useWorkflowRunsDetails } from "./useWorkflowRunsDetails";
 import { WorkflowRunLogs } from "../WorkflowRunLogs";
-import { Breadcrumbs, Link } from "@backstage/core-components";
+import { Link } from "@backstage/core-components";
 import {
   type CortexDomain,
   type CortexResource,
