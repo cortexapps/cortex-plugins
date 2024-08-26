@@ -34,7 +34,9 @@ const CortexEntity: React.FC = () => {
       {!isEmpty(entityYaml) && (
         <Stack spacing={3}>
           <Box padding={2}>
-            {isEmpty(entityYaml?.info?.["x-cortex-static-analysis"]?.sonarqube) ? (
+            {isEmpty(
+              entityYaml?.info?.["x-cortex-static-analysis"]?.sonarqube
+            ) ? (
               <Box backgroundColor="light" padding={3} borderRadius={2}>
                 <Text>No SonarQube details were found for this entity</Text>
               </Box>

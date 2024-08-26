@@ -1,9 +1,4 @@
-import React, {
-  useMemo,
-  useState,
-  useEffect,
-  useCallback
-} from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { PluginContextLocation } from "@cortexapps/plugin-core";
 import {
   SimpleTable,
@@ -22,7 +17,7 @@ interface GitIssuesProps {
 }
 
 // Set your SonarQube url. Cloud is https://sonarcloud.io
-const baseURL = 'https://sonarcloud.io';
+const baseURL = "https://sonarcloud.io";
 
 const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
   const [hasIssues, setHasIssues] = useState(false);
@@ -40,14 +35,14 @@ const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
   const openCommentModal = (issue: string): void => {
     setIssueForComment(issue);
     setIsModalOpen(true);
-  }
+  };
 
   const sendComment = useCallback(async () => {
     const url = `${baseURL}/api/issues/add_comment`;
 
     const params = new URLSearchParams();
-    params.append('issue', issueForComment as string);
-    params.append('text', commentText);
+    params.append("issue", issueForComment as string);
+    params.append("text", commentText);
 
     try {
       const response = await fetch(url, {
@@ -69,14 +64,18 @@ const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
   }, [baseURL, issueForComment, commentText]);
 
   useEffect(() => {
-    const project = entityYaml?.info?.["x-cortex-static-analysis"]?.sonarqube?.project;
+    const project =
+      entityYaml?.info?.["x-cortex-static-analysis"]?.sonarqube?.project;
     const fetchData = async (): Promise<void> => {
       try {
         const issueUrl = `${baseURL}/api/issues/search?componentKeys=${project}`;
 
         const issuesResult = await fetch(issueUrl);
         const issuesJson = await issuesResult.json();
-        if (issuesJson.issues instanceof Array && issuesJson.issues.length > 0) {
+        if (
+          issuesJson.issues instanceof Array &&
+          issuesJson.issues.length > 0
+        ) {
           setHasIssues(true);
           setPosts(issuesJson.issues);
         }
@@ -145,11 +144,7 @@ const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
       },
       {
         Cell: (key: string) => (
-          <Button
-            onClick={(): void => openCommentModal(key)}
-          >
-            Comment
-          </Button>
+          <Button onClick={(): void => openCommentModal(key)}>Comment</Button>
         ),
         accessor: "key",
         id: "comment",
@@ -163,56 +158,60 @@ const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
     return <Loader />;
   }
 
-  return (
-    (hasIssues) ? (
-      <>
-        <SimpleTable config={config} items={posts} />
-        <Modal
-          isOpen={isModalOpen}
-          toggleModal={(): void => {
-            setCommentText("")
-            setIsModalOpen((prev) => !prev)
-          }}
-          title="Comment"
-        >
-          {(issueForComment && issuesByKey[issueForComment]) ? (
-            <>
-              <Text>
-                Commenting on issue
-                &nbsp;
-                <i>{issuesByKey[issueForComment].message}</i>
-              </Text>
-              <br />
-              <Input
-                placeholder="Comment"
-                value={commentText}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setCommentText(event.target.value)}
-              />
-              <br />
-              <Button
-                disabled={!commentText}
-                onClick={(): void => {
-                  console.log("Commenting on issue", issueForComment, "with text", commentText);
-                  sendComment();
-                  setCommentText("");
-                  setIsModalOpen(false);
-                }}
-              >
-                Submit
-              </Button>
-            </>
-          ) : (
+  return hasIssues ? (
+    <>
+      <SimpleTable config={config} items={posts} />
+      <Modal
+        isOpen={isModalOpen}
+        toggleModal={(): void => {
+          setCommentText("");
+          setIsModalOpen((prev) => !prev);
+        }}
+        title="Comment"
+      >
+        {issueForComment && issuesByKey[issueForComment] ? (
+          <>
             <Text>
-              nope
+              Commenting on issue &nbsp;
+              <i>{issuesByKey[issueForComment].message}</i>
             </Text>
-          )}
-        </Modal>
-      </>
-    ) : (
-      <Box backgroundColor="light" padding={3} borderRadius={2}>
-        <Text>We could not find any Sonarqube issues associated with this entity</Text>
-      </Box>
-    )
+            <br />
+            <Input
+              placeholder="Comment"
+              value={commentText}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setCommentText(event.target.value)
+              }
+            />
+            <br />
+            <Button
+              disabled={!commentText}
+              onClick={(): void => {
+                console.log(
+                  "Commenting on issue",
+                  issueForComment,
+                  "with text",
+                  commentText
+                );
+                sendComment();
+                setCommentText("");
+                setIsModalOpen(false);
+              }}
+            >
+              Submit
+            </Button>
+          </>
+        ) : (
+          <Text>nope</Text>
+        )}
+      </Modal>
+    </>
+  ) : (
+    <Box backgroundColor="light" padding={3} borderRadius={2}>
+      <Text>
+        We could not find any Sonarqube issues associated with this entity
+      </Text>
+    </Box>
   );
 };
 

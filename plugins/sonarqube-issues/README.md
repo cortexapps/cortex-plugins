@@ -29,6 +29,7 @@ This plugin requires a proxy to SonarQube. To set up:
 - Create a token in SonarQube by clicking on your profile > My Account > Security
 - In Cortex, define a secret whose value is your new token. Name it `sonarqube_plugin`.
 - Create a proxy:
+
   - Navigate to Plugins, then click on the Proxies tab, then click on Create Proxy
   - Give the proxy a name, then click on Add URL
   - For the URL Prefix, type in the base URL of your SonarQube instance. Default for cloud is `https://sonarcloud.io`. **This URL prefix should be exactly the same as the value of the baseURL variable in [SonarqubeIssues.tsx](src/components/SonarqubeIssues.tsx) - If you are self-hosting SonarQube, you will have to your own base URL in both places!**
@@ -38,7 +39,7 @@ This plugin requires a proxy to SonarQube. To set up:
 
 <div align="center"><img src="img/sonarqube-proxy.png"></div>
 
-Now, you can build and add the plugin. 
+Now, you can build and add the plugin.
 
 - Build the plugin:
   - Make sure you have npm/yarn, and make sure you have put in your correct SonarQube Base URL in the baseURL variable in [SonarqubeIssues.tsx](src/components/SonarqubeIssues.tsx)
@@ -58,7 +59,7 @@ Now, when you navigate to a Service that has a SonarQube associated with it, you
 
 ```ts
 // Set your SonarQube url. Cloud is https://sonarcloud.io
-const baseURL = 'https://sonarcloud.io';
+const baseURL = "https://sonarcloud.io";
 ```
 
 ## Troubleshooting
