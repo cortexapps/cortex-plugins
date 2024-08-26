@@ -32,7 +32,7 @@ This plugin requires a proxy to SonarQube. To set up:
 
   - Navigate to Plugins, then click on the Proxies tab, then click on Create Proxy
   - Give the proxy a name, then click on Add URL
-  - For the URL Prefix, type in the base URL of your SonarQube instance. Default for cloud is `https://sonarcloud.io`. **This URL prefix should be exactly the same as the value of the baseURL variable in [SonarqubeIssues.tsx](src/components/SonarqubeIssues.tsx) - If you are self-hosting SonarQube, you will have to your own base URL in both places!**
+  - For the URL Prefix, type in the base URL of your SonarQube instance. Default for cloud is `https://sonarcloud.io`. **This URL prefix should be exactly the same as the value of the baseURL variable in [SonarqubeIssues.tsx](src/components/SonarqubeIssues.tsx) - If you are self-hosting SonarQube, you will have to put your own base URL in both places!**
   - Click on Add Header and add a header whose name is `Authorization` and whose value is `Bearer {{secrets.sonarqube_plugin}}` (include the curly braces!)
 
 - Once you are done, the proxy should look like the below:
