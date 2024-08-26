@@ -8,7 +8,7 @@ const issuesResp = {
   paging: {
     pageIndex: 1,
     pageSize: 100,
-    total: 3
+    total: 3,
   },
   effortTotal: 12,
   debtTotal: 12,
@@ -25,11 +25,11 @@ const issuesResp = {
         startLine: 3,
         endLine: 3,
         startOffset: 10,
-        endOffset: 22
+        endOffset: 22,
       },
       flows: [],
       status: "OPEN",
-      message: "Remove this useless assignment to variable \"secretApiKey\".",
+      message: 'Remove this useless assignment to variable "secretApiKey".',
       effort: "1min",
       debt: "1min",
       assignee: "martindstone@github",
@@ -44,10 +44,10 @@ const issuesResp = {
       impacts: [
         {
           softwareQuality: "MAINTAINABILITY",
-          severity: "MEDIUM"
-        }
+          severity: "MEDIUM",
+        },
       ],
-      issueStatus: "OPEN"
+      issueStatus: "OPEN",
     },
     {
       key: "AZGA0FU2K5CbPgAYf4Ps",
@@ -61,11 +61,11 @@ const issuesResp = {
         startLine: 6,
         endLine: 6,
         startOffset: 10,
-        endOffset: 24
+        endOffset: 24,
       },
       flows: [],
       status: "OPEN",
-      message: "Remove this useless assignment to variable \"unusedVariable\".",
+      message: 'Remove this useless assignment to variable "unusedVariable".',
       effort: "1min",
       debt: "1min",
       assignee: "martindstone@github",
@@ -80,10 +80,10 @@ const issuesResp = {
       impacts: [
         {
           softwareQuality: "MAINTAINABILITY",
-          severity: "MEDIUM"
-        }
+          severity: "MEDIUM",
+        },
       ],
-      issueStatus: "OPEN"
+      issueStatus: "OPEN",
     },
     {
       key: "AZGA0FU2K5CbPgAYf4Pt",
@@ -97,7 +97,7 @@ const issuesResp = {
         startLine: 21,
         endLine: 21,
         startOffset: 15,
-        endOffset: 26
+        endOffset: 26,
       },
       flows: [
         {
@@ -108,12 +108,12 @@ const issuesResp = {
                 startLine: 19,
                 endLine: 19,
                 startOffset: 8,
-                endOffset: 19
+                endOffset: 19,
               },
-              msg: "Covering"
-            }
-          ]
-        }
+              msg: "Covering",
+            },
+          ],
+        },
       ],
       status: "OPEN",
       message: "This condition is covered by the one on line 19",
@@ -131,11 +131,11 @@ const issuesResp = {
       impacts: [
         {
           softwareQuality: "RELIABILITY",
-          severity: "MEDIUM"
-        }
+          severity: "MEDIUM",
+        },
       ],
-      issueStatus: "OPEN"
-    }
+      issueStatus: "OPEN",
+    },
   ],
   components: [
     {
@@ -146,16 +146,16 @@ const issuesResp = {
       qualifier: "FIL",
       name: "index.tsx",
       longName: "index.tsx",
-      path: "index.tsx"
-    }
+      path: "index.tsx",
+    },
   ],
   organizations: [
     {
       key: "martindstone-org",
-      name: "martindstone-org"
-    }
+      name: "martindstone-org",
+    },
   ],
-  facets: []
+  facets: [],
 };
 
 const serviceYaml = {
@@ -193,7 +193,7 @@ describe("Issues", () => {
     fetchMock.mockIf(
       /^https:\/\/sonarcloud\.io\/api\/issues/,
       async (_req: Request) => {
-        return await Promise.resolve(JSON.stringify({issues: []}));
+        return await Promise.resolve(JSON.stringify({ issues: [] }));
       }
     );
     render(<SonarqubeIssues entityYaml={serviceYaml} />);
