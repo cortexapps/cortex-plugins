@@ -152,8 +152,8 @@ const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
           </Button>
         ),
         accessor: "key",
-        id: "key",
-        title: "Key",
+        id: "comment",
+        title: "Comment",
         width: "15%",
       },
     ],
