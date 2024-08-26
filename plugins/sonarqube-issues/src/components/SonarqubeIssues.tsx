@@ -17,7 +17,7 @@ interface GitIssuesProps {
 }
 
 // Set your SonarQube url. Cloud is https://sonarcloud.io
-const baseURL = "https://sonarcloud.io";
+const baseURL: string = "https://sonarcloud.io";
 
 const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
   const [hasIssues, setHasIssues] = useState(false);
@@ -61,14 +61,14 @@ const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
     } catch (err) {
       console.error("Failed to add comment", err);
     }
-  }, [baseURL, issueForComment, commentText]);
+  }, [issueForComment, commentText]);
 
   useEffect(() => {
-    const project =
-      entityYaml?.info?.["x-cortex-static-analysis"]?.sonarqube?.project;
+    const project: string =
+      entityYaml?.info?.["x-cortex-static-analysis"]?.sonarqube?.project || "";
     const fetchData = async (): Promise<void> => {
       try {
-        const issueUrl = `${baseURL}/api/issues/search?componentKeys=${project}`;
+        const issueUrl: string = `${baseURL}/api/issues/search?componentKeys=${project}`;
 
         const issuesResult = await fetch(issueUrl);
         const issuesJson = await issuesResult.json();
@@ -85,7 +85,7 @@ const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
       setIsLoading(false);
     };
     void fetchData();
-  }, []);
+  }, [entityYaml?.info]);
 
   const issuesByKey = useMemo(() => {
     if (posts && posts instanceof Array && posts.length > 0) {
@@ -125,8 +125,9 @@ const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
       {
         Cell: (key: string) => {
           const issue = issuesByKey[key];
+          const project: string = issue.project || "";
           const message = issue.message;
-          const url = `${baseURL}/project/issues?open=${issue.key}&id=${issue.project}`;
+          const url = `${baseURL}/project/issues?open=${key}&id=${project}`;
           return (
             <Box>
               <Text>
@@ -144,7 +145,13 @@ const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
       },
       {
         Cell: (key: string) => (
-          <Button onClick={(): void => openCommentModal(key)}>Comment</Button>
+          <Button
+            onClick={(): void => {
+              openCommentModal(key);
+            }}
+          >
+            Comment
+          </Button>
         ),
         accessor: "key",
         id: "comment",
@@ -179,9 +186,9 @@ const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
             <Input
               placeholder="Comment"
               value={commentText}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setCommentText(event.target.value)
-              }
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setCommentText(event.target.value);
+              }}
             />
             <br />
             <Button
@@ -193,7 +200,7 @@ const SonarqubeIssues: React.FC<GitIssuesProps> = ({ entityYaml }) => {
                   "with text",
                   commentText
                 );
-                sendComment();
+                void sendComment();
                 setCommentText("");
                 setIsModalOpen(false);
               }}
