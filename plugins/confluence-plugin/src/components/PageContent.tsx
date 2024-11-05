@@ -31,7 +31,7 @@ const PageContent: React.FC = () => {
             ? undefined
             : getConfluenceDetailsFromEntity(yaml);
           if (!pageID?.pageID) {
-            throw new Error('No Confluence details for entity')
+            throw new Error("No Confluence details for entity");
           }
           setEntityPage(pageID?.pageID);
           const jiraURL = `${baseConfluenceUrl}/wiki/rest/api/content/${pageID.pageID}?expand=body.view`;

@@ -33,5 +33,4 @@ x-cortex-confluence:
   pageID: "123456"
 ```
 
-You can do this for Custom Entities, as well as any Service entity. 
-
+You can do this for Custom Entities, as well as any Service entity.
