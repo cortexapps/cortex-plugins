@@ -60,7 +60,7 @@ describe("PageContent", () => {
     });
   });
 
-  it("Shows a page if page is found", async () => {
+  it("shows a page if page is found", async () => {
     fetchMock.mockResponses(
       [JSON.stringify(serviceYaml), { status: 200 }],
       [JSON.stringify(mockPageContent), { status: 200 }]
@@ -72,7 +72,7 @@ describe("PageContent", () => {
     });
   });
 
-  it("Handles fetchEntityYaml failure", async () => {
+  it("handles fetchEntityYaml failure", async () => {
     fetchMock.mockRejectOnce(new Error("Failed to fetch YAML"));
 
     render(<PageContent />);
@@ -86,7 +86,7 @@ describe("PageContent", () => {
     });
   });
 
-  it("Renders content with dangerouslySetInnerHTML", async () => {
+  it("renders content with dangerouslySetInnerHTML", async () => {
     fetchMock.mockResponses(
       [JSON.stringify(serviceYaml), { status: 200 }],
       [JSON.stringify(mockPageContent), { status: 200 }]

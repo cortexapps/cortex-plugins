@@ -2907,12 +2907,10 @@
     csstype "^3.0.2"
 
 "@types/react@>=16":
-  version "17.0.65"
-  resolved "https://registry.npmjs.org/@types/react/-/react-17.0.65.tgz"
-  integrity sha512-oxur785xZYHvnI7TRS61dXbkIhDPnGfsXKv0cNXR/0ml4SipRIFpSMzA7HMEfOywFwJ5AOnPrXYTEiTRUQeGlQ==
+  version "17.0.80"
   dependencies:
     "@types/prop-types" "*"
-    "@types/scheduler" "*"
+    "@types/scheduler" "^0.16"
     csstype "^3.0.2"
 
 "@types/retry@0.12.0":
@@ -2924,6 +2922,9 @@
   version "0.16.3"
   resolved "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.3.tgz"
   integrity sha512-5cJ8CB4yAx7BH1oMvdU0Jh9lrEXyPkar6F9G/ERswkCuvP4KQZfZkSjcMbAICCpQTN4OuZn8tz0HiKv9TGZgrQ==
+
+"@types/scheduler@^0.16":
+  version "0.16.8"
 
 "@types/semver@^7.3.12":
   version "7.5.0"

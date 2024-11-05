@@ -12,7 +12,7 @@ import {
 import { getEntityYaml } from "../api/Cortex";
 import { getConfluenceDetailsFromEntity } from "../lib/parseEntity";
 
-const baseJIRAUrl = "https://cortex-se-test.atlassian.net";
+const baseConfluenceUrl = "https://cortex-se-test.atlassian.net";
 
 const PageContent: React.FC = () => {
   const [pageContent, setPageContent] = useState<string | undefined>();
@@ -23,7 +23,6 @@ const PageContent: React.FC = () => {
 
   useEffect(() => {
     const fetchEntityYaml = async (): Promise<void> => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const entityTag = context.entity?.tag;
       if (!isNil(entityTag)) {
         try {
@@ -31,19 +30,18 @@ const PageContent: React.FC = () => {
           const pageID = isEmpty(yaml)
             ? undefined
             : getConfluenceDetailsFromEntity(yaml);
+          if (!pageID?.pageID) {
+            throw new Error('No Confluence details for entity')
+          }
           setEntityPage(pageID?.pageID);
-          const jiraURL =
-            baseJIRAUrl +
-            "/wiki/rest/api/content/" +
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-            pageID?.pageID +
-            "?expand=body.view";
+          const jiraURL = `${baseConfluenceUrl}/wiki/rest/api/content/${pageID.pageID}?expand=body.view`;
           const contentResult = await fetch(jiraURL);
           const contentJSON = await contentResult.json();
           setPageContent(contentJSON.body.view.value);
           setPageTitle(contentJSON.title);
         } catch (e) {
-          console.error("Error fetching Confluence page: ", e);
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          throw new Error(`Error fetching Confluence page: ${e}`);
         }
       }
     };
@@ -55,7 +53,7 @@ const PageContent: React.FC = () => {
       {isNil(entityPage) ? (
         <Box backgroundColor="light" padding={3} borderRadius={2}>
           <Text>
-            We could not find any Confluence Page associated with this entity
+            We could not find any Confluence page associated with this entity
           </Text>
         </Box>
       ) : (
