@@ -40,8 +40,8 @@ const PageContent: React.FC = () => {
           setPageContent(contentJSON.body.view.value);
           setPageTitle(contentJSON.title);
         } catch (e) {
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          throw new Error(`Error fetching Confluence page: ${e}`);
+          // This will still result in a "We could not find any Confluence page" error in the UI, but may as well trap in console as well
+          console.error("Error retrieving Confluence page: ", e);
         }
       }
     };

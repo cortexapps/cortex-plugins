@@ -54,7 +54,7 @@ describe("PageContent", () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          "We could not find any Confluence Page associated with this entity"
+          "We could not find any Confluence page associated with this entity"
         )
       ).toBeInTheDocument();
     });
@@ -80,7 +80,7 @@ describe("PageContent", () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          "We could not find any Confluence Page associated with this entity"
+          "We could not find any Confluence page associated with this entity"
         )
       ).toBeInTheDocument();
     });
