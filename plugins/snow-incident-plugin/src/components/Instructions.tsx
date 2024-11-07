@@ -1,15 +1,12 @@
 import React from "react";
 
 import {
-    Title,
     Text,
     Box,
-    // Code,
 } from "@cortexapps/plugin-core/components";
 
 const Instructions: React.FC = () => (
     <Box backgroundColor="light" margin={2} padding={4} borderRadius={2}>
-        <Title level={1}>Instructions</Title>
         <Text>
             This plugin will fetch incidents from ServiceNow and display them here.
         </Text>

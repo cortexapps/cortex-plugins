@@ -45,10 +45,13 @@ const Incidents: React.FC = () => {
   const apiBaseUrl = useMemo(() => context?.apiBaseUrl || "", [context]);
   const entityTag = useMemo(() => context?.entity?.tag || "", [context?.entity]);
   const entityName = useMemo(() => context?.entity?.name || "", [context?.entity]);
+  const entityType = useMemo(() => context?.entity?.type || "", [context?.entity]);
+
   const [entityDefinition, setEntityDefinition] = useState<any>(null);
 
   const [errorStr, setErrorStr] = useState("");
 
+  // Fetch entity definition when entityTag changes
   useEffect(() => {
     if (!apiBaseUrl) {
       return;
@@ -59,23 +62,18 @@ const Incidents: React.FC = () => {
         const data = await response.json();
         setEntityDefinition(data);
       } catch (e) {
-        console.error("Failed to fetch entity definition", e);
         setErrorStr("Failed to fetch entity definition");
       }
     };
     void getEntityDefinition();
   }, [entityTag]);
 
+  // Extract ServiceNow sys_id from entity definition when it changes
   const entitySysId = useMemo(() => {
-    if (!entityDefinition) {
-      return "";
-    }
-    try {
-      return entityDefinition.info["x-cortex-custom-data"]["servicenow-sysid"];
-    } catch (e) {
-      console.log("Failed to get ServiceNow sys_id", e);
-    }
-    return "";
+    // Check for custom data field first, then fallback to ServiceNow domain ID
+    return entityDefinition?.info?.["x-cortex-custom-data"]?.["servicenow-sys_id"]
+      || entityDefinition?.info?.["x-cortex-servicenow"]?.domains?.[0]?.id
+      || "";
   }, [entityDefinition]);
 
   const [posts, setPosts] = React.useState<any[]>([]);
@@ -87,6 +85,7 @@ const Incidents: React.FC = () => {
     context.location === PluginContextLocation.Entity
   );
 
+  // Fetch ServiceNow integration configuration from Cortex entity "servicenow-plugin-config"
   useEffect(() => {
     if (!apiBaseUrl) {
       return;
@@ -98,11 +97,8 @@ const Incidents: React.FC = () => {
         try {
           const response = await fetch(`${apiBaseUrl}/catalog/servicenow-plugin-config/openapi`);
           const data = await response.json();
-          console.log(data);
           newSnowUrl = data.info["x-cortex-definition"]["servicenow-url"];
-        } catch (e) {
-          console.error("Failed to fetch ServiceNow plugin configuration", e);
-        }
+        } catch (e) {}
       }
       setSnowUrl(newSnowUrl);
       if (!newSnowUrl) {
@@ -113,6 +109,9 @@ const Incidents: React.FC = () => {
     void getSnowIntegrationConfig();
   }, [apiBaseUrl]);
 
+  // Fetch ServiceNow CI sys_id from entity definition or search by name/tag
+  // If entitySysId is set, use it directly
+  // If entitySysId is not set, search for CI in SNOW by name/tag
   useEffect(() => {
     if (entitySysId) {
       setSnowCi(entitySysId);
@@ -150,11 +149,7 @@ const Incidents: React.FC = () => {
     void searchForCI();
   }, [snowUrl, entityTag, entityName, entitySysId]);
 
-  useEffect(() => {
-    if (posts.length > 0) {
-      console.log(posts);
-    }
-  }, [posts]);
+  // Fetch incidents associated to the CI
   useEffect(() => {
     const fetchIncidents = async (): Promise<void> => {
       if (!snowUrl || !snowCi) {
@@ -168,8 +163,7 @@ const Incidents: React.FC = () => {
           `${snowUrl}/api/now/table/incident?sysparm_display_value=true&sysparm_query=${sysparmQuery}&sysparm_limit=50`
         );
         const data = await result.json();
-        if (data.result.length > 0) {
-          // setHasIncidents(true);
+        if ((data?.result instanceof Array) && data.result.length > 0) {
           setPosts(data.result);
         }
       } catch (e) {
@@ -180,6 +174,7 @@ const Incidents: React.FC = () => {
     void fetchIncidents();
   }, [snowUrl, snowCi]);
 
+  // Table configuration
   const config = {
     columns: [
       {
@@ -272,7 +267,7 @@ const Incidents: React.FC = () => {
           </Text>
         </Box>
         <Text>
-          To manually set a CI, add a custom field to the entity with the key <b>servicenow-sysid</b> and the value of the sys_id of the CI in ServiceNow.
+          To manually set a CI, map it in the Cortex ServiceNow integration, or add a custom field to the entity with the key <b>servicenow-sys_id</b> and the value of the sys_id of the CI in ServiceNow.
         </Text>
       </Box>
     );
@@ -284,7 +279,7 @@ const Incidents: React.FC = () => {
   } else if (snowCi && posts.length === 0) {
     return (
       <Box backgroundColor="light" margin={2} padding={3} borderRadius={2}>
-        <Text>We could not find any Incidents associated to this Service</Text>
+        <Text>We could not find any Incidents associated to this {entityType}</Text>
       </Box>
     );
   } else {
