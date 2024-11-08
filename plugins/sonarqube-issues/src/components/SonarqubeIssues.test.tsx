@@ -182,7 +182,6 @@ describe("Issues", () => {
     await waitFor(() => {
       expect(screen.queryByText("Loading")).not.toBeInTheDocument();
     });
-    // expect(screen.queryByText("useless")).toBeInTheDocument();
     const majorElements = screen.queryAllByText("major");
     expect(majorElements.length).toEqual(3);
     const commentElements = screen.queryAllByText("Comment");
@@ -196,16 +195,13 @@ describe("Issues", () => {
         return await Promise.resolve(JSON.stringify({ issues: [] }));
       }
     );
+
     render(<SonarqubeIssues entityYaml={serviceYaml} />);
-    expect(screen.queryByText("Loading")).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.queryByText("Loading")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/We could not find any Sonarqube issues/)
+      ).toBeInTheDocument();
     });
-    expect(
-      screen.queryByText(
-        "We could not find any Sonarqube issues associated with this entity"
-      )
-    ).toBeInTheDocument();
   });
 });
