@@ -20,57 +20,58 @@ export const successMockBodies = {
       },
     ],
   },
-  "https://unit-testing-snow-instance.service-now.com/api/now/table/cmdb_ci_service": {
-    result: [
-      {
-        operational_status: "1",
-        sys_updated_on: "2012-01-21 19:00:12",
-        used_for: "Production",
-        sys_created_by: "glide.maint",
-        owned_by: {
-          link: "https://dev80317.service-now.com/api/now/table/sys_user/5f728212c0a8010e004a13c7588047dd",
-          value: "5f728212c0a8010e004a13c7588047dd"
+  "https://unit-testing-snow-instance.service-now.com/api/now/table/cmdb_ci_service":
+    {
+      result: [
+        {
+          operational_status: "1",
+          sys_updated_on: "2012-01-21 19:00:12",
+          used_for: "Production",
+          sys_created_by: "glide.maint",
+          owned_by: {
+            link: "https://dev80317.service-now.com/api/now/table/sys_user/5f728212c0a8010e004a13c7588047dd",
+            value: "5f728212c0a8010e004a13c7588047dd",
+          },
+          sys_domain_path: "/",
+          busines_criticality: "1 - most critical",
+          managed_by: {
+            link: "https://dev80317.service-now.com/api/now/table/sys_user/f298d2d2c611227b0106c6be7f154bc8",
+            value: "f298d2d2c611227b0106c6be7f154bc8",
+          },
+          can_print: "false",
+          sys_class_name: "cmdb_ci_service",
+          support_group: {
+            link: "https://dev80317.service-now.com/api/now/table/sys_user_group/8a4dde73c6112278017a6a4baf547aa7",
+            value: "8a4dde73c6112278017a6a4baf547aa7",
+          },
+          unverified: "false",
+          asset: {
+            link: "https://dev80317.service-now.com/api/now/table/alm_asset/73c13e8837f3100044e0bfc8bcbe5d05",
+            value: "73c13e8837f3100044e0bfc8bcbe5d05",
+          },
+          skip_sync: "false",
+          sys_updated_by: "admin",
+          sys_created_on: "2008-10-22 23:19:20",
+          sys_domain: {
+            link: "https://dev80317.service-now.com/api/now/table/sys_user_group/global",
+            value: "global",
+          },
+          install_status: "1",
+          name: "SAP Enterprise Services",
+          sys_id: "26da329f0a0a0bb400f69d8159bc753d",
+          sys_class_path: "/!!/!7",
+          sys_mod_count: "9",
+          monitor: "false",
+          model_id: {
+            link: "https://dev80317.service-now.com/api/now/table/cmdb_model/e8aaeb3f3763100044e0bfc8bcbe5d20",
+            value: "e8aaeb3f3763100044e0bfc8bcbe5d20",
+          },
+          cost_cc: "USD",
+          attested: "false",
+          fault_count: "0",
         },
-        sys_domain_path: "/",
-        busines_criticality: "1 - most critical",
-        managed_by: {
-          link: "https://dev80317.service-now.com/api/now/table/sys_user/f298d2d2c611227b0106c6be7f154bc8",
-          value: "f298d2d2c611227b0106c6be7f154bc8"
-        },
-        can_print: "false",
-        sys_class_name: "cmdb_ci_service",
-        support_group: {
-          link: "https://dev80317.service-now.com/api/now/table/sys_user_group/8a4dde73c6112278017a6a4baf547aa7",
-          value: "8a4dde73c6112278017a6a4baf547aa7"
-        },
-        unverified: "false",
-        asset: {
-          link: "https://dev80317.service-now.com/api/now/table/alm_asset/73c13e8837f3100044e0bfc8bcbe5d05",
-          value: "73c13e8837f3100044e0bfc8bcbe5d05"
-        },
-        skip_sync: "false",
-        sys_updated_by: "admin",
-        sys_created_on: "2008-10-22 23:19:20",
-        sys_domain: {
-          link: "https://dev80317.service-now.com/api/now/table/sys_user_group/global",
-          value: "global"
-        },
-        install_status: "1",
-        name: "SAP Enterprise Services",
-        sys_id: "26da329f0a0a0bb400f69d8159bc753d",
-        sys_class_path: "/!!/!7",
-        sys_mod_count: "9",
-        monitor: "false",
-        model_id: {
-          link: "https://dev80317.service-now.com/api/now/table/cmdb_model/e8aaeb3f3763100044e0bfc8bcbe5d20",
-          value: "e8aaeb3f3763100044e0bfc8bcbe5d20"
-        },
-        cost_cc: "USD",
-        attested: "false",
-        fault_count: "0"
-      }
-    ]
-  },
+      ],
+    },
   "https://unit-testing-snow-instance.service-now.com/api/now/table/incident": {
     result: [
       {
@@ -157,4 +158,4 @@ export const successMockBodies = {
       },
     ],
   },
-}
+};

@@ -1,8 +1,4 @@
-import {
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 
 import fetchMock from "jest-fetch-mock";
 import { successMockBodies } from "../mocks/mockBodies";
@@ -21,9 +17,9 @@ describe("App", () => {
       return {
         status: 200,
         body: JSON.stringify(successMockBodies[url]),
-      }
+      };
     });
-    
+
     render(<App />);
 
     await waitFor(() => {
@@ -34,10 +30,14 @@ describe("App", () => {
         "https://api.cortex.dev/catalog/inventory-planner/openapi"
       );
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringMatching(/https:\/\/unit-testing-snow-instance\.service-now\.com\/api\/now\/table\/cmdb_ci_service/)
+        expect.stringMatching(
+          /https:\/\/unit-testing-snow-instance\.service-now\.com\/api\/now\/table\/cmdb_ci_service/
+        )
       );
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringMatching(/https:\/\/unit-testing-snow-instance\.service-now\.com\/api\/now\/table\/incident/)
+        expect.stringMatching(
+          /https:\/\/unit-testing-snow-instance\.service-now\.com\/api\/now\/table\/incident/
+        )
       );
     });
   });
@@ -48,13 +48,15 @@ describe("App", () => {
       return {
         status: 200,
         body: JSON.stringify(successMockBodies[url]),
-      }
+      };
     });
 
     render(<App />);
 
     await waitFor(() => {
-      const element = screen.getByText("Unable to connect to email", { selector: "p" });
+      const element = screen.getByText("Unable to connect to email", {
+        selector: "p",
+      });
       expect(element).toBeInTheDocument();
     });
   });
@@ -64,13 +66,16 @@ describe("App", () => {
       return {
         status: 200,
         body: JSON.stringify({}),
-      }
+      };
     });
 
     render(<App />);
 
     await waitFor(() => {
-      const element = screen.getByText("This plugin will fetch incidents from ServiceNow and display them here.", { selector: "p" });
+      const element = screen.getByText(
+        "This plugin will fetch incidents from ServiceNow and display them here.",
+        { selector: "p" }
+      );
       expect(element).toBeInTheDocument();
     });
   });

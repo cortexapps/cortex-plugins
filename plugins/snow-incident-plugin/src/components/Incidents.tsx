@@ -1,12 +1,6 @@
-import React, {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
-import {
-  PluginContextLocation,
-} from "@cortexapps/plugin-core";
+import { PluginContextLocation } from "@cortexapps/plugin-core";
 
 import {
   SimpleTable,
@@ -43,9 +37,18 @@ const parseServiceNowDate = (dateString: string): Date | null => {
 const Incidents: React.FC = () => {
   const context = usePluginContext();
   const apiBaseUrl = useMemo(() => context?.apiBaseUrl || "", [context]);
-  const entityTag = useMemo(() => context?.entity?.tag || "", [context?.entity]);
-  const entityName = useMemo(() => context?.entity?.name || "", [context?.entity]);
-  const entityType = useMemo(() => context?.entity?.type || "", [context?.entity]);
+  const entityTag = useMemo(
+    () => context?.entity?.tag ?? "",
+    [context?.entity]
+  );
+  const entityName = useMemo(
+    () => context?.entity?.name ?? "",
+    [context?.entity]
+  );
+  const entityType = useMemo(
+    () => context?.entity?.type ?? "",
+    [context?.entity]
+  );
 
   const [entityDefinition, setEntityDefinition] = useState<any>(null);
 
@@ -58,7 +61,9 @@ const Incidents: React.FC = () => {
     }
     const getEntityDefinition = async (): Promise<void> => {
       try {
-        const response = await fetch(`${apiBaseUrl}/catalog/${entityTag}/openapi`);
+        const response = await fetch(
+          `${apiBaseUrl}/catalog/${entityTag}/openapi`
+        );
         const data = await response.json();
         setEntityDefinition(data);
       } catch (e) {
@@ -66,14 +71,16 @@ const Incidents: React.FC = () => {
       }
     };
     void getEntityDefinition();
-  }, [entityTag]);
+  }, [entityTag, apiBaseUrl]);
 
   // Extract ServiceNow sys_id from entity definition when it changes
   const entitySysId = useMemo(() => {
     // Check for custom data field first, then fallback to ServiceNow domain ID
-    return entityDefinition?.info?.["x-cortex-custom-data"]?.["servicenow-sys_id"]
-      || entityDefinition?.info?.["x-cortex-servicenow"]?.domains?.[0]?.id
-      || "";
+    return (
+      entityDefinition?.info?.["x-cortex-custom-data"]?.["servicenow-sys_id"] ||
+      entityDefinition?.info?.["x-cortex-servicenow"]?.domains?.[0]?.id ||
+      ""
+    );
   }, [entityDefinition]);
 
   const [posts, setPosts] = React.useState<any[]>([]);
@@ -95,7 +102,9 @@ const Incidents: React.FC = () => {
       let newSnowUrl = "";
       if (!newSnowUrl) {
         try {
-          const response = await fetch(`${apiBaseUrl}/catalog/servicenow-plugin-config/openapi`);
+          const response = await fetch(
+            `${apiBaseUrl}/catalog/servicenow-plugin-config/openapi`
+          );
           const data = await response.json();
           newSnowUrl = data.info["x-cortex-definition"]["servicenow-url"];
         } catch (e) {}
@@ -127,7 +136,9 @@ const Incidents: React.FC = () => {
 
       setIsLoading(true);
 
-      const sysparmQuery = encodeURIComponent(`name=${entityName}^ORname=${entityTag}`);
+      const sysparmQuery = encodeURIComponent(
+        `name=${entityName}^ORname=${entityTag}`
+      );
       const url = `${snowUrl}/api/now/table/cmdb_ci_service?sysparm_query=${sysparmQuery}`;
 
       try {
@@ -145,7 +156,7 @@ const Incidents: React.FC = () => {
         setSnowCi("");
       }
       setIsLoading(false);
-    }
+    };
     void searchForCI();
   }, [snowUrl, entityTag, entityName, entitySysId]);
 
@@ -157,13 +168,15 @@ const Incidents: React.FC = () => {
       }
       setIsLoading(true);
       setPosts([]);
-      const sysparmQuery = encodeURIComponent(`cmdb_ci=${snowCi}^ORbusiness_service=${snowCi}^ORaffected_ci=${snowCi}^ORDERBYDESCopened_at`);
+      const sysparmQuery = encodeURIComponent(
+        `cmdb_ci=${snowCi}^ORbusiness_service=${snowCi}^ORaffected_ci=${snowCi}^ORDERBYDESCopened_at`
+      );
       try {
         const result = await fetch(
           `${snowUrl}/api/now/table/incident?sysparm_display_value=true&sysparm_query=${sysparmQuery}&sysparm_limit=50`
         );
         const data = await result.json();
-        if ((data?.result instanceof Array) && data.result.length > 0) {
+        if (data?.result instanceof Array && data.result.length > 0) {
           setPosts(data.result);
         }
       } catch (e) {
@@ -178,9 +191,10 @@ const Incidents: React.FC = () => {
   const config = {
     columns: [
       {
-        Cell: (incident: any) => {
-          const number = incident.number;
-          const url = `${snowUrl}/nav_to.do?uri=incident.do?sys_id=${incident.sys_id}`;
+        Cell: (incident: Record<string, any>) => {
+          const number: string = incident?.number ?? "";
+          const sysId: string = incident?.sys_id ?? "";
+          const url = `${snowUrl}/nav_to.do?uri=incident.do?sys_id=${sysId}`;
           return (
             <Box>
               <Text>
@@ -197,13 +211,11 @@ const Incidents: React.FC = () => {
         width: "10%",
       },
       {
-        Cell: (opened_at: string) => {
-          const date = parseServiceNowDate(opened_at);
+        Cell: (openedAt: string) => {
+          const date = parseServiceNowDate(openedAt);
           return (
             <Box>
-              <Text>
-                {date ? date.toLocaleString() : opened_at}
-              </Text>
+              <Text>{date ? date.toLocaleString() : openedAt}</Text>
             </Box>
           );
         },
@@ -214,12 +226,10 @@ const Incidents: React.FC = () => {
       },
       {
         Cell: (incident: any) => {
-          const title = incident.short_description;
+          const title = incident?.short_description ?? "";
           return (
             <Box>
-              <Text>
-                {title}
-              </Text>
+              <Text>{title}</Text>
             </Box>
           );
         },
@@ -263,23 +273,26 @@ const Incidents: React.FC = () => {
       <Box backgroundColor="light" margin={2} padding={3} borderRadius={2}>
         <Box marginBottom={4}>
           <Text>
-            Couldn't find any CI in ServiceNow with the name <b>{entityName}</b> or <b>{entityTag}</b>.
+            Couldn't find any CI in ServiceNow with the name <b>{entityName}</b>{" "}
+            or <b>{entityTag}</b>.
           </Text>
         </Box>
         <Text>
-          To manually set a CI, map it in the Cortex ServiceNow integration, or add a custom field to the entity with the key <b>servicenow-sys_id</b> and the value of the sys_id of the CI in ServiceNow.
+          To manually set a CI, map it in the Cortex ServiceNow integration, or
+          add a custom field to the entity with the key <b>servicenow-sys_id</b>{" "}
+          and the value of the sys_id of the CI in ServiceNow.
         </Text>
       </Box>
     );
   }
   if (snowCi && posts.length > 0) {
-    return (
-      <SimpleTable config={config} items={posts} />
-    );
+    return <SimpleTable config={config} items={posts} />;
   } else if (snowCi && posts.length === 0) {
     return (
       <Box backgroundColor="light" margin={2} padding={3} borderRadius={2}>
-        <Text>We could not find any Incidents associated to this {entityType}</Text>
+        <Text>
+          We could not find any Incidents associated to this {entityType}
+        </Text>
       </Box>
     );
   } else {
