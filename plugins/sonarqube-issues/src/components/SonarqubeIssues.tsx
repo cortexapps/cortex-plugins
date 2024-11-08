@@ -39,15 +39,15 @@ const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
     }
     const getSonarqubePluginConfig = async (): Promise<void> => {
       setIsLoading(true);
-      let newSnowUrl = "https://sonarcloud.io";
+      let newApiBaseUrl = "https://sonarcloud.io";
       try {
         const response = await fetch(
           `${apiBaseUrl}/catalog/sonarqube-plugin-config/openapi`
         );
         const data = await response.json();
-        newSnowUrl = data.info["x-cortex-definition"]["sonarqube-api-url"];
+        newApiBaseUrl = data.info["x-cortex-definition"]["sonarqube-api-url"];
       } catch (e) {}
-      setSonarqubeApiBaseUrl(newSnowUrl);
+      setSonarqubeApiBaseUrl(newApiBaseUrl);
       setIsLoading(false);
     };
     void getSonarqubePluginConfig();
