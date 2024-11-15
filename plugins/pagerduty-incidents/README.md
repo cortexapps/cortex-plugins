@@ -1,4 +1,4 @@
-# SonarQube Issues Cortex Plugin
+# PagerDuty Incidents Cortex Plugin
 
 View PagerDuty incidents associated with your services!!
 
