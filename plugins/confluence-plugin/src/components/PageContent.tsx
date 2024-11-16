@@ -1,7 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import React, { useState, useEffect } from "react";
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-// import React from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import { isEmpty, isNil } from "lodash";
 import "../baseStyles.css";
 import {
@@ -12,16 +10,45 @@ import {
 import { getEntityYaml } from "../api/Cortex";
 import { getConfluenceDetailsFromEntity } from "../lib/parseEntity";
 
-const baseConfluenceUrl = "https://cortex-se-test.atlassian.net";
+import Instructions from "./Instructions";
 
 const PageContent: React.FC = () => {
   const [pageContent, setPageContent] = useState<string | undefined>();
   const [pageTitle, setPageTitle] = useState<string | undefined>();
   const [entityPage, setEntityPage] = useState<any | string>();
+  const [baseConfluenceUrl, setBaseConfluenceUrl] = useState<string>("");
+  const [errorStr, setErrorStr] = useState<string>("");
 
   const context = usePluginContext();
 
   useEffect(() => {
+    if (!context?.apiBaseUrl) {
+      return;
+    }
+    const getConfluencePluginConfig = async (): Promise<void> => {
+      if (!context?.apiBaseUrl) {
+        return;
+      }
+      let newConfluenceUrl = "";
+      try {
+        const response = await fetch(
+          `${context?.apiBaseUrl}/catalog/confluence-plugin-config/openapi`
+        );
+        const data = await response.json();
+        newConfluenceUrl = data.info["x-cortex-definition"]["confluence-url"];
+      } catch (e) {}
+      setBaseConfluenceUrl(newConfluenceUrl);
+      if (!newConfluenceUrl) {
+        setErrorStr("instructions");
+      }
+    };
+    void getConfluencePluginConfig();
+  }, [context?.apiBaseUrl]);
+
+  useEffect(() => {
+    if (!context.apiBaseUrl || !context.entity?.tag || !baseConfluenceUrl) {
+      return;
+    }
     const fetchEntityYaml = async (): Promise<void> => {
       const entityTag = context.entity?.tag;
       if (!isNil(entityTag)) {
@@ -46,7 +73,11 @@ const PageContent: React.FC = () => {
       }
     };
     void fetchEntityYaml();
-  }, [context.apiBaseUrl, context.entity?.tag]);
+  }, [context.apiBaseUrl, context.entity?.tag, baseConfluenceUrl]);
+
+  if (errorStr === "instructions") {
+    return <Instructions />;
+  }
 
   return (
     <div>
