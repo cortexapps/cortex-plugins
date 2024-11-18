@@ -1,4 +1,3 @@
-// import { render, screen, waitFor } from "@testing-library/react";
 import { render, waitFor } from "@testing-library/react";
 import fetchMock from "jest-fetch-mock";
 import App from "./App";
