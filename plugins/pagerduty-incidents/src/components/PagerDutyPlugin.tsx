@@ -6,6 +6,7 @@ import {
   Box,
   Stack,
   Title,
+  Link,
   usePluginContext,
 } from "@cortexapps/plugin-core/components";
 
@@ -19,6 +20,29 @@ const PagerDutyPlugin: React.FC = () => {
   const [entityYaml, setEntityYaml] = useState<
     Record<string, any> | undefined
   >();
+
+  const [hasGitops, setHasGitops] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (!context?.entity?.tag || !context?.apiBaseUrl) {
+      return;
+    }
+    const fetchGitopsLogs = async (): Promise<void> => {
+      try {
+        const entityTag: string = context.entity?.tag ?? "";
+        const response = await fetch(
+          `${context.apiBaseUrl}/catalog/${entityTag}/gitops-logs`
+        );
+        if (response.ok) {
+          setHasGitops(true);
+        } else {
+          setHasGitops(false);
+        }
+      } catch (e) {
+        setHasGitops(false);
+      }
+    };
+    void fetchGitopsLogs();
+  }, [context.entity?.tag, context.apiBaseUrl]);
 
   const [rerender, setRerender] = useState(0);
   const forceRerender = useCallback(() => {
@@ -46,15 +70,33 @@ const PagerDutyPlugin: React.FC = () => {
             {isEmpty(entityYaml?.info?.["x-cortex-oncall"]?.pagerduty?.id) ? (
               <Box backgroundColor="light" padding={3} borderRadius={2}>
                 <Title level={1}>PagerDuty</Title>
-                <Text mb={4}>
-                  This entity is not associated with any PagerDuty service. To
-                  associate it with a service, select one from the dropdown
-                  below.
-                </Text>
-                <PagerDutyPicker
-                  entityYaml={entityYaml}
-                  changed={forceRerender}
-                />
+                {hasGitops === false && (
+                  <>
+                    <Text mb={4}>
+                      This entity is not associated with any PagerDuty service.
+                      To associate it with a service, select one from the
+                      dropdown below.
+                    </Text>
+                    <PagerDutyPicker
+                      entityYaml={entityYaml}
+                      changed={forceRerender}
+                    />
+                  </>
+                )}
+                {hasGitops === true && (
+                  <Text>
+                    This entity is managed by GitOps. To associate it with a
+                    PagerDuty service, update the entity's YAML file in Git, as
+                    described in the{" "}
+                    <Link
+                      href="https://docs.cortex.dev/guides/alerting/pagerduty"
+                      target="_blank"
+                    >
+                      documentation
+                    </Link>
+                    .
+                  </Text>
+                )}
               </Box>
             ) : (
               <PagerDutyIncidents entityYaml={entityYaml} />

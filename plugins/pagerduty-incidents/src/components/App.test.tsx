@@ -32,6 +32,11 @@ describe("App", () => {
 
     fetchMock.mockResponse(async (req) => {
       const url = req.url.split("?")[0];
+      if (!mockBodies[url]) {
+        return {
+          status: 404,
+        };
+      }
       const body = mockBodies[url] || {};
       return {
         status: 200,
