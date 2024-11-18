@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import PageContent from "./PageContent";
 
-import { successMockBodies } from "../mocks/mockBodies";
+import { successMockBodies, noEntityMockBodies } from "../mocks/mockBodies";
 
 describe("PageContent", () => {
   beforeEach(() => {
@@ -11,12 +11,12 @@ describe("PageContent", () => {
   it("shows message when no page is found", async () => {
     fetchMock.mockResponse(async (req) => {
       const url = req.url.split("?")[0];
-      if (!successMockBodies[url]) {
+      if (!noEntityMockBodies[url]) {
         return { status: 404 };
       }
       return {
         status: 200,
-        body: JSON.stringify(successMockBodies[url]),
+        body: JSON.stringify(noEntityMockBodies[url]),
       };
     });
 
@@ -25,7 +25,7 @@ describe("PageContent", () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          "We could not find any Confluence page associated with this entity"
+          "No Confluence details exist on this entity."
         )
       ).toBeInTheDocument();
     });
@@ -56,8 +56,8 @@ describe("PageContent", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          "We could not find any Confluence page associated with this entity"
+        screen.queryByText(
+          "To get started, please add an entity to Cortex like the following:"
         )
       ).toBeInTheDocument();
     });

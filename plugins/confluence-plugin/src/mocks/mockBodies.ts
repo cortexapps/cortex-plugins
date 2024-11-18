@@ -54,3 +54,21 @@ export const successMockBodies = {
       },
     },
 };
+
+export const noEntityMockBodies = {
+  ...successMockBodies,
+  "https://api.cortex.dev/catalog/inventory-planner/openapi": {
+    info: {
+      title: "Inventory Planner",
+      description: "it is a inventory planner",
+      "x-cortex-tag": "inventory-planner",
+      "x-cortex-type": "service",
+    },
+    openapi: "3.0.1",
+    servers: [
+      {
+        url: "/",
+      },
+    ],
+  },
+};
