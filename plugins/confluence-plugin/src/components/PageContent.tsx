@@ -37,7 +37,7 @@ const PageContent: React.FC = () => {
         );
         const data = await response.json();
         newConfluenceUrl = data.info["x-cortex-definition"]["confluence-url"];
-      } catch (e) { }
+      } catch (e) {}
       setBaseConfluenceUrl(newConfluenceUrl);
       if (!newConfluenceUrl) {
         setErrorStr("instructions");
@@ -69,9 +69,15 @@ const PageContent: React.FC = () => {
             let newErrorStr = "";
             // if the contentResult contains valid JSON, we can use it to display an error message
             try {
-              if (contentResult.headers.get("content-type")?.includes("application/json")) {
+              if (
+                contentResult.headers
+                  .get("content-type")
+                  ?.includes("application/json")
+              ) {
                 const contentJSON = await contentResult.json();
-                newErrorStr = `Failed to fetch Confluence page with ID ${pageID.pageID}: ${contentJSON.message || JSON.stringify(contentJSON)}`;
+                const msg: string =
+                  contentJSON.message || JSON.stringify(contentJSON);
+                newErrorStr = `Failed to fetch Confluence page with ID ${pageID.pageID}: ${msg}`;
               } else {
                 // just get the text if it's not JSON
                 const contentText = await contentResult.text();
@@ -79,7 +85,8 @@ const PageContent: React.FC = () => {
               }
             } catch (e) {
               // if we can't parse the content, just use the status text
-              newErrorStr = contentResult.statusText || "Failed to fetch Confluence page";
+              newErrorStr =
+                contentResult.statusText || "Failed to fetch Confluence page";
             }
             setErrorStr(newErrorStr);
             return;
@@ -90,7 +97,8 @@ const PageContent: React.FC = () => {
           setErrorStr("");
         } catch (e) {
           // This will still result in a "We could not find any Confluence page" error in the UI, but may as well trap in console as well
-          setErrorStr(`Error retrieving Confluence page: ${e.message || e.toString()}`);
+          const msg: string = e.message || e.toString();
+          setErrorStr(`Error retrieving Confluence page: ${msg}`);
           console.error("Error retrieving Confluence page: ", e);
         }
       }

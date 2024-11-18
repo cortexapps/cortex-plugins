@@ -24,9 +24,7 @@ describe("PageContent", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          "No Confluence details exist on this entity."
-        )
+        screen.getByText("No Confluence details exist on this entity.")
       ).toBeInTheDocument();
     });
   });
