@@ -14,7 +14,7 @@ Your Confluence instance URL should look like `https://something.atlassian.net`.
 
 ### Set your Confluence credentials
 
-If you are using username and password authentication, type them in to a text editor with a colon (`:`) between them. If you are using SSO, use an API token in place of the password. To create an API token in Confluence by clicking on Security > Create and manage API tokens > Create API token. Once you have your text in your text editor like `myusername@example.com:MySecretPassWordOrToken`, you need to base64 encode it. You can do this using an online tool like [this](https://www.base64encode.org). You will add the base64 encoded value to Cortex as a secret. Copy the base64 encoded value. In Cortex, click on Settings > Secrets > Add secret. In Secret name, type `confluence_secret`, paste the base64 encoded secret into Secret value, and click on Create secret.
+If you are using username and password authentication, type them in to a text editor with a colon (`:`) between them. If you are using SSO, use an API token in place of the password. To create an API token in Confluence, follow the [instructions provided by Atlassian](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/). Once you have your text in your text editor like `myusername@example.com:MySecretPassWordOrToken`, you need to base64 encode it. You can do this using an online tool like [this](https://www.base64encode.org). You will add the base64 encoded value to Cortex as a secret. Copy the base64 encoded value. In Cortex, click on Settings > Secrets > Add secret. In Secret name, type `confluence_secret`, paste the base64 encoded secret into Secret value, and click on Create secret.
 
 ### Set up a Plugin Proxy
 
