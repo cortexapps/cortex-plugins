@@ -16,7 +16,7 @@ import { useToast } from "@chakra-ui/react";
 import "../baseStyles.css";
 
 const getErrorMessageFromResponse = async (
-  response: Response,
+  response: Response
 ): Promise<string> => {
   if (response.headers.get("Content-Type")?.includes("application/json")) {
     try {
@@ -40,7 +40,7 @@ const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
 
   const [posts, setPosts] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(
-    context.location === PluginContextLocation.Entity,
+    context.location === PluginContextLocation.Entity
   );
 
   const [issueForComment, setIssueForComment] = useState<string | null>(null);
@@ -60,7 +60,7 @@ const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
       let newBaseUrl = "https://sonarcloud.io";
       try {
         const response = await fetch(
-          `${context.apiBaseUrl}/catalog/sonarqube-plugin-config/openapi`,
+          `${context.apiBaseUrl}/catalog/sonarqube-plugin-config/openapi`
         );
         const data = await response.json();
         newBaseUrl = data.info["x-cortex-definition"]["sonarqube-url"];
