@@ -300,7 +300,9 @@ const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
   ) : (
     <Box backgroundColor="light" padding={3} borderRadius={2}>
       <Text>
-        We could not find any Sonarqube issues associated with this entity
+        We could not find any Sonarqube issues associated with this
+        {" "}
+        {context?.entity?.type ?? "entity"}.
       </Text>
     </Box>
   );

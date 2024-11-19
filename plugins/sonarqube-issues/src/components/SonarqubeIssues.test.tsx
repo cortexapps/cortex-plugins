@@ -203,9 +203,7 @@ describe("Issues", () => {
     await waitFor(() => {
       expect(queryByText("Loading")).not.toBeInTheDocument();
       expect(
-        queryByText(
-          "We could not find any Sonarqube issues associated with this entity"
-        )
+        queryByText(/We could not find any Sonarqube issues/)
       ).toBeInTheDocument();
     });
   });
