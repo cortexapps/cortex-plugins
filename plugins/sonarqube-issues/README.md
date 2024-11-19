@@ -31,9 +31,9 @@ This plugin requires a proxy to SonarQube. To set up:
 - Create a proxy:
 
   - Navigate to Plugins, then click on the Proxies tab, then click on Create Proxy
-  - Give the proxy a name, then click on Add URL
-  - For the URL Prefix, type in the API base URL of your SonarQube instance. Default for cloud is `https://sonarcloud.io`. If you are self-hosting SonarQube, you will have a different API base URL.
-  - Click on Add Header and add a header whose name is `Authorization` and whose value is `Bearer {{secrets.sonarqube_secret}}` (include the curly braces!)
+  - Give the proxy a name, like SonarQube Proxy, then click on Add URL.
+  - For the URL Prefix, type in the API base URL of your SonarQube instance. The default for cloud is `https://sonarcloud.io`. **If you are self-hosting SonarQube, you will have to put in your own base URL instead.**
+  - Click on Add Header and add a header whose name is `Authorization` and whose value is `Bearer {{{secrets.sonarqube_plugin}}}` (include the curly braces!)
 
 - Once you are done, the proxy should look like the below:
 
@@ -61,20 +61,37 @@ info:
 Now, you can build and add the plugin.
 
 - Build the plugin:
-  - Make sure you have npm/yarn
-  - In your terminal, in the `sonarqube-issues` directory, type `yarn` or `npm install` to install the dependencies; then type `npm run build` or `yarn build` to build the plugin
-- The compiled plugin will be created in `dist/ui.html`
-- In Plugins > All, click **Register Plugin**
+  - Make sure you have npm or yarn.
+  - In your terminal, in the `sonarqube-issues` directory, type `yarn` or `npm install` to install the dependencies; then type `npm run build` or `yarn build` to build the plugin.
+- The compiled plugin will be created in `dist/ui.html`.
+- In Plugins > All, click **Register Plugin**.
 - Give the plugin a name, like SonarQube Issues. This is the name users will see in the plugin listing.
 - Under **Associated Proxy**, choose the proxy you just created.
 - Under **Plugin Context**, click on Add another context; choose Selection type: Include, and Entity types: service.
-- This plugin does not work in the Global context. Turn off the switch labeled **Include in global context**
+- This plugin does not work in the Global context. Turn off the switch labeled **Include in global context**.
 - In The **Plugin code** section, upload the `dist/ui.html` file you just built.
-- Click on **Save plugin**
+- Click on **Save plugin**.
 
-Now, when you navigate to a Service that has a SonarQube associated with it, you should be able to click on Plugins > SonarQube Issues and see the SonarQube Issues associated with the project that is linked to the service.
+### Create a plugin configuration entity (self-hosted only)
 
-**Note: This plugin will connect to Sonarqube's cloud API service out of the box.** If you are self-hosting SonarQube and need to direct the plugin to a different API base URL, make sure you follow the **Self-hosted setup** instructions above.
+This plugin will connect to SonarQube's cloud instance out of the box, so if you are using SonarQube in the cloud, you should skip this step. If you are self-hosting SonarQube and need to direct the plugin to a different REST API endpoint, create a plugin configuration entity with your SonarQube REST API base URL as follows:
+
+- Consider creating a new entity type, so that any existing scorecards are not affected by this configuration entity. In this example, we have created a new entity type called `plugin-configuration`
+- Create a new entity with the tag `sonarqube-plugin-config`
+- Set `x-cortex-definition.sonarqube-url` to the value of your SonarQube API base URL. For example, if my SonarQube API base URL was `https://sonarqube.martindstone.com`, my `sonarqube-plugin-config` entity would look like this:
+
+```
+openapi: 3.0.1
+info:
+  title: SonarQube Plugin Config
+  description: ""
+  x-cortex-tag: sonarqube-plugin-config
+  x-cortex-type: plugin-configuration
+  x-cortex-definition:
+    sonarqube-url: https://sonarqube.martindstone.com
+```
+
+Now, when you navigate to a Cortex service that has a SonarQube project associated with it, you should be able to click on Plugins > SonarQube Issues and see the SonarQube Issues associated with the project that is linked to the service.
 
 ## Troubleshooting
 

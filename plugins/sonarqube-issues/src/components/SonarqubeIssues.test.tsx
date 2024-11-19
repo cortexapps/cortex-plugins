@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import SonarqubeIssues from "./SonarqubeIssues";
 
 const issuesResp = {
@@ -177,15 +177,16 @@ describe("Issues", () => {
       }
     );
 
-    render(<SonarqubeIssues entityYaml={serviceYaml} />);
-    expect(screen.queryByText("Loading")).toBeInTheDocument();
+    const { queryByText, queryAllByText } = render(
+      <SonarqubeIssues entityYaml={serviceYaml} />
+    );
     await waitFor(() => {
-      expect(screen.queryByText("Loading")).not.toBeInTheDocument();
+      expect(queryByText("Loading")).not.toBeInTheDocument();
+      const majorElements = queryAllByText("major");
+      expect(majorElements.length).toEqual(3);
+      const commentElements = queryAllByText("Comment");
+      expect(commentElements.length).toBeGreaterThan(0);
     });
-    const majorElements = screen.queryAllByText("major");
-    expect(majorElements.length).toEqual(3);
-    const commentElements = screen.queryAllByText("Comment");
-    expect(commentElements.length).toBeGreaterThan(0);
   });
 
   it("has no Issues", async () => {
@@ -195,12 +196,14 @@ describe("Issues", () => {
         return await Promise.resolve(JSON.stringify({ issues: [] }));
       }
     );
-
-    render(<SonarqubeIssues entityYaml={serviceYaml} />);
+    const { queryByText } = render(
+      <SonarqubeIssues entityYaml={serviceYaml} />
+    );
 
     await waitFor(() => {
+      expect(queryByText("Loading")).not.toBeInTheDocument();
       expect(
-        screen.queryByText(/We could not find any Sonarqube issues/)
+        queryByText(/We could not find any Sonarqube issues/)
       ).toBeInTheDocument();
     });
   });
