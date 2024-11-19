@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { PluginContextLocation } from "@cortexapps/plugin-core";
 import {
   SimpleTable,
