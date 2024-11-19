@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import SonarqubeIssues from "./SonarqubeIssues";
 
 const issuesResp = {
@@ -177,16 +177,16 @@ describe("Issues", () => {
       }
     );
 
-    render(<SonarqubeIssues entityYaml={serviceYaml} />);
-    expect(screen.queryByText("Loading")).toBeInTheDocument();
+    const { queryByText, queryAllByText } = render(
+      <SonarqubeIssues entityYaml={serviceYaml} />
+    );
     await waitFor(() => {
-      expect(screen.queryByText("Loading")).not.toBeInTheDocument();
+      expect(queryByText("Loading")).not.toBeInTheDocument();
+      const majorElements = queryAllByText("major");
+      expect(majorElements.length).toEqual(3);
+      const commentElements = queryAllByText("Comment");
+      expect(commentElements.length).toBeGreaterThan(0);
     });
-    // expect(screen.queryByText("useless")).toBeInTheDocument();
-    const majorElements = screen.queryAllByText("major");
-    expect(majorElements.length).toEqual(3);
-    const commentElements = screen.queryAllByText("Comment");
-    expect(commentElements.length).toBeGreaterThan(0);
   });
 
   it("has no Issues", async () => {
@@ -196,16 +196,17 @@ describe("Issues", () => {
         return await Promise.resolve(JSON.stringify({ issues: [] }));
       }
     );
-    render(<SonarqubeIssues entityYaml={serviceYaml} />);
-    expect(screen.queryByText("Loading")).toBeInTheDocument();
+    const { queryByText } = render(
+      <SonarqubeIssues entityYaml={serviceYaml} />
+    );
 
     await waitFor(() => {
-      expect(screen.queryByText("Loading")).not.toBeInTheDocument();
+      expect(queryByText("Loading")).not.toBeInTheDocument();
+      expect(
+        queryByText(
+          "We could not find any Sonarqube issues associated with this entity"
+        )
+      ).toBeInTheDocument();
     });
-    expect(
-      screen.queryByText(
-        "We could not find any Sonarqube issues associated with this entity"
-      )
-    ).toBeInTheDocument();
   });
 });

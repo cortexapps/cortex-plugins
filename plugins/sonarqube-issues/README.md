@@ -31,9 +31,9 @@ This plugin requires a proxy to SonarQube. To set up:
 - Create a proxy:
 
   - Navigate to Plugins, then click on the Proxies tab, then click on Create Proxy
-  - Give the proxy a name, then click on Add URL
-  - For the URL Prefix, type in the base URL of your SonarQube instance. Default for cloud is `https://sonarcloud.io`. **This URL prefix should be exactly the same as the value of the baseURL variable in [SonarqubeIssues.tsx](src/components/SonarqubeIssues.tsx) - If you are self-hosting SonarQube, you will have to put your own base URL in both places!**
-  - Click on Add Header and add a header whose name is `Authorization` and whose value is `Bearer {{secrets.sonarqube_plugin}}` (include the curly braces!)
+  - Give the proxy a name, like SonarQube Proxy, then click on Add URL.
+  - For the URL Prefix, type in the API base URL of your SonarQube instance. The default for cloud is `https://sonarcloud.io`. **If you are self-hosting SonarQube, you will have to put in your own base URL instead.**
+  - Click on Add Header and add a header whose name is `Authorization` and whose value is `Bearer {{{secrets.sonarqube_plugin}}}` (include the curly braces!)
 
 - Once you are done, the proxy should look like the below:
 
@@ -53,14 +53,26 @@ Now, you can build and add the plugin.
 - In The **Plugin code** section, upload the `dist/ui.html` file you just built.
 - Click on **Save plugin**
 
-Now, when you navigate to a Service that has a SonarQube associated with it, you should be able to click on Plugins > SonarQube Issues and see the SonarQube Issues associated with the project that is linked to the service.
+### Create a plugin configuration entity (self-hosted only)
 
-**Note: This plugin will connect to SonarQube's cloud instance out of the box.** If you are self-hosting SonarQube and need to direct the plugin to a different API endpoint, update the following section of the [SonarqubeIssues.tsx](src/components/SonarqubeIssues.tsx) file:
+This plugin will connect to SonarQube's cloud instance out of the box, so if you are using SonarQube in the cloud, you should skip this step. If you are self-hosting SonarQube and need to direct the plugin to a different REST API endpoint, create a plugin configuration entity with your SonarQube REST API base URL as follows:
 
-```ts
-// Set your SonarQube url. Cloud is https://sonarcloud.io
-const baseURL = "https://sonarcloud.io";
+- Consider creating a new entity type, so that any existing scorecards are not affected by this configuration entity. In this example, we have created a new entity type called `plugin-configuration`
+- Create a new entity with the tag `sonarqube-plugin-config`
+- Set `x-cortex-definition.sonarqube-url` to the value of your SonarQube API base URL. For example, if my SonarQube API base URL was `https://sonarqube.martindstone.com`, my `sonarqube-plugin-config` entity would look like this:
+
 ```
+openapi: 3.0.1
+info:
+  title: SonarQube Plugin Config
+  description: ""
+  x-cortex-tag: sonarqube-plugin-config
+  x-cortex-type: plugin-configuration
+  x-cortex-definition:
+    sonarqube-url: https://sonarqube.martindstone.com
+```
+
+Now, when you navigate to a Cortex service that has a SonarQube project associated with it, you should be able to click on Plugins > SonarQube Issues and see the SonarQube Issues associated with the project that is linked to the service.
 
 ## Troubleshooting
 
