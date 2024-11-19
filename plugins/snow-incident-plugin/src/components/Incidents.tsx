@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-
-import { PluginContextLocation } from "@cortexapps/plugin-core";
+import type React from "react";
+import { useMemo } from "react";
 
 import {
   SimpleTable,
@@ -9,6 +8,14 @@ import {
   Loader,
   usePluginContext,
 } from "@cortexapps/plugin-core/components";
+
+import {
+  useEntityDefinition,
+  useServiceNowConfig,
+  useServiceNowCi,
+  useIncidents,
+} from "../hooks";
+
 import Instructions from "./Instructions";
 
 const parseServiceNowDate = (dateString: string): Date | null => {
@@ -50,28 +57,8 @@ const Incidents: React.FC = () => {
     [context?.entity]
   );
 
-  const [entityDefinition, setEntityDefinition] = useState<any>(null);
-
-  const [errorStr, setErrorStr] = useState("");
-
-  // Fetch entity definition when entityTag changes
-  useEffect(() => {
-    if (!apiBaseUrl) {
-      return;
-    }
-    const getEntityDefinition = async (): Promise<void> => {
-      try {
-        const response = await fetch(
-          `${apiBaseUrl}/catalog/${entityTag}/openapi`
-        );
-        const data = await response.json();
-        setEntityDefinition(data);
-      } catch (e) {
-        setErrorStr("Failed to fetch entity definition");
-      }
-    };
-    void getEntityDefinition();
-  }, [entityTag, apiBaseUrl]);
+  const { entityDefinition, errorStr: entityDefinitionErrorStr } =
+    useEntityDefinition(apiBaseUrl, entityTag);
 
   // Extract ServiceNow sys_id from entity definition when it changes
   const entitySysId = useMemo(() => {
@@ -83,109 +70,26 @@ const Incidents: React.FC = () => {
     );
   }, [entityDefinition]);
 
-  const [posts, setPosts] = React.useState<any[]>([]);
+  const {
+    snowUrl,
+    isLoading: snowConfigIsLoading,
+    errorStr: snowConfigErrorStr,
+  } = useServiceNowConfig(apiBaseUrl);
 
-  const [snowUrl, setSnowUrl] = React.useState("");
-  const [snowCi, setSnowCi] = React.useState("");
-
-  const [isLoading, setIsLoading] = React.useState(
-    context.location === PluginContextLocation.Entity
+  const { snowCi, isLoading: snowCiIsLoading } = useServiceNowCi(
+    snowUrl,
+    entitySysId,
+    entityName,
+    entityTag
+  );
+  const { incidents, isLoading: incidentsIsLoading } = useIncidents(
+    snowUrl,
+    snowCi
   );
 
-  // Fetch ServiceNow integration configuration from Cortex entity "servicenow-plugin-config"
-  useEffect(() => {
-    if (!apiBaseUrl) {
-      return;
-    }
-    const getSnowIntegrationConfig = async (): Promise<void> => {
-      setIsLoading(true);
-      let newSnowUrl = "";
-      if (!newSnowUrl) {
-        try {
-          const response = await fetch(
-            `${apiBaseUrl}/catalog/servicenow-plugin-config/openapi`
-          );
-          const data = await response.json();
-          newSnowUrl = data.info["x-cortex-definition"]["servicenow-url"];
-        } catch (e) {}
-      }
-      setSnowUrl(newSnowUrl);
-      if (!newSnowUrl) {
-        setErrorStr("instructions");
-      }
-      setIsLoading(false);
-    };
-    void getSnowIntegrationConfig();
-  }, [apiBaseUrl]);
-
-  // Fetch ServiceNow CI sys_id from entity definition or search by name/tag
-  // If entitySysId is set, use it directly
-  // If entitySysId is not set, search for CI in SNOW by name/tag
-  useEffect(() => {
-    if (entitySysId) {
-      setSnowCi(entitySysId);
-      return;
-    }
-    if (!snowUrl || !entityName || !entityTag) {
-      return;
-    }
-    const searchForCI = async (): Promise<void> => {
-      if (!snowUrl || !entityTag) {
-        return;
-      }
-
-      setIsLoading(true);
-
-      const sysparmQuery = encodeURIComponent(
-        `name=${entityName}^ORname=${entityTag}`
-      );
-      const url = `${snowUrl}/api/now/table/cmdb_ci_service?sysparm_query=${sysparmQuery}`;
-
-      try {
-        const result = await fetch(url);
-        const data = await result.json();
-        if (data.result.length > 0) {
-          try {
-            setSnowCi(data.result[0].sys_id);
-          } catch (e) {
-            console.error(`Failed to search ${url}`, e);
-          }
-        }
-      } catch (e) {
-        console.error("Failed to search for CI", e);
-        setSnowCi("");
-      }
-      setIsLoading(false);
-    };
-    void searchForCI();
-  }, [snowUrl, entityTag, entityName, entitySysId]);
-
-  // Fetch incidents associated to the CI
-  useEffect(() => {
-    const fetchIncidents = async (): Promise<void> => {
-      if (!snowUrl || !snowCi) {
-        return;
-      }
-      setIsLoading(true);
-      setPosts([]);
-      const sysparmQuery = encodeURIComponent(
-        `cmdb_ci=${snowCi}^ORbusiness_service=${snowCi}^ORaffected_ci=${snowCi}^ORDERBYDESCopened_at`
-      );
-      try {
-        const result = await fetch(
-          `${snowUrl}/api/now/table/incident?sysparm_display_value=true&sysparm_query=${sysparmQuery}&sysparm_limit=50`
-        );
-        const data = await result.json();
-        if (data?.result instanceof Array && data.result.length > 0) {
-          setPosts(data.result);
-        }
-      } catch (e) {
-        console.error("Failed to fetch incidents", e);
-      }
-      setIsLoading(false);
-    };
-    void fetchIncidents();
-  }, [snowUrl, snowCi]);
+  const isLoading =
+    snowConfigIsLoading || snowCiIsLoading || incidentsIsLoading;
+  const errorStr = entityDefinitionErrorStr || snowConfigErrorStr;
 
   // Table configuration
   const config = {
@@ -205,7 +109,6 @@ const Incidents: React.FC = () => {
             </Box>
           );
         },
-        // accessor: "number",
         id: "number",
         title: "Number",
         width: "10%",
@@ -233,7 +136,6 @@ const Incidents: React.FC = () => {
             </Box>
           );
         },
-        // accessor: "short_description",
         id: "short_description",
         title: "Short Description",
         width: "55%",
@@ -285,9 +187,9 @@ const Incidents: React.FC = () => {
       </Box>
     );
   }
-  if (snowCi && posts.length > 0) {
-    return <SimpleTable config={config} items={posts} />;
-  } else if (snowCi && posts.length === 0) {
+  if (snowCi && incidents.length > 0) {
+    return <SimpleTable config={config} items={incidents} />;
+  } else if (snowCi && incidents.length === 0) {
     return (
       <Box backgroundColor="light" margin={2} padding={3} borderRadius={2}>
         <Text>
