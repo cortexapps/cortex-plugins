@@ -151,7 +151,7 @@ const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
       setIsLoading(false);
     };
     void fetchData();
-  }, [entityYaml?.info, baseUrl, project]);
+  }, [entityYaml?.info, baseUrl, project, toast]);
 
   const issuesByKey = useMemo(() => {
     if (posts && posts instanceof Array && posts.length > 0) {
