@@ -6,9 +6,9 @@ import {
   Text,
   Loader,
   usePluginContext,
-  // Modal,
+  Modal,
   Button,
-  // Input,
+  Input,
 } from "@cortexapps/plugin-core/components";
 
 import { useToast } from "@chakra-ui/react";
@@ -43,7 +43,7 @@ const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
     context.location === PluginContextLocation.Entity
   );
 
-  const [issueForComment, setIssueForComment] = useState("");
+  const [issueForComment, setIssueForComment] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [isCommenting, setIsCommenting] = useState(false);
