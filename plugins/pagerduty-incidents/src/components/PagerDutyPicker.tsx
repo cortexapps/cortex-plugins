@@ -3,13 +3,10 @@ import { useCallback, useState, useEffect, useMemo } from "react";
 import "../baseStyles.css";
 
 import { usePluginContext } from "@cortexapps/plugin-core/components";
-
 import { Flex, Button, Select } from "@chakra-ui/react";
+import { parseDocument } from "yaml";
 
-import {
-  // Document,
-  parseDocument,
-} from "yaml";
+import { usePagerDutyServices } from "../hooks";
 
 interface PagerDutyPickerProps {
   entityYaml: Record<string, any>;
@@ -22,13 +19,13 @@ const PagerDutyPicker: React.FC<PagerDutyPickerProps> = ({ changed }) => {
     () => context.entity?.tag ?? "",
     [context.entity?.tag]
   );
-  const [services, setServices] = useState([] as any[]);
   const [serviceSelectOptions, setServiceSelectOptions] = useState([] as any[]);
   const [selectedService, setSelectedService] = useState("" as any);
-  const [isLoading, setIsLoading] = useState(false);
   const [fetchedEntityDocument, setFetchedEntityDocument] = useState(
     null as any
   );
+
+  const { services, isLoading } = usePagerDutyServices();
 
   const updateEntity = useCallback((): void => {
     const doUpdate = async (): Promise<void> => {
@@ -57,42 +54,6 @@ const PagerDutyPicker: React.FC<PagerDutyPickerProps> = ({ changed }) => {
     };
     void doUpdate();
   }, [context.apiBaseUrl, fetchedEntityDocument, selectedService, changed]);
-
-  useEffect(() => {
-    const fetchServices = async (): Promise<void> => {
-      setIsLoading(true);
-      let more = false;
-      let offset = 0;
-      const limit = 25;
-      let services: any[] = [];
-      do {
-        // Fetch services
-        const url = `https://api.pagerduty.com/services?limit=${limit}&offset=${offset}`;
-        const response = await fetch(url, {
-          headers: {
-            Accept: "application/vnd.pagerduty+json;version=2",
-          },
-        });
-        if (!response.ok) {
-          console.error(
-            `HTTP Error ${response.status}: ${response.statusText}`
-          );
-          return;
-        }
-        const data = await response.json();
-        if (!data.services) {
-          console.error("No services found in response");
-          return;
-        }
-        more = data.more;
-        offset += limit;
-        services = services.concat(data.services);
-      } while (more);
-      setServices(services);
-      setIsLoading(false);
-    };
-    void fetchServices();
-  }, []);
 
   useEffect(() => {
     setServiceSelectOptions(

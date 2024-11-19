@@ -132,11 +132,21 @@ describe("App", () => {
       expect(element).toBeInTheDocument();
       expect(fetch).toHaveBeenCalledWith(
         expect.stringMatching(
+          /https:\/\/api\.getcortexapp\.com\/catalog\/inventory-planner\/gitops-logs/
+        )
+      );
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringMatching(
           /https:\/\/api\.getcortexapp\.com\/catalog\/inventory-planner\/openapi/
         )
       );
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringMatching(/https:\/\/api\.pagerduty.com\/services/)
+        "https://api.pagerduty.com/services/PXXXXXX",
+        {
+          headers: {
+            Accept: "application/vnd.pagerduty+json;version=2",
+          },
+        }
       );
     });
   });
