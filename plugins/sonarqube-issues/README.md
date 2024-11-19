@@ -42,16 +42,16 @@ This plugin requires a proxy to SonarQube. To set up:
 Now, you can build and add the plugin.
 
 - Build the plugin:
-  - Make sure you have npm/yarn, and make sure you have put in your correct SonarQube Base URL in the baseURL variable in [SonarqubeIssues.tsx](src/components/SonarqubeIssues.tsx)
-  - In your terminal, in the `sonarqube-issues` directory, type `yarn` or `npm install` to install the dependencies; then type `npm run build` or `yarn build` to build the plugin
-- The compiled plugin will be created in `dist/ui.html`
-- In Plugins > All, click **Register Plugin**
+  - Make sure you have npm or yarn.
+  - In your terminal, in the `sonarqube-issues` directory, type `yarn` or `npm install` to install the dependencies; then type `npm run build` or `yarn build` to build the plugin.
+- The compiled plugin will be created in `dist/ui.html`.
+- In Plugins > All, click **Register Plugin**.
 - Give the plugin a name, like SonarQube Issues. This is the name users will see in the plugin listing.
 - Under **Associated Proxy**, choose the proxy you just created.
 - Under **Plugin Context**, click on Add another context; choose Selection type: Include, and Entity types: service.
-- This plugin does not work in the Global context. Turn off the switch labeled **Include in global context**
+- This plugin does not work in the Global context. Turn off the switch labeled **Include in global context**.
 - In The **Plugin code** section, upload the `dist/ui.html` file you just built.
-- Click on **Save plugin**
+- Click on **Save plugin**.
 
 ### Create a plugin configuration entity (self-hosted only)
 
