@@ -45,7 +45,7 @@ The plugin uses `https://sonarcloud.io` as its default API base URL. If you are 
 
 - Consider creating a new entity type, so that any existing scorecards are not affected by ths configuration entity. In this example, we have created a new entity type called `plugin-configuration`
 - Create a new entity with the tag `sonarqube-plugin-config`
-- Set `x-cortex-definition.sonarqube-api-url` to the value of your ServiceNow Instance URL. For example, if my Sonarqube API base URL was `https://sonarqube.martindstone.com`, my `sonarqube-plugin-config` entity would look like this:
+- Set `x-cortex-definition.sonarqube-url` to the value of your ServiceNow Instance URL. For example, if my Sonarqube API base URL was `https://sonarqube.martindstone.com`, my `sonarqube-plugin-config` entity would look like this:
 
 ```yaml
 openapi: 3.0.1
@@ -55,7 +55,7 @@ info:
   x-cortex-tag: sonarqube-plugin-config
   x-cortex-type: plugin-configuration
   x-cortex-definition:
-    sonarqube-api-url: https://sonarqube.martindstone.com
+    sonarqube-url: https://sonarqube.martindstone.com
 ```
 
 Now, you can build and add the plugin.
