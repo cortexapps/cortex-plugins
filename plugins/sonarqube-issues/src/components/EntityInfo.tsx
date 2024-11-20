@@ -38,7 +38,10 @@ const CortexEntity: React.FC = () => {
               entityYaml?.info?.["x-cortex-static-analysis"]?.sonarqube
             ) ? (
               <Box backgroundColor="light" padding={3} borderRadius={2}>
-                <Text>No SonarQube details were found for this entity</Text>
+                <Text>
+                  No SonarQube details were found for this{" "}
+                  {context.entity?.type ?? "entity"}
+                </Text>
               </Box>
             ) : (
               <SonarqubeIssues entityYaml={entityYaml} />
