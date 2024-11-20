@@ -1,17 +1,18 @@
-import React, { useMemo, useState, useEffect, useCallback } from "react";
-import { PluginContextLocation } from "@cortexapps/plugin-core";
+import type React from "react";
+import { useMemo, useState, useCallback } from "react";
 import {
   SimpleTable,
   Box,
   Text,
   Loader,
   usePluginContext,
-  Modal,
   Button,
-  Input,
 } from "@cortexapps/plugin-core/components";
 
 import { useToast } from "@chakra-ui/react";
+
+import { useSonarQubeConfig, useSonarQubeIssues } from "../hooks";
+import SonarQubeCommentModal from "./SonarQubeCommentModal";
 
 import "../baseStyles.css";
 
@@ -34,73 +35,59 @@ interface SonarqubeIssuesProps {
 
 const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
   const toast = useToast();
-  const [baseUrl, setBaseUrl] = useState("");
-  const [hasIssues, setHasIssues] = useState(false);
   const context = usePluginContext();
-
-  const [posts, setPosts] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(
-    context.location === PluginContextLocation.Entity
-  );
 
   const [issueForComment, setIssueForComment] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [commentText, setCommentText] = useState("");
-  const [isCommenting, setIsCommenting] = useState(false);
 
   const project = useMemo((): string => {
     return entityYaml?.info?.["x-cortex-static-analysis"]?.sonarqube?.project;
   }, [entityYaml?.info]);
 
-  useEffect(() => {
-    if (!context?.apiBaseUrl) {
-      return;
-    }
-    const fetchPluginConfig = async (): Promise<void> => {
-      let newBaseUrl = "https://sonarcloud.io";
-      try {
-        const response = await fetch(
-          `${context.apiBaseUrl}/catalog/sonarqube-plugin-config/openapi`
-        );
-        const data = await response.json();
-        newBaseUrl = data.info["x-cortex-definition"]["sonarqube-url"];
-      } catch (e) {}
-      setBaseUrl(newBaseUrl);
-    };
-    void fetchPluginConfig();
-  }, [context?.apiBaseUrl]);
+  const { baseUrl, isLoading: isConfigLoading } = useSonarQubeConfig();
+  const {
+    issues,
+    hasIssues,
+    isLoading: isIssuesLoading,
+  } = useSonarQubeIssues(baseUrl, project);
+
+  const isLoading = isConfigLoading || isIssuesLoading;
 
   const openCommentModal = (issue: string): void => {
     setIssueForComment(issue);
     setIsModalOpen(true);
   };
 
-  const sendComment = useCallback(async () => {
-    const url = `${baseUrl}/api/issues/add_comment`;
+  const sendComment = useCallback(
+    async (commentText: string) => {
+      const url = `${baseUrl}/api/issues/add_comment`;
 
-    const params = new URLSearchParams();
-    params.append("issue", issueForComment as string);
-    params.append("text", commentText);
+      const params = new URLSearchParams();
+      params.append("issue", issueForComment as string);
+      params.append("text", commentText);
 
-    try {
-      setIsCommenting(true);
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: params.toString(),
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Comment added successfully",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: params.toString(),
         });
-      } else {
-        const msg = await getErrorMessageFromResponse(response);
+
+        if (response.ok) {
+          toast({
+            title: "Comment added successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+        } else {
+          const msg: string = await getErrorMessageFromResponse(response);
+          throw new Error(msg);
+        }
+      } catch (err) {
+        const msg: string = err.message || err.toString();
         toast({
           title: `Failed to add comment: ${msg}`,
           status: "error",
@@ -108,61 +95,20 @@ const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
           isClosable: true,
         });
       }
-    } catch (err) {
-      const msg: string = err.toString();
-      toast({
-        title: `Failed to add comment: ${msg}`,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-    setIsCommenting(false);
-  }, [issueForComment, commentText, baseUrl, toast]);
-
-  useEffect(() => {
-    if (!project || !baseUrl) {
-      setIsLoading(false);
-      return;
-    }
-    const fetchData = async (): Promise<void> => {
-      setIsLoading(true);
-      try {
-        const issueUrl: string = `${baseUrl}/api/issues/search?componentKeys=${project}&resolved=false&s=CREATION_DATE&asc=false`;
-
-        const issuesResult = await fetch(issueUrl);
-        const issuesJson = await issuesResult.json();
-        if (
-          issuesJson.issues instanceof Array &&
-          issuesJson.issues.length > 0
-        ) {
-          setHasIssues(true);
-          setPosts(issuesJson.issues);
-        }
-      } catch (err) {
-        const msg: string = err.toString();
-        toast({
-          title: `Failed to fetch issues: ${msg}`,
-          status: "error",
-          duration: null,
-          isClosable: true,
-        });
-      }
-      setIsLoading(false);
-    };
-    void fetchData();
-  }, [entityYaml?.info, baseUrl, project, toast]);
+    },
+    [issueForComment, baseUrl, toast]
+  );
 
   const issuesByKey = useMemo(() => {
-    if (posts && posts instanceof Array && posts.length > 0) {
-      return posts.reduce((acc: Record<string, any>, issue: any) => {
+    if (issues && issues instanceof Array && issues.length > 0) {
+      return issues.reduce((acc: Record<string, any>, issue: any) => {
         const key = issue.key;
         acc[key] = issue;
         return acc;
       }, {});
     }
     return {};
-  }, [posts]);
+  }, [issues]);
 
   const config = {
     columns: [
@@ -258,44 +204,17 @@ const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
 
   return hasIssues ? (
     <>
-      <SimpleTable config={config} items={posts} />
-      <Modal
-        isOpen={isModalOpen}
-        toggleModal={(): void => {
-          setCommentText("");
-          setIsModalOpen((prev) => !prev);
-        }}
-        title="Comment"
-      >
-        {issueForComment && issuesByKey[issueForComment] && (
-          <>
-            <Text>
-              Commenting on issue &nbsp;
-              <i>{issuesByKey[issueForComment].message}</i>
-            </Text>
-            <br />
-            <Input
-              placeholder="Comment"
-              value={commentText}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setCommentText(event.target.value);
-              }}
-            />
-            <br />
-            <Button
-              disabled={!commentText || isCommenting}
-              onClick={(): void => {
-                void sendComment().then(() => {
-                  setCommentText("");
-                  setIsModalOpen(false);
-                });
-              }}
-            >
-              {isCommenting ? "Commenting..." : "Comment"}
-            </Button>
-          </>
-        )}
-      </Modal>
+      {issueForComment && issuesByKey[issueForComment] && (
+        <SonarQubeCommentModal
+          isOpen={isModalOpen}
+          toggleModal={() => {
+            setIsModalOpen((prev) => !prev);
+          }}
+          issue={issuesByKey[issueForComment]}
+          onCommentSubmit={sendComment}
+        />
+      )}
+      <SimpleTable config={config} items={issues} />
     </>
   ) : (
     <Box backgroundColor="light" padding={3} borderRadius={2}>

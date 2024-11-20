@@ -17,7 +17,7 @@ describe("EntityInfo", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText("No SonarQube details were found for this entity")
+        screen.queryByText("No SonarQube details were found for this service")
       ).toBeInTheDocument();
     });
   });

@@ -27,7 +27,7 @@ info:
 This plugin requires a proxy to SonarQube. To set up:
 
 - Create a token in SonarQube by clicking on your profile > My Account > Security
-- In Cortex, define a secret whose value is your new token. Name it `sonarqube_secret`.
+- In Cortex, define a secret whose value is your new token. Name it `sonarqube_plugin`.
 - Create a proxy:
 
   - Navigate to Plugins, then click on the Proxies tab, then click on Create Proxy
