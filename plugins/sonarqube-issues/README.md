@@ -27,13 +27,13 @@ info:
 This plugin requires a proxy to SonarQube. To set up:
 
 - Create a token in SonarQube by clicking on your profile > My Account > Security
-- In Cortex, define a secret whose value is your new token. Name it `sonarqube_secret`.
+- In Cortex, define a secret whose value is your new token. Name it `sonarqube_plugin`.
 - Create a proxy:
 
   - Navigate to Plugins, then click on the Proxies tab, then click on Create Proxy
   - Give the proxy a name, like SonarQube Proxy, then click on Add URL.
   - For the URL Prefix, type in the API base URL of your SonarQube instance. The default for cloud is `https://sonarcloud.io`. **If you are self-hosting SonarQube, you will have to put in your own base URL instead.**
-  - Click on Add Header and add a header whose name is `Authorization` and whose value is `Bearer {{{secrets.sonarqube_secret}}}` (include the curly braces!)
+  - Click on Add Header and add a header whose name is `Authorization` and whose value is `Bearer {{{secrets.sonarqube_plugin}}}` (include the curly braces!)
 
 - Once you are done, the proxy should look like the below:
 
