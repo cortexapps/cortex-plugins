@@ -4,7 +4,7 @@ View SonarQube Issues associated with your services!!
 
 <div align="center"><img src="img/sonarqube-plugin.png" /></div>
 
-The SonarQube Issues plugin shows open SonarQube issues associated with the SonarQube project specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a SonarQube Project defined in its `x-cortex-static-analysis` configuration, it will query for issues pertaining to that project. For example:
+The SonarQube Issues plugin shows open SonarQube issues associated with the SonarQube project specified in the entity's `cortex.yaml`. If the `cortex.yaml` has a [SonarQube Project key](https://docs.cortex.io/docs/reference/integrations/sonarqube#entity-descriptor) defined in its `x-cortex-static-analysis` configuration, it will query for issues pertaining to that project. For example:
 
 ```yaml
 openapi: 3.0.1
