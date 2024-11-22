@@ -6,7 +6,11 @@ import { usePluginContext } from "@cortexapps/plugin-core/components";
 import { Flex, Button, Select } from "@chakra-ui/react";
 import { parseDocument } from "yaml";
 
-import { usePagerDutyServices } from "../hooks";
+import {
+  usePagerDutyServices,
+  useErrorToast,
+  useErrorToastForResponse,
+} from "../hooks";
 
 interface PagerDutyPickerProps {
   entityYaml: Record<string, any>;
@@ -25,7 +29,16 @@ const PagerDutyPicker: React.FC<PagerDutyPickerProps> = ({ changed }) => {
     null as any
   );
 
-  const { services, isLoading } = usePagerDutyServices();
+  const errorToastForResponse = useErrorToastForResponse();
+  const errorToast = useErrorToast();
+
+  const { services, isLoading, errorMessage } = usePagerDutyServices();
+
+  useEffect(() => {
+    if (errorMessage) {
+      console.error(errorMessage);
+    }
+  }, [errorMessage, errorToast]);
 
   const updateEntity = useCallback((): void => {
     const doUpdate = async (): Promise<void> => {
@@ -47,13 +60,19 @@ const PagerDutyPicker: React.FC<PagerDutyPickerProps> = ({ changed }) => {
         body: newDoc.toString(),
       });
       if (!response.ok) {
-        console.error(`HTTP Error ${response.status}: ${response.statusText}`);
+        errorToastForResponse(response);
         return;
       }
       changed();
     };
     void doUpdate();
-  }, [context.apiBaseUrl, fetchedEntityDocument, selectedService, changed]);
+  }, [
+    context.apiBaseUrl,
+    fetchedEntityDocument,
+    selectedService,
+    changed,
+    errorToastForResponse,
+  ]);
 
   useEffect(() => {
     setServiceSelectOptions(
@@ -72,7 +91,7 @@ const PagerDutyPicker: React.FC<PagerDutyPickerProps> = ({ changed }) => {
       const url = `${context.apiBaseUrl}/catalog/${entityTag}/openapi?yaml=true`;
       const response = await fetch(url);
       if (!response.ok) {
-        console.error(`HTTP Error ${response.status}: ${response.statusText}`);
+        errorToastForResponse(response);
         return;
       }
       const data = await response.text();
@@ -80,7 +99,13 @@ const PagerDutyPicker: React.FC<PagerDutyPickerProps> = ({ changed }) => {
       setFetchedEntityDocument(doc);
     };
     void fetchEntity();
-  }, [selectedService, context.apiBaseUrl, entityTag]);
+  }, [
+    selectedService,
+    context.apiBaseUrl,
+    entityTag,
+    errorToast,
+    errorToastForResponse,
+  ]);
 
   const handleSelectChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>): void => {

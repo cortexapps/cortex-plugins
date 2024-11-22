@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useToast } from "@chakra-ui/react";
+import { cortexResponseError } from "./util";
 
 export interface UsePagerDutyServicesReturn {
   services: Array<Record<string, any>>;
@@ -24,10 +26,51 @@ export interface UsePagerDutyOnCallsReturn {
   errorMessage: string;
 }
 
+interface ErrorToastProps {
+  title?: string;
+  message?: string;
+}
+
+export const useErrorToast = (): ((props: ErrorToastProps) => void) => {
+  const toast = useToast();
+  const errorToast = useCallback(
+    ({ title = "Error", message = "An error occurred" }: ErrorToastProps) => {
+      toast({
+        title,
+        description: message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+    [toast]
+  );
+
+  return errorToast;
+};
+
+export const useErrorToastForResponse = (): ((response: Response) => void) => {
+  const errorToast = useErrorToast();
+  const errorToastForResponse = useCallback(
+    (response: Response) => {
+      const { status, message } = cortexResponseError(response);
+      errorToast({
+        title: `HTTP Error ${status}`,
+        message,
+      });
+    },
+    [errorToast]
+  );
+
+  return errorToastForResponse;
+};
+
 export const usePagerDutyServices = (): UsePagerDutyServicesReturn => {
   const [services, setServices] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const errorToastForResponse = useErrorToastForResponse();
 
   useEffect(() => {
     const fetchServices = async (): Promise<void> => {
@@ -48,9 +91,8 @@ export const usePagerDutyServices = (): UsePagerDutyServicesReturn => {
           });
 
           if (!response.ok) {
-            throw new Error(
-              `HTTP Error ${response.status}: ${response.statusText}`
-            );
+            errorToastForResponse(response);
+            throw new Error(`HTTP Error ${response.status}`);
           }
 
           const data = await response.json();
@@ -69,7 +111,7 @@ export const usePagerDutyServices = (): UsePagerDutyServicesReturn => {
     };
 
     void fetchServices();
-  }, []);
+  }, [errorToastForResponse]);
 
   return { services, isLoading, errorMessage };
 };
@@ -81,6 +123,8 @@ export const usePagerDutyService = (
   const [service, setService] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const errorToastForResponse = useErrorToastForResponse();
 
   useEffect(() => {
     const fetchService = async (): Promise<void> => {
@@ -104,6 +148,7 @@ export const usePagerDutyService = (
         });
 
         if (!response.ok) {
+          errorToastForResponse(response);
           throw new Error(
             `HTTP Error ${response.status}: ${response.statusText}`
           );
@@ -124,7 +169,7 @@ export const usePagerDutyService = (
     };
 
     void fetchService();
-  }, [pdId, pdType]);
+  }, [pdId, pdType, errorToastForResponse]);
 
   return { service, isLoading, errorMessage };
 };
@@ -136,6 +181,8 @@ export const usePagerDutyIncidents = (
   const [incidents, setIncidents] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const errorToastForResponse = useErrorToastForResponse();
 
   useEffect(() => {
     if (!pdId || pdType !== "SERVICE") return;
@@ -161,6 +208,7 @@ export const usePagerDutyIncidents = (
         });
 
         if (!response.ok) {
+          errorToastForResponse(response);
           throw new Error(
             `HTTP Error ${response.status}: ${response.statusText}`
           );
@@ -181,7 +229,7 @@ export const usePagerDutyIncidents = (
     };
 
     void fetchIncidents();
-  }, [pdId, pdType]);
+  }, [pdId, pdType, errorToastForResponse]);
 
   return { incidents, isLoading, errorMessage };
 };
@@ -192,6 +240,8 @@ export const usePagerDutyOnCalls = (
   const [oncalls, setOncalls] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const errorToastForResponse = useErrorToastForResponse();
 
   useEffect(() => {
     if (!service) return;
@@ -212,6 +262,7 @@ export const usePagerDutyOnCalls = (
         });
 
         if (!response.ok) {
+          errorToastForResponse(response);
           throw new Error(
             `HTTP Error ${response.status}: ${response.statusText}`
           );
@@ -232,7 +283,7 @@ export const usePagerDutyOnCalls = (
     };
 
     void fetchOnCalls();
-  }, [service]);
+  }, [service, errorToastForResponse]);
 
   return { oncalls, isLoading, errorMessage };
 };

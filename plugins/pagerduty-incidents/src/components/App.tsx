@@ -9,7 +9,7 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <PluginProvider>
-        <ChakraProvider>
+        <ChakraProvider toastOptions={{ defaultOptions: { position: "top" } }}>
           <PagerDutyPlugin />
         </ChakraProvider>
       </PluginProvider>
