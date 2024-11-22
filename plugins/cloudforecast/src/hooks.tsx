@@ -10,7 +10,7 @@ export interface UseCloudForecastPluginConfig {
   cloudForecastDataKey: string;
 }
 
-export const useCloudForecacstPluginConfig =
+export const useCloudForecastPluginConfig =
   (): UseCloudForecastPluginConfig => {
     const { apiBaseUrl } = usePluginContext();
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -62,7 +62,7 @@ export const useEntityCloudForecastData =
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const { isLoading: isCloudForecastDataKeyLoading, cloudForecastDataKey } =
-      useCloudForecacstPluginConfig();
+      useCloudForecastPluginConfig();
     const [cloudForecastData, setCloudForecastData] = useState<
       CloudForecastData | undefined
     >(undefined);
