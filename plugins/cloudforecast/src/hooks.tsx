@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { usePluginContext } from "@cortexapps/plugin-core/components";
 import {
   type CloudForecastData,
-  isCloudForecastData,
+  // isCloudForecastData,
 } from "./cloudForecastSchema";
 
 export interface UseCloudForecastPluginConfig {
@@ -92,9 +92,9 @@ export const useEntityCloudForecastData =
           if (!cloudforecast) {
             throw new Error("Data not found");
           }
-          if (!isCloudForecastData(cloudforecast)) {
-            throw new Error("Invalid data format");
-          }
+          // if (!isCloudForecastData(cloudforecast)) {
+          //   throw new Error("Invalid data format");
+          // }
           setCloudForecastData(cloudforecast);
         } catch (e) {
           setError(e.message);
