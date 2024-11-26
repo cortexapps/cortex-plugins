@@ -10,16 +10,38 @@ import {
   usePluginContext,
 } from "@cortexapps/plugin-core/components";
 
-import { Text } from "@chakra-ui/react";
+import { Text, useDisclosure } from "@chakra-ui/react";
 
 import PagerDutyIncidents from "./PagerDutyIncidents";
 import PagerDutyPicker from "./PagerDutyPicker";
+import InstructionsModal from "./InstructionsModal";
 
 const PagerDutyPlugin: React.FC = () => {
   const context = usePluginContext();
   const [entityYaml, setEntityYaml] = useState<
     Record<string, any> | undefined
   >();
+
+  const {
+    isOpen: isInstuctionsModalOpen,
+    onOpen: onInstructionsModalOpen,
+    onClose: onInstructionsModalClose,
+  } = useDisclosure();
+
+  useEffect(() => {
+    // checks if instructions modal is needed
+    const checkPagerDutyToken = async (): Promise<void> => {
+      try {
+        const response = await fetch(`https://api.pagerduty.com/abilities`);
+
+        if (response.status === 401) {
+          onInstructionsModalOpen();
+        }
+        // const data = await response.json();
+      } catch (e) {}
+    };
+    void checkPagerDutyToken();
+  }, []);
 
   const [hasGitops, setHasGitops] = useState<boolean | null>(null);
   useEffect(() => {
@@ -104,6 +126,10 @@ const PagerDutyPlugin: React.FC = () => {
           </Box>
         </Stack>
       )}
+      <InstructionsModal
+        isOpen={isInstuctionsModalOpen}
+        onClose={onInstructionsModalClose}
+      />
     </div>
   );
 };
