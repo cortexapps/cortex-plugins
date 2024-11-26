@@ -46,22 +46,11 @@ export interface CloudForecastRecentAlert {
 export const isCloudForecastData = (data: any): data is CloudForecastData => {
   const isString = (value: any): boolean => typeof value === "string";
   const isNumber = (value: any): boolean => typeof value === "number";
-  const isISODateString = (value: any): boolean =>
-    isString(value) && !isNaN(Date.parse(value));
-  const isYYYYMMDD = (value: any): boolean =>
-    isString(value) && /^\d{4}-\d{2}-\d{2}$/.test(value);
-  const isYYYYMM = (value: any): boolean =>
-    isString(value) && /^\d{4}-\d{2}$/.test(value);
-  const isStatus = (value: any): boolean =>
-    value === "cloudy" || value === "stormy";
-
-  const isCloudForecastLinks = (links: any): links is CloudForecastLinks =>
-    links && isString(links.mostRecentReportDeepLink);
 
   const isCloudForecastDayMetrics = (
     metrics: any
   ): metrics is CloudForecastDayMetrics =>
-    metrics && isNumber(metrics.cost) && isYYYYMMDD(metrics.dayAsStr);
+    metrics && isNumber(metrics.cost) && isString(metrics.dayAsStr);
 
   const isCloudForecastDailyMetrics = (
     metrics: any
@@ -77,7 +66,7 @@ export const isCloudForecastData = (data: any): data is CloudForecastData => {
   const isCloudForecastMonthMetrics = (
     metrics: any
   ): metrics is CloudForecastMonthMetrics =>
-    metrics && isNumber(metrics.cost) && isYYYYMM(metrics.monthAsStr);
+    metrics && isNumber(metrics.cost) && isString(metrics.monthAsStr);
 
   const isCloudForecastMonthlyMetrics = (
     metrics: any
@@ -93,19 +82,18 @@ export const isCloudForecastData = (data: any): data is CloudForecastData => {
     alert: any
   ): alert is CloudForecastRecentAlert =>
     alert &&
-    (alert.report_date === undefined || isYYYYMMDD(alert.report_date)) &&
+    (alert.report_date === undefined || isString(alert.report_date)) &&
     (alert.description === undefined || isString(alert.description)) &&
     (alert.whyDeepLink === undefined || isString(alert.whyDeepLink)) &&
-    (alert.status === undefined || isStatus(alert.status));
+    (alert.status === undefined || isString(alert.status));
 
   return (
     typeof data === "object" &&
     data !== null &&
     isString(data.entityTag) &&
-    isISODateString(data.generatedAt) &&
+    isString(data.generatedAt) &&
     (data.dataFormatVersion === undefined ||
       isString(data.dataFormatVersion)) &&
-    isCloudForecastLinks(data.links) &&
     isCloudForecastDailyMetrics(data.dailyMetrics) &&
     isCloudForecastMonthlyMetrics(data.monthlyMetrics) &&
     (data.recentAlerts === undefined ||
