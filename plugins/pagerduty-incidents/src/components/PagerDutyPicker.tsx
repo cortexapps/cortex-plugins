@@ -8,9 +8,12 @@ import { parseDocument } from "yaml";
 
 import {
   usePagerDutyServices,
+} from "../hooks/pagerDutyHooks";
+
+import {
   useErrorToast,
   useErrorToastForResponse,
-} from "../hooks";
+} from "../hooks/uiHooks";
 
 interface PagerDutyPickerProps {
   entityYaml: Record<string, any>;

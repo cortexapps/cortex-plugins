@@ -1,7 +1,7 @@
 import type React from "react";
+import { useState, useEffect } from "react";
 
 import {
-  Text,
   Box,
   Modal,
   ModalOverlay,
@@ -11,12 +11,12 @@ import {
   Button,
   FormControl,
   FormLabel,
-  FormHelperText,
   Input,
   FormErrorMessage,
   Flex,
 } from "@chakra-ui/react";
-import { useState } from "react";
+
+import { isPagerDutyTokenValid } from "../hooks/pagerDutyHooks";
 
 interface InstructionsProps {
   isOpen: boolean;
@@ -28,14 +28,23 @@ const InstructionsModal: React.FC<InstructionsProps> = ({
   onClose,
 }) => {
   const [tokenInput, setTokenInput] = useState("");
-  const [isError, setIsError] = useState(false);
-  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+  const [debouncedTokenInput, setDebouncedTokenInput] = useState("");
+
+  const tokenIsValid = isPagerDutyTokenValid(debouncedTokenInput);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setTokenInput(e.target.value);
-    setIsSubmitDisabled(false); // todo: validate token before enabling submit
-    setIsError(false); // todo: if token is invalid, set isError to true
   };
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedTokenInput(tokenInput);
+    }, 100);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [tokenInput]);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     // todo: handle form submit here
@@ -52,19 +61,12 @@ const InstructionsModal: React.FC<InstructionsProps> = ({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Instructions</ModalHeader>
+        <ModalHeader>Configure Plugin Proxy</ModalHeader>
         <ModalBody>
           <Box backgroundColor="light" margin={2} padding={4} borderRadius={2}>
-            <Text>
-              This plugin makes it possible to view PagerDuty incidents.
-            </Text>
-            <Text>
-              To get started, please add your PagerDuty REST API token:
-            </Text>
-
             <Box>
               <form onSubmit={handleFormSubmit}>
-                <FormControl isInvalid={isError}>
+                <FormControl isInvalid={!tokenIsValid}>
                   <FormLabel>PagerDuty REST API Token</FormLabel>
                   <Input
                     type="text"
@@ -72,12 +74,7 @@ const InstructionsModal: React.FC<InstructionsProps> = ({
                     value={tokenInput}
                     onChange={handleInputChange}
                   />
-                  {!isError ? (
-                    <FormHelperText>
-                      You can generate REST API Token from your PagerDuty
-                      dashboard.
-                    </FormHelperText>
-                  ) : (
+                  {!tokenIsValid && (
                     <FormErrorMessage>
                       Please enter a valid token.
                     </FormErrorMessage>
@@ -87,7 +84,7 @@ const InstructionsModal: React.FC<InstructionsProps> = ({
                   <Button
                     type="submit"
                     colorScheme="purple"
-                    disabled={isSubmitDisabled}
+                    isDisabled={!tokenIsValid}
                   >
                     Submit
                   </Button>

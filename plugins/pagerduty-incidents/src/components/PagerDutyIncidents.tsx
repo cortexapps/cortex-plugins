@@ -8,7 +8,7 @@ import {
   usePagerDutyService,
   usePagerDutyIncidents,
   usePagerDutyOnCalls,
-} from "../hooks";
+} from "../hooks/pagerDutyHooks";
 import OnCallBadges from "./OnCallBadges";
 import "../baseStyles.css";
 

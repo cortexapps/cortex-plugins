@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { useToast } from "@chakra-ui/react";
-import { cortexResponseError } from "./util";
+import { useState, useEffect } from "react";
+import { useErrorToastForResponse } from "./uiHooks";
 
 export interface UsePagerDutyServicesReturn {
   services: Array<Record<string, any>>;
@@ -26,44 +25,62 @@ export interface UsePagerDutyOnCallsReturn {
   errorMessage: string;
 }
 
-interface ErrorToastProps {
-  title?: string;
-  message?: string;
+export const isPagerDutyTokenValid = (token: string): boolean => {
+  const [isValid, setIsValid] = useState(false);
+
+  useEffect(() => {
+    if (!token) {
+      setIsValid(false);
+      return;
+    }
+
+    const checkPagerDutyAbilities = async (): Promise<void> => {
+      try {
+        const response = await fetch(`https://api.pagerduty.com/abilities`, {
+          headers: {
+            Authorization: `Token token=${token}`,
+          },
+        });
+
+        if (response.ok) {
+          setIsValid(true);
+        } else {
+          setIsValid(false);
+        }
+      } catch (e) {
+        setIsValid(false);
+      }
+    };
+
+    void checkPagerDutyAbilities();
+  }, [token]);
+
+  return isValid;
 }
 
-export const useErrorToast = (): ((props: ErrorToastProps) => void) => {
-  const toast = useToast();
-  const errorToast = useCallback(
-    ({ title = "Error", message = "An error occurred" }: ErrorToastProps) => {
-      toast({
-        title,
-        description: message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    },
-    [toast]
-  );
+export const isPagerDutyConfigured = (): boolean | null => {
+  const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
 
-  return errorToast;
-};
+  useEffect(() => {
+    const checkPagerDutyAbilities = async (): Promise<void> => {
+      try {
+        const response = await fetch(`https://api.pagerduty.com/abilities`);
 
-export const useErrorToastForResponse = (): ((response: Response) => void) => {
-  const errorToast = useErrorToast();
-  const errorToastForResponse = useCallback(
-    (response: Response) => {
-      const { status, message } = cortexResponseError(response);
-      errorToast({
-        title: `HTTP Error ${status}`,
-        message,
-      });
-    },
-    [errorToast]
-  );
+        if (response.ok) {
+          setIsConfigured(true);
+        } else {
+          setIsConfigured(false);
+        }
+      } catch (e) {
+        setIsConfigured(false);
+      }
+    };
 
-  return errorToastForResponse;
-};
+    void checkPagerDutyAbilities();
+  }, []);
+
+  return isConfigured;
+}
 
 export const usePagerDutyServices = (): UsePagerDutyServicesReturn => {
   const [services, setServices] = useState<any[]>([]);
