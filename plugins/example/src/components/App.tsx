@@ -8,8 +8,11 @@ import {
 import "../baseStyles.css";
 import ErrorBoundary from "./ErrorBoundary";
 import PluginContext from "./PluginContext";
+import { useExample } from "@cortex-plugins/hooks";
 
 const App: React.FC = () => {
+  const example = useExample();
+  console.warn(example);
   return (
     <ErrorBoundary>
       <PluginProvider>
