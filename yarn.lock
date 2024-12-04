@@ -1227,9 +1227,6 @@
     "@types/lodash.mergewith" "4.6.9"
     lodash.mergewith "4.6.2"
 
-"@cortex-plugins/hooks@file:./common/hooks":
-  version "0.0.0"
-
 "@cortexapps/plugin-core@^2.0.0":
   version "2.1.2"
   resolved "https://registry.npmjs.org/@cortexapps/plugin-core/-/plugin-core-2.1.2.tgz"

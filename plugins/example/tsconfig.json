@@ -11,6 +11,9 @@
     "removeComments": true,
     "strictNullChecks": true,
     "target": "es6",
-    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
+    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"],
+    "paths": {
+      "@shared/*": ["../../shared/*"] // Alias pointing to the shared code
+    }
   }
 }

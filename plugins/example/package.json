@@ -6,8 +6,7 @@
     "@cortexapps/plugin-core": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "reactstrap": "9.1.9",
-    "@cortex-plugins/hooks": "file:./../../common/hooks"
+    "reactstrap": "9.1.9"
   },
   "devDependencies": {
     "@babel/core": "^7.21.3",
