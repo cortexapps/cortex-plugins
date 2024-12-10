@@ -1,0 +1,12 @@
+# OSX
+*.DS_Store
+
+# IDEs
+.idea
+*.iml
+.vscode
+
+# This project
+node_modules/
+dist/
+yarn-error.log
