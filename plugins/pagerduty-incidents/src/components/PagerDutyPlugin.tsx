@@ -13,7 +13,7 @@ import {
 
 import { Text } from "@chakra-ui/react";
 
-import { isPagerDutyConfigured } from "../hooks/pagerDutyHooks";
+import { useIsPagerDutyConfigured } from "../hooks/pagerDutyHooks";
 
 import PagerDutyIncidents from "./PagerDutyIncidents";
 import PagerDutyPicker from "./PagerDutyPicker";
@@ -25,7 +25,7 @@ const PagerDutyPlugin: React.FC = () => {
     Record<string, any> | undefined
   >();
 
-  const isConfigured = isPagerDutyConfigured();
+  const isConfigured = useIsPagerDutyConfigured();
 
   const [hasGitops, setHasGitops] = useState<boolean | null>(null);
   useEffect(() => {
@@ -72,7 +72,7 @@ const PagerDutyPlugin: React.FC = () => {
     return <Loader />;
   }
 
-  if (isConfigured === false) {
+  if (!isConfigured) {
     return <Instructions />;
   }
 

@@ -25,7 +25,7 @@ export interface UsePagerDutyOnCallsReturn {
   errorMessage: string;
 }
 
-export const isPagerDutyTokenValid = (token: string): boolean => {
+export const useIsPagerDutyTokenValid = (token: string): boolean => {
   const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
@@ -56,9 +56,9 @@ export const isPagerDutyTokenValid = (token: string): boolean => {
   }, [token]);
 
   return isValid;
-}
+};
 
-export const isPagerDutyConfigured = (): boolean | null => {
+export const useIsPagerDutyConfigured = (): boolean | null => {
   const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export const isPagerDutyConfigured = (): boolean | null => {
   }, []);
 
   return isConfigured;
-}
+};
 
 export const usePagerDutyServices = (): UsePagerDutyServicesReturn => {
   const [services, setServices] = useState<any[]>([]);

@@ -47,9 +47,7 @@ describe("App", () => {
     const { getByText } = render(<App />);
 
     await waitFor(() => {
-      const element = getByText(
-        /This entity is not associated with any PagerDuty service./
-      );
+      const element = getByText(/Configure PagerDuty Incidents Plugin/);
       expect(element).toBeInTheDocument();
       expect(fetch).toHaveBeenCalledWith(
         expect.stringMatching(
