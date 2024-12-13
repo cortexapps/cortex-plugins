@@ -20,17 +20,73 @@ interface LayoutBuilderProps {
   toggleEditor: () => void;
   infoRows: InfoRowI[];
   setInfoRows: React.Dispatch<React.SetStateAction<InfoRowI[]>>;
-  infoCards: InfoCardI[];
-  setInfoCards: React.Dispatch<React.SetStateAction<InfoCardI[]>>;
 }
 
-const LayoutBuilder = ({
+const moveCard = (data: InfoRowI[], activeId, overId): InfoRowI[] => {
+  let activeCard: InfoCardI | null = null;
+  let activeRowIndex = -1;
+  let activeCardIndex = -1;
+  let overRowIndex = -1;
+  let overCardIndex = -1;
+
+  // Find the active card and its source row
+  for (let i = 0; i < data.length; i++) {
+    const row = data[i];
+    const cardIndex = row.cards.findIndex((card) => card.id === activeId);
+    if (cardIndex !== -1) {
+      activeRowIndex = i;
+      activeCardIndex = cardIndex;
+      activeCard = row.cards[cardIndex];
+      break;
+    }
+  }
+
+  if (!activeCard) {
+    throw new Error("Active card not found");
+  }
+
+  // Remove the active card from its current position
+  data[activeRowIndex].cards.splice(activeCardIndex, 1);
+
+  // Find the over card and its target row
+  for (let i = 0; i < data.length; i++) {
+    const row = data[i];
+    const cardIndex = row.cards.findIndex((card) => card.id === overId);
+    if (cardIndex !== -1) {
+      overRowIndex = i;
+      overCardIndex = cardIndex;
+      break;
+    }
+  }
+
+  if (overRowIndex === -1 || overCardIndex === -1) {
+    // overId is not a card, so it must be a row
+    // Find the row with the overId
+    const overRow = data.find((row) => row.id === overId);
+    if (overRow) {
+      overRowIndex = data.indexOf(overRow);
+      overCardIndex = 0; // Insert at the beginning of the row
+    } else {
+      // error, so put the card back in its original position
+      data[activeRowIndex].cards.splice(activeCardIndex, 0, activeCard);
+      throw new Error("Over row not found");
+    }
+  }
+
+  // Insert the active card into the target row before the over card
+  data[overRowIndex].cards.splice(overCardIndex, 0, activeCard);
+
+  // Update the active card's rowId if it has moved to a new row
+  activeCard.rowId = data[overRowIndex].id;
+
+  return data;
+};
+
+const LayoutBuilder: React.FC<LayoutBuilderProps> = ({
   toggleEditor,
   infoRows,
   setInfoRows,
-  infoCards,
-  setInfoCards,
-}: LayoutBuilderProps): JSX.Element => {
+}): JSX.Element => {
   const {
     isOpen: isPreviewOpen,
     onOpen: onPreviewOpen,
@@ -55,20 +111,15 @@ const LayoutBuilder = ({
   );
 
   const saveLayout = (): void => {
-    const layout = JSON.stringify(infoRows, null, 2);
-    console.warn(layout);
-    // const blob = new Blob([layout], { type: "application/json" });
-    // const url = URL.createObjectURL(blob);
-    // const a = document.createElement("a");
-    // a.href = url;
-    // a.download = "layout.json";
-    // a.click();
-    // URL.revokeObjectURL(url);
+    // TODO: Save the layout to an entity
+    // eslint-disable-next-line no-console
+    console.log(infoRows);
   };
 
   function addInfoRow(): void {
     const infoRowToAdd = {
       id: new Date().getTime(),
+      cards: [],
     };
     setInfoRows([...infoRows, infoRowToAdd]);
   }
@@ -83,8 +134,8 @@ const LayoutBuilder = ({
 
     if (activeId === overId) return;
 
-    const isActiveAInfoRow = active.data.current?.type === "InfoRow";
-    if (!isActiveAInfoRow) return;
+    const isActiveAnInfoRow = active.data.current?.type === "InfoRow";
+    if (!isActiveAnInfoRow) return;
 
     setInfoRows((infoRows) => {
       const activeInfoRowIndex = infoRows.findIndex(
@@ -109,49 +160,13 @@ const LayoutBuilder = ({
 
     if (activeId === overId) return;
 
-    const isActiveAInfoCard = active.data.current?.type === "InfoCard";
-    const isOverAInfoCard = over.data.current?.type === "InfoCard";
+    const isActiveAnInfoCard = active.data.current?.type === "InfoCard";
 
-    if (!isActiveAInfoCard) return;
+    if (!isActiveAnInfoCard) return;
 
-    if (isActiveAInfoCard && isOverAInfoCard) {
-      if (
-        infoCards.filter(
-          (card) => card.rowId === over.data.current?.infoCard.rowId
-        ).length >= maxCardsPerRow
-      ) {
-        return;
-      }
-      setInfoCards((cards) => {
-        const activeIndex = cards.findIndex((t) => t.id === activeId);
-        const overIndex = cards.findIndex((t) => t.id === overId);
-
-        if (cards[activeIndex].rowId !== cards[overIndex].rowId) {
-          cards[activeIndex].rowId = cards[overIndex].rowId;
-          return arrayMove(cards, activeIndex, overIndex - 1);
-        }
-
-        return arrayMove(cards, activeIndex, overIndex);
-      });
-    }
-
-    const isOverAInfoRow = over.data.current?.type === "InfoRow";
-
-    if (isActiveAInfoCard && isOverAInfoRow) {
-      if (
-        active.data.current?.infoCard.rowId !== overId &&
-        infoCards.filter((card) => card.rowId === overId).length >=
-          maxCardsPerRow
-      ) {
-        return;
-      }
-
-      setInfoCards((cards) => {
-        const activeIndex = cards.findIndex((t) => t.id === activeId);
-        cards[activeIndex].rowId = overId as number;
-        return arrayMove(cards, activeIndex, activeIndex);
-      });
-    }
+    setInfoRows((infoRows) => {
+      return moveCard(infoRows, activeId as string, overId as string);
+    });
   }
 
   return (
@@ -164,10 +179,7 @@ const LayoutBuilder = ({
         onDragEnd={onDragEnd}
         onDragOver={onDragOver}
       >
-        <SortableContext
-          items={infoRowsId}
-          // strategy={verticalListSortingStrategy}
-        >
+        <SortableContext items={infoRowsId}>
           {infoRows.length === 0 && (
             <Box
               h={50}
@@ -189,8 +201,6 @@ const LayoutBuilder = ({
               infoRow={row}
               infoRows={infoRows}
               setInfoRows={setInfoRows}
-              infoCards={infoCards}
-              setInfoCards={setInfoCards}
               maxCardsPerRow={maxCardsPerRow}
             />
           ))}
@@ -232,7 +242,7 @@ const LayoutBuilder = ({
         </Button>
         <Button
           onClick={saveLayout}
-          disabled={infoRows.length === 0 || infoCards.length === 0}
+          disabled={infoRows.length === 0}
           variant={"solid"}
           colorScheme={"green"}
           leftIcon={<PiFloppyDisk />}
@@ -242,7 +252,6 @@ const LayoutBuilder = ({
       </Box>
       <PreviewModal
         infoRows={infoRows}
-        infoCards={infoCards}
         isOpen={isPreviewOpen}
         onClose={onPreviewClose}
         handleAction={saveLayout}

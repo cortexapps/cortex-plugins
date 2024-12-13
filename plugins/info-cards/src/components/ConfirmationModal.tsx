@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import {
   Button,
   Modal,
@@ -20,7 +20,7 @@ interface DeleteInfoRowConfirmationModalProps extends React.PropsWithChildren {
   actionButtonColorScheme?: string;
 }
 
-export default function ConfirmationModal({
+const ConfirmationModal: React.FC<DeleteInfoRowConfirmationModalProps> = ({
   isOpen,
   onClose,
   handleAction,
@@ -28,7 +28,7 @@ export default function ConfirmationModal({
   title = "Confirmation Required",
   actionButtonColorScheme = "purple",
   children,
-}: DeleteInfoRowConfirmationModalProps) {
+}) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"xs"}>
       <ModalOverlay />
@@ -49,4 +49,6 @@ export default function ConfirmationModal({
       </ModalContent>
     </Modal>
   );
-}
+};
+
+export default ConfirmationModal;

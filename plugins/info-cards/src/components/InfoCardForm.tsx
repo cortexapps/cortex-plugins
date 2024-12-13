@@ -1,4 +1,4 @@
-import type { InfoCardI } from "../typings";
+import type { InfoCardI, InfoRowI } from "../typings";
 import {
   Box,
   FormControl,
@@ -15,12 +15,12 @@ interface ContentTypesSelectItemI {
 
 interface InfoCardFormProps {
   infoCard: InfoCardI;
-  setInfoCards?: React.Dispatch<React.SetStateAction<InfoCardI[]>>;
+  setInfoRows?: React.Dispatch<React.SetStateAction<InfoRowI[]>>;
 }
 
 export default function InfoCardForm({
   infoCard,
-  setInfoCards,
+  setInfoRows,
 }: InfoCardFormProps): JSX.Element {
   const contentTypes: ContentTypesSelectItemI[] = [
     { label: "IFrame URL", value: "IFrameURL" },
@@ -28,16 +28,21 @@ export default function InfoCardForm({
   ];
 
   const handleChange = (field: keyof InfoCardI, value: string): void => {
-    if (!setInfoCards) return;
-    setInfoCards((infoCards) => {
-      return infoCards.map((ic) => {
-        if (infoCard.id === ic.id) {
-          return {
-            ...ic,
-            [field]: value,
-          };
-        }
-        return ic;
+    if (!setInfoRows) return;
+    setInfoRows((infoRows) => {
+      return infoRows.map((ir) => {
+        return {
+          ...ir,
+          cards: ir.cards.map((ic) => {
+            if (infoCard.id === ic.id) {
+              return {
+                ...ic,
+                [field]: value,
+              };
+            }
+            return ic;
+          }),
+        };
       });
     });
   };
