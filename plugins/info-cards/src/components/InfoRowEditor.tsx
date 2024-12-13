@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import type { InfoRowI, InfoCardI } from "../typings";
+// import { useMemo } from "react";
+import type { InfoRowI } from "../typings";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Box, Button, Text, useDisclosure } from "@chakra-ui/react";
@@ -11,17 +11,13 @@ interface InfoRowComponentProps {
   infoRow: InfoRowI;
   infoRows?: InfoRowI[];
   setInfoRows?: React.Dispatch<React.SetStateAction<InfoRowI[]>>;
-  infoCards: InfoCardI[];
-  setInfoCards?: React.Dispatch<React.SetStateAction<InfoCardI[]>>;
   maxCardsPerRow: number;
 }
 
 const InfoRowComponent: React.FC<InfoRowComponentProps> = ({
   infoRow,
   infoRows,
-  infoCards,
   setInfoRows,
-  setInfoCards,
   maxCardsPerRow,
 }) => {
   const { setNodeRef, attributes, listeners, transform, transition } =
@@ -36,30 +32,29 @@ const InfoRowComponent: React.FC<InfoRowComponentProps> = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const deleteInfoRow = (infoRowId: number): void => {
-    if (!setInfoRows || !setInfoCards) return;
+    if (!setInfoRows) return;
     setInfoRows(infoRows?.filter((row) => row.id !== infoRowId) ?? []);
-    setInfoCards(infoCards?.filter((card) => card.rowId !== infoRowId) ?? []);
   };
 
-  // Got the tasks for the current column
-  const infoCardIds = useMemo(() => {
-    return infoCards.map((card) => card.id);
-  }, [infoCards]);
-
-  // Calculated the number of tasks in the column
-  const infoCardCount = useMemo((): number => {
-    return infoCards.filter((card) => card.rowId === infoRow.id).length;
-  }, [infoCards, infoRow.id]);
-
   const addInfoCard = (infoRowId: number): void => {
-    if (!setInfoCards) return;
+    if (!setInfoRows) return;
     const infoCardToAdd = {
       id: new Date().getTime(),
       rowId: infoRowId,
       title: "",
       contentType: "",
     };
-    setInfoCards([...infoCards, infoCardToAdd]);
+    setInfoRows(
+      infoRows?.map((row) => {
+        if (row.id === infoRowId) {
+          return {
+            ...row,
+            cards: [...row.cards, infoCardToAdd],
+          };
+        }
+        return row;
+      }) ?? []
+    );
   };
 
   return (
@@ -99,8 +94,7 @@ const InfoRowComponent: React.FC<InfoRowComponentProps> = ({
         alignItems={"center"}
       >
         <Text fontSize={"sm"} mt={1}>
-          Cards {infoCards.filter((card) => card.rowId === infoRow.id).length}/
-          {maxCardsPerRow}
+          Cards {infoRow.cards.length}/{maxCardsPerRow}
         </Text>
         <Button onClick={onOpen} variant={"plain"} size={"sm"} color={"red"}>
           <PiTrash />
@@ -109,23 +103,21 @@ const InfoRowComponent: React.FC<InfoRowComponentProps> = ({
 
       <Box w={"full"} overflowX={"auto"} maxW={"full"}>
         <Box display={"flex"} flexDirection={"row"} gap={4} w={"full"}>
-          <SortableContext items={infoCardIds}>
-            {infoCards
-              .filter((card) => card.rowId === infoRow.id)
-              .map((card) => (
-                <InfoCardEditor
-                  key={card.id}
-                  infoCard={card}
-                  setInfoCards={setInfoCards}
-                />
-              ))}
+          <SortableContext items={infoRow.cards.map((card) => card.id)}>
+            {infoRow.cards.map((card) => (
+              <InfoCardEditor
+                key={card.id}
+                infoCard={card}
+                setInfoRows={setInfoRows}
+              />
+            ))}
           </SortableContext>
-          {infoCardCount < maxCardsPerRow && (
+          {infoRow.cards.length < maxCardsPerRow && (
             <Button
               onClick={() => {
                 addInfoCard(infoRow.id);
               }}
-              disabled={infoCardCount >= maxCardsPerRow}
+              disabled={infoRow.cards.length >= maxCardsPerRow}
               flexDirection={"column"}
               justifyContent={"center"}
               alignItems={"center"}

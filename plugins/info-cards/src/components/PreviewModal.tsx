@@ -9,7 +9,7 @@ import {
   ModalCloseButton,
   Heading,
 } from "@chakra-ui/react";
-import type { InfoCardI, InfoRowI } from "../typings";
+import type { InfoRowI } from "../typings";
 import { PiX, PiFloppyDisk } from "react-icons/pi";
 import InfoLayout from "./InfoLayout";
 
@@ -18,7 +18,6 @@ interface PreviewModalProps {
   onClose: () => void;
   handleAction: () => void;
   infoRows: InfoRowI[];
-  infoCards: InfoCardI[];
 }
 
 export default function PreviewModal({
@@ -26,7 +25,6 @@ export default function PreviewModal({
   onClose,
   handleAction,
   infoRows,
-  infoCards,
 }: PreviewModalProps): JSX.Element {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"full"}>
@@ -37,7 +35,7 @@ export default function PreviewModal({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <InfoLayout infoRows={infoRows} infoCards={infoCards} />
+          <InfoLayout infoRows={infoRows} />
         </ModalBody>
         <ModalFooter>
           <Button variant="outline" mr={3} onClick={onClose} leftIcon={<PiX />}>

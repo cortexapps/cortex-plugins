@@ -1,4 +1,4 @@
-import type { InfoCardI } from "../typings";
+import type { InfoCardI, InfoRowI } from "../typings";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { PiDotsSixVertical, PiTrash } from "react-icons/pi";
@@ -8,12 +8,12 @@ import InfoCardForm from "./InfoCardForm";
 
 interface InfoCardEditorProps {
   infoCard: InfoCardI;
-  setInfoCards?: React.Dispatch<React.SetStateAction<InfoCardI[]>>;
+  setInfoRows?: React.Dispatch<React.SetStateAction<InfoRowI[]>>;
 }
 
 const InfoCardEditor: React.FC<InfoCardEditorProps> = ({
   infoCard,
-  setInfoCards,
+  setInfoRows,
 }) => {
   const { setNodeRef, attributes, listeners, transform, transition } =
     useSortable({
@@ -27,9 +27,12 @@ const InfoCardEditor: React.FC<InfoCardEditorProps> = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const deleteInfoCard = (infoCardId: number): void => {
-    if (!setInfoCards) return;
-    setInfoCards((infoCards) =>
-      infoCards.filter((infoCard) => infoCard.id !== infoCardId)
+    if (!setInfoRows) return;
+    setInfoRows((infoRows) =>
+      infoRows.map((row) => ({
+        ...row,
+        cards: row.cards.filter((card) => card.id !== infoCardId),
+      }))
     );
   };
 
@@ -72,7 +75,7 @@ const InfoCardEditor: React.FC<InfoCardEditorProps> = ({
           <PiTrash />
         </Button>
 
-        <InfoCardForm infoCard={infoCard} setInfoCards={setInfoCards} />
+        <InfoCardForm infoCard={infoCard} setInfoRows={setInfoRows} />
       </Box>
       <ConfirmationModal
         isOpen={isOpen}

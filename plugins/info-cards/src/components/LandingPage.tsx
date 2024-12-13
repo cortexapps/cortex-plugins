@@ -1,19 +1,19 @@
 import { Box, Button } from "@chakra-ui/react";
 import InfoLayout from "./InfoLayout";
 import { PiGear } from "react-icons/pi";
-import type { InfoCardI, InfoRowI } from "../typings";
+import type { InfoRowI } from "../typings";
 import InstructionsCard from "./InstructionsCard";
 
 interface LandingPageProps {
   toggleEditor: () => void;
 
   // TODO: infoCards and infoRows will be fetched from the API
-  infoCards: InfoCardI[];
+  // infoCards: InfoCardI[];
   infoRows: InfoRowI[];
 }
 export default function LandingPage({
   toggleEditor,
-  infoCards,
+  // infoCards,
   infoRows,
 }: LandingPageProps): JSX.Element {
   return (
@@ -37,7 +37,7 @@ export default function LandingPage({
       {infoRows.length === 0 ? (
         <InstructionsCard toggleEditor={toggleEditor} />
       ) : (
-        <InfoLayout infoRows={infoRows} infoCards={infoCards} />
+        <InfoLayout infoRows={infoRows} />
       )}
     </Box>
   );

@@ -5,6 +5,7 @@ declare module "*.svg" {
 
 export interface InfoRowI {
   id: number;
+  cards: InfoCardI[];
 }
 
 export interface InfoCardI {
