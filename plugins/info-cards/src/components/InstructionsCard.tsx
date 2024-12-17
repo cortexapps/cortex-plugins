@@ -4,9 +4,10 @@ import { PiGear } from "react-icons/pi";
 interface InstructionsCardProps {
   toggleEditor: () => void;
 }
-export default function InstructionsCard({
+
+const InstructionsCard: React.FC<InstructionsCardProps> = ({
   toggleEditor,
-}: InstructionsCardProps): JSX.Element {
+}) => {
   return (
     <Box
       display={"flex"}
@@ -46,4 +47,6 @@ export default function InstructionsCard({
       </Card>
     </Box>
   );
-}
+};
+
+export default InstructionsCard;

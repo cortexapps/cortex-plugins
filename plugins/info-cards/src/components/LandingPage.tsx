@@ -1,38 +1,47 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, IconButton } from "@chakra-ui/react";
 import InfoLayout from "./InfoLayout";
-import { PiGear } from "react-icons/pi";
+import { PiPencil } from "react-icons/pi";
 import type { InfoRowI } from "../typings";
 import InstructionsCard from "./InstructionsCard";
 
 interface LandingPageProps {
   toggleEditor: () => void;
-
-  // TODO: infoCards and infoRows will be fetched from the API
-  // infoCards: InfoCardI[];
   infoRows: InfoRowI[];
 }
-export default function LandingPage({
+
+const LandingPage: React.FC<LandingPageProps> = ({
   toggleEditor,
-  // infoCards,
   infoRows,
-}: LandingPageProps): JSX.Element {
+}) => {
   return (
-    <Box w={"full"} minH={"100vh"} p={4}>
+    <Box w={"full"} minH={"100vh"} p={4} position="relative">
       <Box
+        position="absolute"
+        top={2}
+        right={2}
+        zIndex={10}
         w={"full"}
         display={"flex"}
         justifyContent={"flex-end"}
-        px={8}
-        py={2}
+        role="group"
+        pointerEvents={"none"}
       >
-        <Button
-          colorScheme={"black"}
-          leftIcon={<PiGear />}
-          variant={"link"}
+        <IconButton
+          size={"xs"}
+          m={0}
+          p={0}
+          aria-label={"Edit Layout"}
+          shadow={"md"}
+          rounded={"full"}
+          colorScheme={"purple"}
           onClick={toggleEditor}
+          pointerEvents={"auto"}
+          opacity={0.3}
+          _groupHover={{ opacity: 1 }}
+          transition="opacity 0.2s ease-in-out"
         >
-          Edit Layout
-        </Button>
+          <PiPencil />
+        </IconButton>
       </Box>
       {infoRows.length === 0 ? (
         <InstructionsCard toggleEditor={toggleEditor} />
@@ -41,4 +50,6 @@ export default function LandingPage({
       )}
     </Box>
   );
-}
+};
+
+export default LandingPage;

@@ -20,6 +20,7 @@ interface LayoutBuilderProps {
   toggleEditor: () => void;
   infoRows: InfoRowI[];
   setInfoRows: React.Dispatch<React.SetStateAction<InfoRowI[]>>;
+  onSubmit: () => void;
 }
 
 const moveCard = (data: InfoRowI[], activeId, overId): InfoRowI[] => {
@@ -86,7 +87,8 @@ const LayoutBuilder: React.FC<LayoutBuilderProps> = ({
   toggleEditor,
   infoRows,
   setInfoRows,
-}): JSX.Element => {
+  onSubmit,
+}) => {
   const {
     isOpen: isPreviewOpen,
     onOpen: onPreviewOpen,
@@ -109,12 +111,6 @@ const LayoutBuilder: React.FC<LayoutBuilderProps> = ({
       },
     })
   );
-
-  const saveLayout = (): void => {
-    // TODO: Save the layout to an entity
-    // eslint-disable-next-line no-console
-    console.log(infoRows);
-  };
 
   function addInfoRow(): void {
     const infoRowToAdd = {
@@ -241,7 +237,7 @@ const LayoutBuilder: React.FC<LayoutBuilderProps> = ({
           Show Preview
         </Button>
         <Button
-          onClick={saveLayout}
+          onClick={onSubmit}
           disabled={infoRows.length === 0}
           variant={"solid"}
           colorScheme={"green"}
@@ -254,7 +250,7 @@ const LayoutBuilder: React.FC<LayoutBuilderProps> = ({
         infoRows={infoRows}
         isOpen={isPreviewOpen}
         onClose={onPreviewClose}
-        handleAction={saveLayout}
+        handleAction={onSubmit}
       />
     </Box>
   );
