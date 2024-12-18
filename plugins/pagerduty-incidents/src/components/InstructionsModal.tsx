@@ -30,11 +30,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
   onClose,
   onConfigCompleted,
 }) => {
-  const {
-    doAddSecret,
-    doAddProxy,
-    doUpdatePlugin,
-  } = usePluginUpdateFns();
+  const { doAddSecret, doAddProxy, doUpdatePlugin } = usePluginUpdateFns();
 
   const [tokenInput, setTokenInput] = useState("");
   const [debouncedTokenInput, setDebouncedTokenInput] = useState("");
@@ -60,15 +56,30 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
       e.preventDefault();
       const didUpdatePlugin =
         (await doAddSecret("pagerduty_secret", debouncedTokenInput)) &&
-        (await doAddProxy("PagerDuty Plugin Proxy", "pagerduty-plugin-proxy", "pagerduty_secret")) &&
-        (await doUpdatePlugin("pagerduty-incidents", "https://plugin-marketplace.s3.us-east-2.amazonaws.com/pagerduty-plugin/ui.html", "pagerduty-plugin-proxy"));
+        (await doAddProxy(
+          "PagerDuty Plugin Proxy",
+          "pagerduty-plugin-proxy",
+          "pagerduty_secret"
+        )) &&
+        (await doUpdatePlugin(
+          "pagerduty-incidents",
+          "https://plugin-marketplace.s3.us-east-2.amazonaws.com/pagerduty-plugin/ui.html",
+          "pagerduty-plugin-proxy"
+        ));
       setTokenInput("");
       if (didUpdatePlugin) {
         onConfigCompleted();
       }
       onClose();
     },
-    [onClose, doAddSecret, doAddProxy, doUpdatePlugin, onConfigCompleted, debouncedTokenInput]
+    [
+      onClose,
+      doAddSecret,
+      doAddProxy,
+      doUpdatePlugin,
+      onConfigCompleted,
+      debouncedTokenInput,
+    ]
   );
 
   return (
