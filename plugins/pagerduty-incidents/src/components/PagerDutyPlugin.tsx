@@ -7,19 +7,25 @@ import {
   Stack,
   Title,
   Link,
+  Loader,
   usePluginContext,
 } from "@cortexapps/plugin-core/components";
 
 import { Text } from "@chakra-ui/react";
 
+import { useIsPagerDutyConfigured } from "../hooks/pagerDutyHooks";
+
 import PagerDutyIncidents from "./PagerDutyIncidents";
 import PagerDutyPicker from "./PagerDutyPicker";
+import Instructions from "./Instructions";
 
 const PagerDutyPlugin: React.FC = () => {
   const context = usePluginContext();
   const [entityYaml, setEntityYaml] = useState<
     Record<string, any> | undefined
   >();
+
+  const isConfigured = useIsPagerDutyConfigured();
 
   const [hasGitops, setHasGitops] = useState<boolean | null>(null);
   useEffect(() => {
@@ -61,6 +67,14 @@ const PagerDutyPlugin: React.FC = () => {
   useEffect(() => {
     void fetchEntityYaml();
   }, [fetchEntityYaml, rerender]);
+
+  if (isConfigured === null) {
+    return <Loader />;
+  }
+
+  if (!isConfigured) {
+    return <Instructions />;
+  }
 
   return (
     <div>

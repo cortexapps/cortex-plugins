@@ -6,11 +6,9 @@ import { usePluginContext } from "@cortexapps/plugin-core/components";
 import { Flex, Button, Select } from "@chakra-ui/react";
 import { parseDocument } from "yaml";
 
-import {
-  usePagerDutyServices,
-  useErrorToast,
-  useErrorToastForResponse,
-} from "../hooks";
+import { usePagerDutyServices } from "../hooks/pagerDutyHooks";
+
+import { useErrorToast, useErrorToastForResponse } from "../hooks/uiHooks";
 
 interface PagerDutyPickerProps {
   entityYaml: Record<string, any>;
