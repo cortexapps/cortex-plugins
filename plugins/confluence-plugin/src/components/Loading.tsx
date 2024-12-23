@@ -12,7 +12,7 @@ export default function Loading(): JSX.Element {
       gap={6}
     >
       <Spinner color="purple" size="xl" />
-      <Text size="md">Loading...</Text>
+      <Text fontSize="2xl">Loading...</Text>
     </Box>
   );
 }
