@@ -19,7 +19,7 @@ export default function PageSelector({
       alignItems={"baseline"}
       w={"full"}
     >
-      <FormLabel>Select page:</FormLabel>
+      <FormLabel>Select confluence page:</FormLabel>
       <Select
         value={currentPageId}
         onChange={(e) => {
@@ -32,7 +32,7 @@ export default function PageSelector({
           <option key={page.id} value={page.id}>
             {page.title && page.title.length > 0
               ? page.title
-              : `Page ID: ${page.id}`}
+              : `Confluence Page ${page.id}`}
           </option>
         ))}
       </Select>

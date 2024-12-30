@@ -43,6 +43,41 @@ const PageContent: React.FC = () => {
     [baseConfluenceUrl]
   );
 
+  const fetchMissingPageTitles = useCallback(
+    async (pages: EntityPageI[]): Promise<EntityPageI[]> => {
+      if (pages.length === 0) return [];
+      const updatedPages = await Promise.all(
+        pages.map(async (page) => {
+          if (page.title && page.title.length > 0) {
+            return page;
+          }
+          try {
+            const contentJSON = await fetchConfluencePageContent(
+              baseConfluenceUrl,
+              page.id
+            );
+            return {
+              ...page,
+              title:
+                page.title && page.title.length > 0
+                  ? page.title
+                  : contentJSON.title,
+            };
+          } catch (error) {
+            console.error(
+              `Error fetching page title for page with ID ${page.id}: ${
+                (error as Error).message
+              }`
+            );
+            return page;
+          }
+        })
+      );
+      return updatedPages;
+    },
+    [baseConfluenceUrl]
+  );
+
   useEffect(() => {
     if (!context?.apiBaseUrl) return;
     const getConfig = async (): Promise<void> => {
@@ -85,7 +120,10 @@ const PageContent: React.FC = () => {
             setErrorStr("No Confluence details exist on this entity.");
             return;
           }
-          setEntityPages(fetchedEntityPages);
+          const pagesWithTitles = await fetchMissingPageTitles(
+            fetchedEntityPages
+          );
+          setEntityPages(pagesWithTitles);
         } catch (error) {
           setErrorStr(
             `Error retrieving Confluence page: ${(error as Error).message}`
@@ -95,7 +133,12 @@ const PageContent: React.FC = () => {
       }
     };
     void fetchEntityYamlData();
-  }, [context.apiBaseUrl, context.entity?.tag, baseConfluenceUrl]);
+  }, [
+    context.apiBaseUrl,
+    context.entity?.tag,
+    baseConfluenceUrl,
+    fetchMissingPageTitles,
+  ]);
 
   useEffect(() => {
     const setFirstPageContent = async (): Promise<void> => {
