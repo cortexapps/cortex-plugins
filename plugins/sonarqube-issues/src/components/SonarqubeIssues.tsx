@@ -1,4 +1,5 @@
 import type React from "react";
+import "../baseStyles.css";
 import { useMemo, useState, useCallback } from "react";
 import {
   SimpleTable,
@@ -10,11 +11,10 @@ import {
 } from "@cortexapps/plugin-core/components";
 
 import { useToast } from "@chakra-ui/react";
-
-import { useSonarQubeConfig, useSonarQubeIssues } from "../hooks";
+import { useSonarQubeConfig } from "../hooks/useSonarQubeConfig";
+import { useSonarQubeIssues } from "../hooks/useSonarQubeIssues";
 import SonarQubeCommentModal from "./SonarQubeCommentModal";
-
-import "../baseStyles.css";
+import SonarQubePagination from "./SonarQubePagination";
 
 const getErrorMessageFromResponse = async (
   response: Response
@@ -29,16 +29,18 @@ const getErrorMessageFromResponse = async (
   return response.statusText || response.status.toString();
 };
 
-interface SonarqubeIssuesProps {
+interface SonarQubeIssuesProps {
   entityYaml: Record<string, any>;
 }
 
-const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
+const SonarQubeIssues: React.FC<SonarQubeIssuesProps> = ({ entityYaml }) => {
   const toast = useToast();
   const context = usePluginContext();
 
   const [issueForComment, setIssueForComment] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const project = useMemo((): string => {
     return entityYaml?.info?.["x-cortex-static-analysis"]?.sonarqube?.project;
@@ -49,7 +51,8 @@ const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
     issues,
     hasIssues,
     isLoading: isIssuesLoading,
-  } = useSonarQubeIssues(baseUrl, project);
+    totalIssues,
+  } = useSonarQubeIssues(baseUrl, project, currentPage, itemsPerPage);
 
   const isLoading = isConfigLoading || isIssuesLoading;
 
@@ -215,6 +218,14 @@ const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
         />
       )}
       <SimpleTable config={config} items={issues} />
+      <SonarQubePagination
+        currentPage={currentPage}
+        totalItems={totalIssues}
+        itemsPerPage={itemsPerPage}
+        onPageChange={(page) => {
+          setCurrentPage(page);
+        }}
+      />
     </>
   ) : (
     <Box backgroundColor="light" padding={3} borderRadius={2}>
@@ -226,4 +237,4 @@ const SonarqubeIssues: React.FC<SonarqubeIssuesProps> = ({ entityYaml }) => {
   );
 };
 
-export default SonarqubeIssues;
+export default SonarQubeIssues;

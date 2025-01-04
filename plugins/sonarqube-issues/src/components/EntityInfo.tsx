@@ -8,7 +8,7 @@ import {
   Text,
   usePluginContext,
 } from "@cortexapps/plugin-core/components";
-import SonarqubeIssues from "./SonarqubeIssues";
+import SonarQubeIssues from "./SonarQubeIssues";
 
 const CortexEntity: React.FC = () => {
   const context = usePluginContext();
@@ -44,7 +44,7 @@ const CortexEntity: React.FC = () => {
                 </Text>
               </Box>
             ) : (
-              <SonarqubeIssues entityYaml={entityYaml} />
+              <SonarQubeIssues entityYaml={entityYaml} />
             )}
           </Box>
         </Stack>

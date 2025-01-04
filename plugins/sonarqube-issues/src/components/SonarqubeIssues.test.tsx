@@ -1,5 +1,5 @@
 import { render, waitFor } from "@testing-library/react";
-import SonarqubeIssues from "./SonarqubeIssues";
+import SonarQubeIssues from "./SonarQubeIssues";
 
 const issuesResp = {
   total: 3,
@@ -178,7 +178,7 @@ describe("Issues", () => {
     );
 
     const { queryByText, queryAllByText } = render(
-      <SonarqubeIssues entityYaml={serviceYaml} />
+      <SonarQubeIssues entityYaml={serviceYaml} />
     );
     await waitFor(() => {
       expect(queryByText("Loading")).not.toBeInTheDocument();
@@ -197,7 +197,7 @@ describe("Issues", () => {
       }
     );
     const { queryByText } = render(
-      <SonarqubeIssues entityYaml={serviceYaml} />
+      <SonarQubeIssues entityYaml={serviceYaml} />
     );
 
     await waitFor(() => {
