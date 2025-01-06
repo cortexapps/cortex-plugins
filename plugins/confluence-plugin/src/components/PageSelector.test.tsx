@@ -48,7 +48,7 @@ describe("PageSelector Component", () => {
     await waitFor(() => {
       expect(screen.getByText("Page One")).toBeInTheDocument();
       expect(screen.getByText("Page Two")).toBeInTheDocument();
-      expect(screen.getByText("Page ID: 3")).toBeInTheDocument();
+      expect(screen.getByText("Confluence Page 3")).toBeInTheDocument();
     });
   });
 

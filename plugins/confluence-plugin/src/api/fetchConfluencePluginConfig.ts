@@ -11,7 +11,6 @@ export const fetchConfluencePluginConfig = async (
     const data = await response.json();
     return data.info["x-cortex-definition"]["confluence-url"];
   } catch (error) {
-    console.error("Error fetching Confluence plugin config:", error);
     throw error;
   }
 };
