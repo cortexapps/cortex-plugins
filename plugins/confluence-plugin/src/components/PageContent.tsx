@@ -1,162 +1,92 @@
 import type React from "react";
-import { useState, useEffect, useCallback } from "react";
-import { isEmpty, isNil } from "lodash";
-import "../baseStyles.css";
+import { useState, useEffect, useMemo } from "react";
+import { isNil } from "lodash";
 import { usePluginContext } from "@cortexapps/plugin-core/components";
-import { getEntityYaml } from "../api/Cortex";
-import { getConfluenceDetailsFromEntity } from "../lib/parseEntity";
 import { Heading, Box } from "@chakra-ui/react";
+
 import Instructions from "./Instructions";
 import Loading from "./Loading";
 import Notice from "./Notice";
 import PageSelector from "./PageSelector";
-import { fetchConfluencePageContent } from "../api/fetchConfluencePageContent";
-import { fetchConfluencePluginConfig } from "../api/fetchConfluencePluginConfig";
+
+import {
+  usePluginConfig,
+  useCortexEntityDefinition,
+  useConfluencePageContent,
+} from "../hooks";
+
+import "../baseStyles.css";
 
 const PageContent: React.FC = () => {
-  const [entityPages, setEntityPages] = useState<EntityPageI[]>([]);
-  const [pageContent, setPageContent] = useState<string | undefined>();
-  const [pageTitle, setPageTitle] = useState<string | undefined>();
-  const [entityPage, setEntityPage] = useState<string | number | undefined>();
-  const [baseConfluenceUrl, setBaseConfluenceUrl] = useState<string>("");
+  const [entityPage, setEntityPage] = useState<EntityPageI>();
   const [errorStr, setErrorStr] = useState<string>("");
 
   const context = usePluginContext();
 
-  const fetchPageContent = useCallback(
-    async (pages: EntityPageI[], pageId: string | number): Promise<void> => {
-      if (pages.length === 0) return;
-      setEntityPage(pageId);
-      setErrorStr("loading-content");
-      try {
-        const contentJSON = await fetchConfluencePageContent(
-          baseConfluenceUrl,
-          pageId
-        );
-        setPageContent(contentJSON.body.view.value);
-        setPageTitle(contentJSON.title);
-        setErrorStr("");
-      } catch (error) {
-        setErrorStr(error.message);
-      }
-    },
-    [baseConfluenceUrl]
+  const { isLoading: isPluginConfigLoading, pluginConfig } = usePluginConfig(
+    "confluence-plugin-config"
   );
 
-  const fetchMissingPageTitles = useCallback(
-    async (pages: EntityPageI[]): Promise<EntityPageI[]> => {
-      if (pages.length === 0) return [];
-      const updatedPages = await Promise.all(
-        pages.map(async (page) => {
-          if (page.title && page.title.length > 0) {
-            return page;
-          }
-          try {
-            const contentJSON = await fetchConfluencePageContent(
-              baseConfluenceUrl,
-              page.id
-            );
-            return {
-              ...page,
-              title:
-                page.title && page.title.length > 0
-                  ? page.title
-                  : contentJSON.title,
-            };
-          } catch (error) {
-            console.error(
-              `Error fetching page title for page with ID ${page.id}: ${
-                (error as Error).message
-              }`
-            );
-            return page;
-          }
-        })
-      );
-      return updatedPages;
-    },
-    [baseConfluenceUrl]
+  const { isLoading: isEntityDefinitionLoading, entityDefinition } =
+    useCortexEntityDefinition(context.entity?.tag ?? "");
+
+  const baseConfluenceUrl = useMemo(
+    () => pluginConfig?.info?.["x-cortex-definition"]?.["confluence-url"] ?? "",
+    [pluginConfig]
   );
+
+  const entityPages = useMemo((): EntityPageI[] => {
+    if (!entityDefinition) return [];
+    const entityPages: EntityPageI[] = [];
+    if (Array.isArray(entityDefinition.info?.["x-cortex-confluence"]?.pages)) {
+      for (const page of entityDefinition.info["x-cortex-confluence"].pages) {
+        const id = page.id as string;
+        const title = page.title as string;
+        if (id) {
+          entityPages.push({ id, title });
+        }
+      }
+    }
+    if (entityDefinition.info?.["x-cortex-confluence"]?.pageID) {
+      entityPages.push({
+        id: `${entityDefinition.info["x-cortex-confluence"].pageID as string}`,
+      });
+    }
+    return entityPages;
+  }, [entityDefinition]);
 
   useEffect(() => {
-    if (!context?.apiBaseUrl) return;
-    const getConfig = async (): Promise<void> => {
-      setErrorStr("loading");
-      try {
-        const newConfluenceUrl = await fetchConfluencePluginConfig(
-          context.apiBaseUrl
-        );
-        setBaseConfluenceUrl(newConfluenceUrl);
-        setErrorStr(!newConfluenceUrl ? "instructions" : "");
-      } catch {
-        setErrorStr("instructions");
-      }
-    };
-    void getConfig();
-  }, [context?.apiBaseUrl]);
+    if (entityPages.length > 0 && !entityPage) {
+      setEntityPage(entityPages[0]);
+    }
+  }, [entityPages, entityPage]);
+
+  const { isLoading: isContentLoading, contents } =
+    useConfluencePageContent(entityPages);
+
+  const isLoading = useMemo(
+    () =>
+      isPluginConfigLoading || isEntityDefinitionLoading || isContentLoading,
+    [isPluginConfigLoading, isEntityDefinitionLoading, isContentLoading]
+  );
 
   useEffect(() => {
     if (!context.entity?.tag) {
       setErrorStr(
-        "This plugin is intended to be used within the entities. " +
+        "This plugin is intended to be used within entities. " +
           "Go to an entity, then under Plugins, select Confluence to view the Confluence page(s)."
       );
     }
+  }, [context.entity?.tag]);
 
-    if (!context.apiBaseUrl || !baseConfluenceUrl) {
-      return;
-    }
-
-    const fetchEntityYamlData = async (): Promise<void> => {
-      const entityTag = context.entity?.tag;
-      if (!isNil(entityTag)) {
-        try {
-          setErrorStr("loading");
-          const yaml = await getEntityYaml(context.apiBaseUrl, entityTag);
-          const fetchedEntityPages = isEmpty(yaml)
-            ? []
-            : getConfluenceDetailsFromEntity(yaml);
-          if (fetchedEntityPages.length === 0) {
-            setErrorStr("No Confluence details exist on this entity.");
-            return;
-          }
-          const pagesWithTitles = await fetchMissingPageTitles(
-            fetchedEntityPages
-          );
-          setEntityPages(pagesWithTitles);
-        } catch (error) {
-          setErrorStr(
-            `Error retrieving Confluence page: ${(error as Error).message}`
-          );
-          console.error("Error retrieving Confluence page: ", error);
-        }
-      }
-    };
-    void fetchEntityYamlData();
-  }, [
-    context.apiBaseUrl,
-    context.entity?.tag,
-    baseConfluenceUrl,
-    fetchMissingPageTitles,
-  ]);
-
-  useEffect(() => {
-    const setFirstPageContent = async (): Promise<void> => {
-      if (entityPages.length === 0) return;
-      await fetchPageContent(entityPages, entityPages[0].id);
-    };
-    void setFirstPageContent();
-  }, [baseConfluenceUrl, entityPages, fetchPageContent]);
-
-  if (errorStr === "loading") return <Loading />;
-  if (errorStr === "instructions") return <Instructions />;
-  if (errorStr && errorStr !== "loading-content")
-    return <Notice>{errorStr}</Notice>;
+  if (isLoading) return <Loading />;
+  if (!baseConfluenceUrl) return <Instructions />;
+  if (errorStr) return <Notice>{errorStr}</Notice>;
 
   if (isNil(entityPage)) {
     return (
       <Notice>
-        We could not find any Confluence page associated with this entity.
+        We could not find any Confluence pages associated with this entity.
       </Notice>
     );
   }
@@ -165,26 +95,42 @@ const PageContent: React.FC = () => {
     <Box w="full" minH={600}>
       {entityPages.length > 1 && (
         <PageSelector
-          currentPageId={entityPage}
-          onChangeHandler={fetchPageContent}
+          currentPageId={entityPage.id}
+          onChangeHandler={(pageId: string) => {
+            const newEntityPage = entityPages.find(
+              (page) => `${page.id as string}` === pageId
+            );
+            if (newEntityPage) setEntityPage(newEntityPage);
+          }}
           pages={entityPages}
-          disabled={errorStr === "loading-content"}
+          disabled={isContentLoading}
         />
       )}
-      {errorStr === "loading-content" ? (
-        <Loading />
-      ) : (
-        <Box w="full">
-          <Heading
-            as="h1"
-            dangerouslySetInnerHTML={{ __html: pageTitle as string }}
-          />
+      <Box w="full">
+        <Heading
+          as="h1"
+          dangerouslySetInnerHTML={{
+            __html: contents[`${entityPage.id}`]?.title as string,
+          }}
+        />
+        {contents[`${entityPage.id}`]?.body && (
           <Box
             w="full"
-            dangerouslySetInnerHTML={{ __html: pageContent as string }}
+            dangerouslySetInnerHTML={{
+              __html: contents[`${entityPage.id}`]?.body as string,
+            }}
           />
-        </Box>
-      )}
+        )}
+        {contents[`${entityPage.id}`]?.errors && (
+          <Notice>
+            {contents[`${entityPage.id}`]?.errors.map((error: any) => (
+              <Box display="block" key={error.code}>
+                {error.title}
+              </Box>
+            ))}
+          </Notice>
+        )}
+      </Box>
     </Box>
   );
 };

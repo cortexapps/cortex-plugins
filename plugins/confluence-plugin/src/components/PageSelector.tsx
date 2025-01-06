@@ -23,7 +23,7 @@ export default function PageSelector({
       <Select
         value={currentPageId}
         onChange={(e) => {
-          void onChangeHandler(pages, e.target.value);
+          void onChangeHandler(e.target.value);
         }}
         disabled={disabled}
         w={"auto"}

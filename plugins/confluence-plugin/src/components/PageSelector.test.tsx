@@ -65,7 +65,7 @@ describe("PageSelector Component", () => {
 
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "2" } });
     await waitFor(() => {
-      expect(mockOnChangeHandler).toHaveBeenCalledWith(mockPages, "2");
+      expect(mockOnChangeHandler).toHaveBeenCalledWith("2");
     });
   });
 
