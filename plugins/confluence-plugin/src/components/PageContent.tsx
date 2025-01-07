@@ -1,138 +1,149 @@
 import type React from "react";
-import { useState, useEffect } from "react";
-import { isEmpty, isNil } from "lodash";
-import "../baseStyles.css";
-import {
-  Box,
-  Text,
-  usePluginContext,
-} from "@cortexapps/plugin-core/components";
-import { getEntityYaml } from "../api/Cortex";
-import { getConfluenceDetailsFromEntity } from "../lib/parseEntity";
+import { useState, useEffect, useMemo } from "react";
+import { isNil } from "lodash";
+import { usePluginContext } from "@cortexapps/plugin-core/components";
+import { Heading, Box } from "@chakra-ui/react";
 
 import Instructions from "./Instructions";
+import Loading from "./Loading";
+import Notice from "./Notice";
+import PageSelector from "./PageSelector";
+
+import {
+  usePluginConfig,
+  useCortexEntityDefinition,
+  useConfluencePageContent,
+} from "../hooks";
+
+import "../baseStyles.css";
 
 const PageContent: React.FC = () => {
-  const [pageContent, setPageContent] = useState<string | undefined>();
-  const [pageTitle, setPageTitle] = useState<string | undefined>();
-  const [entityPage, setEntityPage] = useState<any | string>();
-  const [baseConfluenceUrl, setBaseConfluenceUrl] = useState<string>("");
+  const [entityPage, setEntityPage] = useState<EntityPageI>();
   const [errorStr, setErrorStr] = useState<string>("");
 
   const context = usePluginContext();
 
-  useEffect(() => {
-    if (!context?.apiBaseUrl) {
-      return;
-    }
-    const getConfluencePluginConfig = async (): Promise<void> => {
-      setErrorStr("loading");
-      if (!context?.apiBaseUrl) {
-        return;
-      }
-      let newConfluenceUrl = "";
-      try {
-        const response = await fetch(
-          `${context?.apiBaseUrl}/catalog/confluence-plugin-config/openapi`
-        );
-        const data = await response.json();
-        newConfluenceUrl = data.info["x-cortex-definition"]["confluence-url"];
-      } catch (e) {}
-      setBaseConfluenceUrl(newConfluenceUrl);
-      if (!newConfluenceUrl) {
-        setErrorStr("instructions");
-      }
-    };
-    void getConfluencePluginConfig();
-  }, [context?.apiBaseUrl]);
+  const { isLoading: isPluginConfigLoading, pluginConfig } = usePluginConfig(
+    "confluence-plugin-config"
+  );
 
-  useEffect(() => {
-    if (!context.apiBaseUrl || !context.entity?.tag || !baseConfluenceUrl) {
-      return;
+  const { isLoading: isEntityDefinitionLoading, entityDefinition } =
+    useCortexEntityDefinition(context.entity?.tag ?? "");
+
+  const baseConfluenceUrl = useMemo(
+    () => pluginConfig?.info?.["x-cortex-definition"]?.["confluence-url"] ?? "",
+    [pluginConfig]
+  );
+
+  const entityPages = useMemo((): EntityPageI[] => {
+    if (!entityDefinition) {
+      return [];
     }
-    const fetchEntityYaml = async (): Promise<void> => {
-      const entityTag = context.entity?.tag;
-      if (!isNil(entityTag)) {
-        try {
-          const yaml = await getEntityYaml(context.apiBaseUrl, entityTag);
-          const pageID = isEmpty(yaml)
-            ? undefined
-            : getConfluenceDetailsFromEntity(yaml);
-          if (!pageID?.pageID) {
-            setErrorStr("No Confluence details exist on this entity.");
-            return;
-          }
-          setEntityPage(pageID?.pageID);
-          const jiraURL = `${baseConfluenceUrl}/wiki/rest/api/content/${pageID.pageID}?expand=body.view`;
-          const contentResult = await fetch(jiraURL);
-          if (!contentResult.ok) {
-            let newErrorStr = "";
-            // if the contentResult contains valid JSON, we can use it to display an error message
-            try {
-              if (
-                contentResult.headers
-                  .get("content-type")
-                  ?.includes("application/json")
-              ) {
-                const contentJSON = await contentResult.json();
-                const msg: string =
-                  contentJSON.message || JSON.stringify(contentJSON);
-                newErrorStr = `Failed to fetch Confluence page with ID ${pageID.pageID}: ${msg}`;
-              } else {
-                // just get the text if it's not JSON
-                const contentText = await contentResult.text();
-                newErrorStr = contentText;
-              }
-            } catch (e) {
-              // if we can't parse the content, just use the status text
-              newErrorStr =
-                contentResult.statusText || "Failed to fetch Confluence page";
-            }
-            setErrorStr(newErrorStr);
-            return;
-          }
-          const contentJSON = await contentResult.json();
-          setPageContent(contentJSON.body.view.value);
-          setPageTitle(contentJSON.title);
-          setErrorStr("");
-        } catch (e) {
-          // This will still result in a "We could not find any Confluence page" error in the UI, but may as well trap in console as well
-          const msg: string = e.message || e.toString();
-          setErrorStr(`Error retrieving Confluence page: ${msg}`);
-          console.error("Error retrieving Confluence page: ", e);
+    const entityPages: EntityPageI[] = [];
+
+    if (Array.isArray(entityDefinition.info?.["x-cortex-confluence"]?.pages)) {
+      for (const page of entityDefinition.info["x-cortex-confluence"].pages) {
+        const id = page.id as string;
+        const title = page.title as string;
+        if (id) {
+          entityPages.push({ id, title });
         }
       }
-    };
-    void fetchEntityYaml();
-  }, [context.apiBaseUrl, context.entity?.tag, baseConfluenceUrl]);
+    }
 
-  if (errorStr === "loading") {
-    return <div>Loading...</div>;
-  } else if (errorStr === "instructions") {
+    if (entityDefinition.info?.["x-cortex-confluence"]?.pageID) {
+      entityPages.push({
+        id: `${entityDefinition.info["x-cortex-confluence"].pageID as string}`,
+      });
+    }
+    return entityPages;
+  }, [entityDefinition]);
+
+  useEffect(() => {
+    if (entityPages.length > 0 && !entityPage) {
+      setEntityPage(entityPages[0]);
+    }
+  }, [entityPages, entityPage]);
+
+  const { isLoading: isContentLoading, contents } =
+    useConfluencePageContent(entityPages);
+
+  const isLoading = useMemo(
+    () =>
+      isPluginConfigLoading || isEntityDefinitionLoading || isContentLoading,
+    [isPluginConfigLoading, isEntityDefinitionLoading, isContentLoading]
+  );
+
+  useEffect(() => {
+    if (!context.entity?.tag) {
+      setErrorStr(
+        "This plugin is intended to be used within entities. " +
+          "Go to an entity, then under Plugins, select Confluence to view the Confluence page(s)."
+      );
+    }
+  }, [context.entity?.tag]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!baseConfluenceUrl) {
     return <Instructions />;
-  } else if (errorStr) {
-    return (
-      <Box backgroundColor="light" padding={3} borderRadius={2}>
-        <Text>{errorStr}</Text>
-      </Box>
-    );
+  }
+
+  if (errorStr) {
+    return <Notice>{errorStr}</Notice>;
   }
 
   if (isNil(entityPage)) {
     return (
-      <Box backgroundColor="light" padding={3} borderRadius={2}>
-        <Text>
-          We could not find any Confluence page associated with this entity.
-        </Text>
-      </Box>
+      <Notice>
+        We could not find any Confluence pages associated with this entity.
+      </Notice>
     );
   }
 
   return (
-    <div>
-      <h1 dangerouslySetInnerHTML={{ __html: pageTitle as string }}></h1>
-      <p dangerouslySetInnerHTML={{ __html: pageContent as string }}></p>
-    </div>
+    <Box w="full" minH={600}>
+      {entityPages.length > 1 && (
+        <PageSelector
+          currentPageId={entityPage.id}
+          onChangeHandler={(pageId: string) => {
+            const newEntityPage = entityPages.find(
+              (page) => `${page.id as string}` === pageId
+            );
+            if (newEntityPage) setEntityPage(newEntityPage);
+          }}
+          pages={entityPages}
+          disabled={isContentLoading}
+        />
+      )}
+      <Box w="full">
+        <Heading
+          as="h1"
+          dangerouslySetInnerHTML={{
+            __html: contents[`${entityPage.id}`]?.title as string,
+          }}
+        />
+        {contents[`${entityPage.id}`]?.body && (
+          <Box
+            w="full"
+            dangerouslySetInnerHTML={{
+              __html: contents[`${entityPage.id}`]?.body as string,
+            }}
+          />
+        )}
+        {contents[`${entityPage.id}`]?.errors && (
+          <Notice>
+            {contents[`${entityPage.id}`]?.errors.map((error: any) => (
+              <Box display="block" key={error.code}>
+                {error.title}
+              </Box>
+            ))}
+          </Notice>
+        )}
+      </Box>
+    </Box>
   );
 };
 

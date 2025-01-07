@@ -1,11 +1,18 @@
 export const getConfluenceDetailsFromEntity = (
   entity: Record<string, any>
-): { pageID: string } | undefined => {
-  const pageID = entity.info["x-cortex-confluence"]?.pageID;
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-  if (!pageID) {
-    return undefined;
+): EntityPageI[] => {
+  const confluenceInfo = entity.info["x-cortex-confluence"];
+  if (!confluenceInfo) {
+    return [];
   }
 
-  return { pageID };
+  if (Array.isArray(confluenceInfo.pages) && confluenceInfo.pages.length > 0) {
+    return confluenceInfo.pages;
+  }
+
+  if (typeof confluenceInfo.pageID !== "undefined") {
+    return [{ id: confluenceInfo.pageID }];
+  }
+
+  return [];
 };
