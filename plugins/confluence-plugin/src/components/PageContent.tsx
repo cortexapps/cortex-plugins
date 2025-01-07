@@ -36,8 +36,11 @@ const PageContent: React.FC = () => {
   );
 
   const entityPages = useMemo((): EntityPageI[] => {
-    if (!entityDefinition) return [];
+    if (!entityDefinition) {
+      return [];
+    }
     const entityPages: EntityPageI[] = [];
+
     if (Array.isArray(entityDefinition.info?.["x-cortex-confluence"]?.pages)) {
       for (const page of entityDefinition.info["x-cortex-confluence"].pages) {
         const id = page.id as string;
@@ -47,6 +50,7 @@ const PageContent: React.FC = () => {
         }
       }
     }
+
     if (entityDefinition.info?.["x-cortex-confluence"]?.pageID) {
       entityPages.push({
         id: `${entityDefinition.info["x-cortex-confluence"].pageID as string}`,
@@ -79,9 +83,17 @@ const PageContent: React.FC = () => {
     }
   }, [context.entity?.tag]);
 
-  if (isLoading) return <Loading />;
-  if (!baseConfluenceUrl) return <Instructions />;
-  if (errorStr) return <Notice>{errorStr}</Notice>;
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!baseConfluenceUrl) {
+    return <Instructions />;
+  }
+
+  if (errorStr) {
+    return <Notice>{errorStr}</Notice>;
+  }
 
   if (isNil(entityPage)) {
     return (
