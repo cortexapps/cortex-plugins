@@ -54,6 +54,13 @@ export default function PluginRoot(): JSX.Element {
         });
       } catch (error) {
         console.error(error);
+        toast({
+          title: "Error",
+          description: `Failed to save layout: ${error.message}`,
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
       }
     };
 
