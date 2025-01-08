@@ -2,6 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 
 import { Loader } from "@cortexapps/plugin-core/components";
 
+import {
+  useToast,
+} from "@chakra-ui/react";
+
 import type { InfoRowI } from "../typings";
 
 import LandingPage from "./LandingPage";
@@ -19,11 +23,13 @@ export default function PluginRoot(): JSX.Element {
     savePluginConfig,
   } = usePluginConfig();
 
+  const toast = useToast();
+
   useEffect(() => {
     if (pluginConfig?.info?.["x-cortex-definition"]?.infoRows) {
       setInfoRows(pluginConfig.info["x-cortex-definition"].infoRows);
     }
-  }, [pluginConfig]);
+  }, [pluginConfig, isEditorPage]);
 
   const handleSubmit = useCallback(() => {
     const doSave = async (): Promise<void> => {
@@ -37,6 +43,14 @@ export default function PluginRoot(): JSX.Element {
               infoRows,
             },
           },
+        });
+        toggleEditor();
+        toast({
+          title: "Layout Saved",
+          description: "Your changes have been saved.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
         });
       } catch (error) {
         console.error(error);
