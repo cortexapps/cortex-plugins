@@ -1,12 +1,17 @@
+import { useEffect, useState } from "react";
 import type { InfoCardI, InfoRowI } from "../typings";
+import useDebounce from "../../../../shared/hooks/useDebounce";
 import {
   Box,
   FormControl,
   FormLabel,
   Input,
   Select,
+  Text,
   Textarea,
 } from "@chakra-ui/react";
+
+import { PiCheck, PiSpinner, PiX } from "react-icons/pi";
 
 interface ContentTypesSelectItemI {
   label: string;
@@ -26,6 +31,44 @@ export default function InfoCardForm({
     { label: "IFrame URL", value: "IFrameURL" },
     { label: "HTML", value: "HTML" },
   ];
+
+  const [contentIFrameURL, setContentIFrameURL] = useState<string>("");
+  const debouncedContentIFrameURL = useDebounce(
+    contentIFrameURL,
+    1000
+  ) as string;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<string | null>(null);
+  const [isUrlIFrameSafe, setIsUrlIFrameSafe] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setIsUrlIFrameSafe(null);
+    setIsError(null);
+    if (contentIFrameURL.length > 0) {
+      async function checkUrlHeaders(): Promise<void> {
+        setIsLoading(true);
+        try {
+          const response = await fetch(debouncedContentIFrameURL);
+          const headers = Object.fromEntries(response.headers);
+
+          if (
+            headers["x-frame-options"] ||
+            headers["content-security-policy"]
+          ) {
+            setIsUrlIFrameSafe(false);
+          } else {
+            setIsUrlIFrameSafe(true);
+          }
+        } catch (error) {
+          setIsError("URL check failed!");
+        }
+        setIsLoading(false);
+      }
+
+      void checkUrlHeaders();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedContentIFrameURL]);
 
   const handleChange = (field: keyof InfoCardI, value: string): void => {
     if (!setInfoRows) return;
@@ -97,15 +140,41 @@ export default function InfoCardForm({
 
       {infoCard.contentType === "IFrameURL" && (
         <FormControl>
-          <FormLabel>Content URL</FormLabel>
+          <Box display={"flex"}>
+            <FormLabel>Content URL</FormLabel>
+            {isLoading && (
+              <Text>
+                <PiSpinner size={24} />
+              </Text>
+            )}
+            {isUrlIFrameSafe && (
+              <Text color={"green.500"}>
+                <PiCheck size={24} />
+              </Text>
+            )}
+            {isUrlIFrameSafe === false ||
+              (isError && (
+                <Text color={"red.500"}>
+                  <PiX size={24} />
+                </Text>
+              ))}
+          </Box>
           <Input
             type="url"
             placeholder="https://example.com"
             value={infoCard.contentIFrameURL ?? ""}
             onChange={(e) => {
+              setContentIFrameURL(e.target.value);
               handleChange("contentIFrameURL", e.target.value);
             }}
           />
+
+          {isUrlIFrameSafe === false && (
+            <Text color={"red.500"} fontSize={"sm"}>
+              This URL does not allow embedding
+            </Text>
+          )}
+          {isError && <Text color={"red.500"}>{isError}</Text>}
         </FormControl>
       )}
 
