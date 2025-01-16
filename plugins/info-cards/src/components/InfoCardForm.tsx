@@ -8,9 +8,8 @@ import {
   Input,
   Select,
   Text,
-  Textarea,
 } from "@chakra-ui/react";
-
+import CodeEditor from "@uiw/react-textarea-code-editor";
 import { PiCheck, PiSpinner, PiX } from "react-icons/pi";
 
 interface ContentTypesSelectItemI {
@@ -181,11 +180,29 @@ export default function InfoCardForm({
       {infoCard.contentType === "HTML" && (
         <FormControl>
           <FormLabel>Content as HTML</FormLabel>
-          <Textarea
+          <CodeEditor
+            language="html"
             placeholder="Type HTML here..."
             value={infoCard.contentHTML ?? ""}
             onChange={(e) => {
               handleChange("contentHTML", e.target.value);
+            }}
+            style={{
+              width: "100%",
+              height: "auto",
+              fontSize: "1rem",
+              borderRadius: "0.375rem",
+              minWidth: 0,
+              outline: "transparent solid 2px",
+              outlineOffset: "2px",
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderImage: "initial",
+              borderColor: "inherit",
+              background: "inherit",
+              resize: "both",
+              fontFamily:
+                "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
             }}
           />
         </FormControl>
