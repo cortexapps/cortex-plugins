@@ -13,6 +13,9 @@ module.exports = {
   setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
   testEnvironment: "jsdom",
   transform: {
-    "^.+\\.tsx?$": "babel-jest",
+    "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
   },
+  transformIgnorePatterns: [
+    "/node_modules/(?!yaml)", // yaml is commonjs evidently
+  ],
 };

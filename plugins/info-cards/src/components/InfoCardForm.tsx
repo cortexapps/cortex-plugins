@@ -9,7 +9,9 @@ import {
   Select,
   Text,
 } from "@chakra-ui/react";
-import CodeEditor from "@uiw/react-textarea-code-editor";
+
+import CodeMirror from "@uiw/react-codemirror";
+import { html } from "@codemirror/lang-html";
 import { PiCheck, PiSpinner, PiX } from "react-icons/pi";
 
 interface ContentTypesSelectItemI {
@@ -103,7 +105,7 @@ export default function InfoCardForm({
       </FormControl>
 
       <FormControl>
-        <FormLabel>Card Title</FormLabel>
+        <FormLabel>Content Type</FormLabel>
         <Select
           placeholder="Select content type"
           value={[infoCard.contentType]}
@@ -180,30 +182,12 @@ export default function InfoCardForm({
       {infoCard.contentType === "HTML" && (
         <FormControl>
           <FormLabel>Content as HTML</FormLabel>
-          <CodeEditor
-            language="html"
-            placeholder="Type HTML here..."
+          <CodeMirror
             value={infoCard.contentHTML ?? ""}
-            onChange={(e) => {
-              handleChange("contentHTML", e.target.value);
+            onChange={(value) => {
+              handleChange("contentHTML", value);
             }}
-            style={{
-              width: "100%",
-              height: "auto",
-              fontSize: "1rem",
-              borderRadius: "0.375rem",
-              minWidth: 0,
-              outline: "transparent solid 2px",
-              outlineOffset: "2px",
-              borderWidth: "1px",
-              borderStyle: "solid",
-              borderImage: "initial",
-              borderColor: "inherit",
-              background: "inherit",
-              resize: "both",
-              fontFamily:
-                "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-            }}
+            extensions={[html()]}
           />
         </FormControl>
       )}

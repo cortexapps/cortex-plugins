@@ -10,7 +10,7 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import type { InfoRowI } from "../typings";
-import { PiX, PiFloppyDisk } from "react-icons/pi";
+// import { PiX, PiFloppyDisk } from "react-icons/pi";
 import InfoLayout from "./InfoLayout";
 
 interface PreviewModalProps {
@@ -38,15 +38,20 @@ export default function PreviewModal({
           <InfoLayout infoRows={infoRows} />
         </ModalBody>
         <ModalFooter>
-          <Button variant="outline" mr={3} onClick={onClose} leftIcon={<PiX />}>
-            Close Without Saving
+          <Button
+            variant={"outline"}
+            colorScheme={"red"}
+            mr={2}
+            onClick={onClose}
+          >
+            Back to Editor
           </Button>
           <Button
-            colorScheme={"purple"}
+            variant={"solid"}
+            colorScheme={"green"}
             onClick={handleAction}
-            leftIcon={<PiFloppyDisk />}
           >
-            Save And Close
+            Save and Close
           </Button>
         </ModalFooter>
       </ModalContent>

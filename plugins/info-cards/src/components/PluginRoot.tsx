@@ -1,10 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 
 import { Loader } from "@cortexapps/plugin-core/components";
 
-import {
-  useToast,
-} from "@chakra-ui/react";
+import { useToast, Text } from "@chakra-ui/react";
 
 import type { InfoRowI } from "../typings";
 
@@ -31,6 +29,15 @@ export default function PluginRoot(): JSX.Element {
     }
   }, [pluginConfig, isEditorPage]);
 
+  const isModified: boolean = useMemo(() => {
+    const isModified =
+      infoRows &&
+      pluginConfig?.info?.["x-cortex-definition"]?.infoRows &&
+      JSON.stringify(infoRows) !==
+        JSON.stringify(pluginConfig?.info?.["x-cortex-definition"]?.infoRows);
+    return Boolean(isModified);
+  }, [infoRows, pluginConfig]);
+
   const handleSubmit = useCallback(() => {
     const doSave = async (): Promise<void> => {
       try {
@@ -56,7 +63,7 @@ export default function PluginRoot(): JSX.Element {
         console.error(error);
         toast({
           title: "Error",
-          description: `Failed to save layout: ${error.message}`,
+          description: `Failed to save layout: ${error.message as string}`,
           status: "error",
           duration: 2000,
           isClosable: true,
@@ -65,7 +72,7 @@ export default function PluginRoot(): JSX.Element {
     };
 
     void doSave();
-  }, [infoRows, pluginConfig, savePluginConfig]);
+  }, [infoRows, pluginConfig, savePluginConfig, toast]);
 
   if (configIsLoading) {
     return <Loader />;
@@ -77,11 +84,27 @@ export default function PluginRoot(): JSX.Element {
 
   return (
     <>
+      {isModified && (
+        <Text
+          size="xs"
+          fontStyle={"italic"}
+          position={"fixed"}
+          top={0}
+          right={0}
+          px={2}
+          py={1}
+          mr={4}
+          color={"red.500"}
+        >
+          You have unsaved changes
+        </Text>
+      )}
       {isEditorPage ? (
         <LayoutBuilder
           toggleEditor={toggleEditor}
           infoRows={infoRows}
           setInfoRows={setInfoRows}
+          isModified={isModified}
           onSubmit={handleSubmit}
         />
       ) : (

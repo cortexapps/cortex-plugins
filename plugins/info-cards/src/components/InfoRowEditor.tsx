@@ -93,12 +93,9 @@ const InfoRowComponent: React.FC<InfoRowComponentProps> = ({
         gap={4}
         alignItems={"center"}
       >
-        <Text fontSize={"sm"} mt={1}>
-          Cards {infoRow.cards.length}/{maxCardsPerRow}
-        </Text>
         <Button onClick={onOpen} variant={"plain"} size={"sm"} color={"red"}>
           <PiTrash />
-        </Button>{" "}
+        </Button>
       </Box>
 
       <Box w={"full"} overflowX={"auto"} maxW={"full"}>

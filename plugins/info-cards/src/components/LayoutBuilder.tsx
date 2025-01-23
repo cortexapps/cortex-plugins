@@ -12,14 +12,17 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 
-import { PiPlus, PiFloppyDisk, PiEye, PiArrowLeft } from "react-icons/pi";
+import { PiPlus } from "react-icons/pi";
 import { Box, Button, Heading, Text, useDisclosure } from "@chakra-ui/react";
+
 import PreviewModal from "./PreviewModal";
+import CancelEditModal from "./CancelEditModal";
 
 interface LayoutBuilderProps {
   toggleEditor: () => void;
   infoRows: InfoRowI[];
   setInfoRows: React.Dispatch<React.SetStateAction<InfoRowI[]>>;
+  isModified: boolean;
   onSubmit: () => void;
 }
 
@@ -87,6 +90,7 @@ const LayoutBuilder: React.FC<LayoutBuilderProps> = ({
   toggleEditor,
   infoRows,
   setInfoRows,
+  isModified,
   onSubmit,
 }) => {
   const {
@@ -160,9 +164,9 @@ const LayoutBuilder: React.FC<LayoutBuilderProps> = ({
 
     if (!isActiveAnInfoCard) return;
 
-    setInfoRows((infoRows) => {
-      return moveCard(infoRows, activeId as string, overId as string);
-    });
+    setInfoRows((infoRows) =>
+      moveCard(infoRows, activeId as string, overId as string)
+    );
   }
 
   return (
@@ -205,7 +209,7 @@ const LayoutBuilder: React.FC<LayoutBuilderProps> = ({
             disabled={infoRows.length >= maxRows}
             colorScheme={"purple"}
             style={{ width: "100%" }}
-            marginTop={4}
+            mt={2}
             leftIcon={<PiPlus />}
           >
             Add Row
@@ -215,35 +219,22 @@ const LayoutBuilder: React.FC<LayoutBuilderProps> = ({
 
       <Box
         display={"flex"}
-        gap={4}
+        gap={2}
         width={"full"}
         justifyContent={"end"}
-        marginTop={12}
+        mt={4}
       >
-        <Button
-          onClick={toggleEditor}
-          variant={"outline"}
-          colorScheme={"red"}
-          leftIcon={<PiArrowLeft />}
-        >
-          Back
-        </Button>
-        <Button
-          onClick={onPreviewOpen}
-          variant={"solid"}
-          colorScheme={"blue"}
-          leftIcon={<PiEye />}
-        >
-          Show Preview
+        <CancelEditModal isModified={isModified} toggleEditor={toggleEditor} />
+        <Button onClick={onPreviewOpen} variant={"solid"} colorScheme={"blue"}>
+          Preview
         </Button>
         <Button
           onClick={onSubmit}
           disabled={infoRows.length === 0}
           variant={"solid"}
           colorScheme={"green"}
-          leftIcon={<PiFloppyDisk />}
         >
-          Save Layout
+          Save
         </Button>
       </Box>
       <PreviewModal
