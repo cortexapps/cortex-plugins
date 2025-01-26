@@ -192,7 +192,9 @@ const LayoutBuilder: React.FC<LayoutBuilderProps> = ({
               alignItems={"center"}
               boxShadow={"md"}
             >
-              <Text color={"black"}>Empty</Text>
+              <Text color={"black"} mt={4}>
+                Empty
+              </Text>
             </Box>
           )}
           {infoRows.map((row) => (

@@ -3,6 +3,7 @@ import type { InfoCardI, InfoRowI } from "../typings";
 import useDebounce from "../../../../shared/hooks/useDebounce";
 import {
   Box,
+  Button,
   FormControl,
   FormLabel,
   Input,
@@ -12,7 +13,13 @@ import {
 
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
-import { PiCheck, PiSpinner, PiX } from "react-icons/pi";
+import {
+  PiCheck,
+  PiSpinner,
+  PiX,
+  PiArrowsOut,
+  PiArrowsIn,
+} from "react-icons/pi";
 
 interface ContentTypesSelectItemI {
   label: string;
@@ -41,6 +48,47 @@ export default function InfoCardForm({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<string | null>(null);
   const [isUrlIFrameSafe, setIsUrlIFrameSafe] = useState<boolean | null>(null);
+
+  const [isCodeareaExpanded, setIsCodeareaExpanded] = useState<boolean>(false);
+
+  const collapsedContainderStyle: React.CSSProperties = {
+    position: "relative",
+    width: "100%",
+  };
+  const expandedContainerStyle: React.CSSProperties = {
+    position: "fixed",
+    inset: 0,
+    padding: "2rem",
+    width: "100%",
+    height: "100%",
+    zIndex: 1,
+  };
+
+  const expandButtonStyle: React.CSSProperties = {
+    position: "absolute",
+    zIndex: 1,
+    top: 0,
+    right: 0,
+    fontSize: "1.5rem",
+    background: "rgba(255,255,255,0.75)",
+  };
+
+  const collapseButtonStyle: React.CSSProperties = {
+    position: "absolute",
+    zIndex: 1,
+    top: "0.25rem",
+    right: "0.25rem",
+    fontSize: "1.5rem",
+    backgroundColor: "white",
+    borderRadius: "0.25rem",
+  };
+
+  const overlayStyle: React.CSSProperties = {
+    position: "absolute",
+    inset: 0,
+    backgroundColor: "rgba(0,0,0,0.25)",
+    zIndex: -1,
+  };
 
   useEffect(() => {
     setIsUrlIFrameSafe(null);
@@ -92,7 +140,7 @@ export default function InfoCardForm({
   };
 
   return (
-    <Box display={"flex"} flexDirection={"column"} gap={4}>
+    <Box display={"flex"} flexDirection={"column"} gap={4} maxW={250}>
       <FormControl>
         <FormLabel>Card Title</FormLabel>
         <Input
@@ -182,13 +230,89 @@ export default function InfoCardForm({
       {infoCard.contentType === "HTML" && (
         <FormControl>
           <FormLabel>Content as HTML</FormLabel>
-          <CodeMirror
-            value={infoCard.contentHTML ?? ""}
-            onChange={(value) => {
-              handleChange("contentHTML", value);
-            }}
-            extensions={[html()]}
-          />
+          {isCodeareaExpanded && (
+            <Box
+              w={"full"}
+              h={10}
+              border={1}
+              rounded={4}
+              borderColor={"gray.200"}
+              borderStyle={"solid"}
+              p={2}
+              fontSize={"sm"}
+            >
+              <span style={{ opacity: 0.5 }}>Editor is expanded</span>
+            </Box>
+          )}
+          <Box
+            style={
+              isCodeareaExpanded
+                ? { ...expandedContainerStyle }
+                : { ...collapsedContainderStyle }
+            }
+          >
+            {isCodeareaExpanded && (
+              <Box
+                style={overlayStyle}
+                onClick={() => {
+                  setIsCodeareaExpanded(false);
+                }}
+              ></Box>
+            )}
+            <button
+              style={
+                isCodeareaExpanded
+                  ? { ...collapseButtonStyle }
+                  : { ...expandButtonStyle }
+              }
+              onClick={() => {
+                setIsCodeareaExpanded(!isCodeareaExpanded);
+              }}
+            >
+              {isCodeareaExpanded ? <PiArrowsIn /> : <PiArrowsOut />}
+            </button>
+
+            <Box
+              style={
+                isCodeareaExpanded
+                  ? {
+                      backgroundColor: "white",
+                      padding: "1rem",
+                      borderRadius: "0.25rem",
+                      border: "1px solid #ccc",
+                      maxHeight: "100%",
+                      overflowY: "auto",
+                    }
+                  : {}
+              }
+            >
+              <CodeMirror
+                value={infoCard.contentHTML ?? ""}
+                onChange={(value) => {
+                  handleChange("contentHTML", value);
+                }}
+                extensions={[html()]}
+                style={
+                  !isCodeareaExpanded
+                    ? { maxHeight: 50, overflowY: "auto" }
+                    : {}
+                }
+              />
+              {isCodeareaExpanded && (
+                <Box display={"flex"} justifyContent={"flex-end"} mt={4}>
+                  <Button
+                    color={"purple.500"}
+                    onClick={() => {
+                      setIsCodeareaExpanded(false);
+                    }}
+                    leftIcon={<PiArrowsIn />}
+                  >
+                    Close
+                  </Button>
+                </Box>
+              )}
+            </Box>
+          </Box>
         </FormControl>
       )}
     </Box>

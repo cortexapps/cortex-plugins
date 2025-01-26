@@ -120,6 +120,7 @@ const InfoRowComponent: React.FC<InfoRowComponentProps> = ({
               alignItems={"center"}
               w={100}
               h={100}
+              minW={100}
               border={1}
               borderStyle={"dashed"}
               borderColor={"gray"}
