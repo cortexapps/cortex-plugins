@@ -53,24 +53,24 @@ export const usePluginConfig = (): UsePluginConfigReturn => {
 
       // Validate the passed in config
       if (
-        !config.info?.["x-cortex-type"] ||
-        config.info["x-cortex-tag"] !== "info-cards-plugin-config" ||
-        config.openapi !== "3.0.1"
+        !config.info?.["x-cortex-definition"]?.infoRows
       ) {
+        // this should never happen since the plugin should always pass in a valid config
+        console.error("Invalid config", config);
         throw new Error("Invalid config");
       }
 
+      config.info["x-cortex-tag"] = "info-cards-plugin-config";
+      config.info.title = "Info Cards Plugin Configuration";
+      config.openapi = "3.0.1";
+
       // Preserve the existing x-cortex-type if it exists
-      if (existingConfig?.info?.["x-cortex-type"]) {
-        config.info["x-cortex-type"] = existingConfig.info["x-cortex-type"];
-      }
+      config.info["x-cortex-type"] = existingConfig?.info?.["x-cortex-type"] || "plugin-configuration";
 
       // See if the entity type exists, if not create it
-      const entityType: string =
-        config.info?.["x-cortex-type"] || "plugin-configuration";
       try {
         const r = await fetch(
-          `${apiBaseUrl}/catalog/definitions/${entityType}`
+          `${apiBaseUrl}/catalog/definitions/${config.info["x-cortex-type"]}`
         );
         if (!r.ok) {
           throw new Error("Failed to fetch existing entity type");
@@ -81,7 +81,7 @@ export const usePluginConfig = (): UsePluginConfigReturn => {
           iconTag: "bucket",
           name: "Plugin Configuration",
           schema: { properties: {}, required: [] },
-          type: "plugin-configuration",
+          type: config.info["x-cortex-type"],
         };
         const entityTypeResponse = await fetch(
           `${apiBaseUrl}/catalog/definitions`,
