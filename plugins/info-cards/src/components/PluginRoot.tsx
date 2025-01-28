@@ -30,8 +30,10 @@ export default function PluginRoot(): JSX.Element {
   }, [pluginConfig, isEditorPage]);
 
   const isModified: boolean = useMemo(() => {
-    const existingInfoRows = pluginConfig?.info?.["x-cortex-definition"]?.infoRows || [];
-    const isModified = JSON.stringify(infoRows) !== JSON.stringify(existingInfoRows);
+    const existingInfoRows =
+      pluginConfig?.info?.["x-cortex-definition"]?.infoRows || [];
+    const isModified =
+      JSON.stringify(infoRows) !== JSON.stringify(existingInfoRows);
     return Boolean(isModified);
   }, [infoRows, pluginConfig]);
 

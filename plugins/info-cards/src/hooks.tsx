@@ -52,9 +52,7 @@ export const usePluginConfig = (): UsePluginConfigReturn => {
       } catch (error) {}
 
       // Validate the passed in config
-      if (
-        !config.info?.["x-cortex-definition"]?.infoRows
-      ) {
+      if (!config.info?.["x-cortex-definition"]?.infoRows) {
         // this should never happen since the plugin should always pass in a valid config
         console.error("Invalid config", config);
         throw new Error("Invalid config");
@@ -65,12 +63,15 @@ export const usePluginConfig = (): UsePluginConfigReturn => {
       config.openapi = "3.0.1";
 
       // Preserve the existing x-cortex-type if it exists
-      config.info["x-cortex-type"] = existingConfig?.info?.["x-cortex-type"] || "plugin-configuration";
+      config.info["x-cortex-type"] =
+        existingConfig?.info?.["x-cortex-type"] || "plugin-configuration";
 
       // See if the entity type exists, if not create it
       try {
         const r = await fetch(
-          `${apiBaseUrl}/catalog/definitions/${config.info["x-cortex-type"]}`
+          `${apiBaseUrl}/catalog/definitions/${
+            config.info["x-cortex-type"] as string
+          }`
         );
         if (!r.ok) {
           throw new Error("Failed to fetch existing entity type");
