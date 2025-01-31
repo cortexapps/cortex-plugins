@@ -9,7 +9,7 @@ import type { InfoRowI } from "../typings";
 import LandingPage from "./LandingPage";
 import LayoutBuilder from "./LayoutBuilder";
 
-import { usePluginConfig } from "../hooks";
+import { useEntityDescriptor } from "../hooks";
 
 export default function PluginRoot(): JSX.Element {
   const [isEditorPage, setIsEditorPage] = useState(false);
@@ -17,9 +17,13 @@ export default function PluginRoot(): JSX.Element {
 
   const {
     isLoading: configIsLoading,
-    pluginConfig,
-    savePluginConfig,
-  } = usePluginConfig();
+    isFetching: configIsFetching,
+    isMutating: configIsMutating,
+    entity: pluginConfig,
+    updateEntity: savePluginConfig,
+  } = useEntityDescriptor({
+    entityTag: "info-cards-plugin-config",
+  });
 
   const toast = useToast();
 
@@ -73,7 +77,7 @@ export default function PluginRoot(): JSX.Element {
     void doSave();
   }, [infoRows, pluginConfig, savePluginConfig, toast]);
 
-  if (configIsLoading) {
+  if (configIsLoading || configIsFetching || configIsMutating) {
     return <Loader />;
   }
 
