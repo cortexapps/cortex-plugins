@@ -1,4 +1,26 @@
-# Example
+# Info Cards Plugin
+
+The Info Cards plugin provides an easy way to display useful links and information in the global context, with a user-friendly layout editor.
+
+## Installation
+
+Install the plugin via the Cortex Plugins Marketplace or manually by adding it to your Cortex instance using the notes under Manual installation below.
+
+## Configuration
+
+No manual configuration is required after installation.
+
+### Saving and Editing Layouts
+- When a card layout is saved for the first time, it will be stored in an entity with the tag `info-cards-plugin-config`.
+- To edit an existing layout, click the small pencil icon in the top right corner of the plugin area.
+
+## Usage
+
+1. Open the Info Cards plugin from the global context.
+2. Add or edit cards using the layout editor.
+3. Save your changes to persist the layout.
+
+# Manual installation
 
 Info Cards Plugin is a [Cortex](https://www.cortex.io/) plugin. To see how to run the plugin inside of Cortex, see [our docs](https://docs.cortex.io/docs/plugins).
 
@@ -22,7 +44,3 @@ The following commands come pre-configured in this repository. You can see all a
 - `lint` - runs lint and format checking on the repository using [prettier](https://prettier.io/) and [eslint](https://eslint.org/)
 - `lintfix` - runs eslint in fix mode to fix any linting errors that can be fixed automatically
 - `formatfix` - runs Prettier in fix mode to fix any formatting errors that can be fixed automatically
-
-### Available React components
-
-See available UI components via our [Storybook](https://cortexapps.github.io/plugin-core/).
