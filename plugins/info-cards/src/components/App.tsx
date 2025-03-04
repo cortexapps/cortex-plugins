@@ -2,12 +2,9 @@ import type React from "react";
 import { PluginProvider } from "@cortexapps/plugin-core/components";
 import { ChakraProvider } from "@chakra-ui/react";
 
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import "../baseStyles.css";
 import ErrorBoundary from "./ErrorBoundary";

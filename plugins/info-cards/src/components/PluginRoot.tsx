@@ -44,7 +44,7 @@ export default function PluginRoot(): JSX.Element {
   const handleSubmit = useCallback(() => {
     const doSave = async (): Promise<void> => {
       try {
-        await savePluginConfig({
+        savePluginConfig({
           ...pluginConfig,
           info: {
             ...pluginConfig?.info,

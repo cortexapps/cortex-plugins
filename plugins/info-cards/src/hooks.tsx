@@ -1,18 +1,30 @@
-import {
-  useQueryClient,
-  useQuery,
-  useMutation,
-} from "@tanstack/react-query";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+
+import type { UseMutationResult } from "@tanstack/react-query";
 
 import { usePluginContext } from "@cortexapps/plugin-core/components";
 
 export interface UseEntityDescriptorProps {
   entityTag: string;
   mutationMethod?: "PATCH" | "POST";
-  onMutateSuccess?: (data: any, variables: any, context: void) => void;
-  onMutateError?: (error: Error, variables: any, context: void) => void;
-  onMutateSettled?: (data: any, error: Error, variables: any, context: void) => void;
+  onMutateSuccess?: (data: any, variables: any, context?: any) => void;
+  onMutateError?: (error: Error, variables: any, context?: any) => void;
+  onMutateSettled?: (
+    data: any,
+    error: Error,
+    variables: any,
+    context?: any
+  ) => void;
   onMutate?: (variables: any) => void;
+}
+
+export interface UseEntityDescriptorReturn {
+  entity: any;
+  isLoading: boolean;
+  isFetching: boolean;
+  error: unknown;
+  updateEntity: UseMutationResult<any, Error, any>["mutate"];
+  isMutating: boolean;
 }
 
 export const useEntityDescriptor = ({
@@ -22,7 +34,7 @@ export const useEntityDescriptor = ({
   onMutateError = () => {},
   onMutateSettled = () => {},
   onMutate = () => {},
-}: UseEntityDescriptorProps) => {
+}: UseEntityDescriptorProps): UseEntityDescriptorReturn => {
   const { apiBaseUrl } = usePluginContext();
 
   const queryClient = useQueryClient();
@@ -33,7 +45,7 @@ export const useEntityDescriptor = ({
       const response = await fetch(
         `${apiBaseUrl}/catalog/${entityTag}/openapi`
       );
-      return response.json();
+      return await response.json();
     },
     enabled: !!apiBaseUrl,
     retry: false,
@@ -51,25 +63,24 @@ export const useEntityDescriptor = ({
       data.info["x-cortex-tag"] = entityTag;
       // set a title if it's not set
       if (!data.info.title) {
-        data.info.title = entityTag.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+        data.info.title = entityTag
+          .replace(/-/g, " ")
+          .replace(/\b\w/g, (l) => l.toUpperCase());
       }
-      const response = await fetch(
-        `${apiBaseUrl}/open-api`,
-        {
-          method: mutationMethod,
-          headers: {
-            "Content-Type": "application/openapi;charset=utf-8",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-      return response.json();
+      const response = await fetch(`${apiBaseUrl}/open-api`, {
+        method: mutationMethod,
+        headers: {
+          "Content-Type": "application/openapi;charset=utf-8",
+        },
+        body: JSON.stringify(data),
+      });
+      return await response.json();
     },
-    onMutate: onMutate,
+    onMutate,
     onError: onMutateError,
     onSettled: onMutateSettled,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ["entityDescriptor", entityTag],
       });
       onMutateSuccess(data, variables, context);
@@ -83,5 +94,5 @@ export const useEntityDescriptor = ({
     error: query.error,
     updateEntity: mutation.mutate,
     isMutating: mutation.isPending,
-  }
+  };
 };

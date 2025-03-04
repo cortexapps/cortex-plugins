@@ -11,6 +11,7 @@ Install the plugin via the Cortex Plugins Marketplace or manually by adding it t
 No manual configuration is required after installation.
 
 ### Saving and Editing Layouts
+
 - When a card layout is saved for the first time, it will be stored in an entity with the tag `info-cards-plugin-config`.
 - To edit an existing layout, click the small pencil icon in the top right corner of the plugin area.
 
