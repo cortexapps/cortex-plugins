@@ -41,6 +41,11 @@ export default function PluginRoot(): JSX.Element {
     return Boolean(isModified);
   }, [infoRows, pluginConfig]);
 
+  const toggleEditor = useCallback(() => {
+    setInfoRows(pluginConfig?.info?.["x-cortex-definition"]?.infoRows || []);
+    setIsEditorPage((prev) => !prev);
+  }, [pluginConfig, setInfoRows, setIsEditorPage]);
+
   const handleSubmit = useCallback(() => {
     const doSave = async (): Promise<void> => {
       try {
@@ -75,16 +80,11 @@ export default function PluginRoot(): JSX.Element {
     };
 
     void doSave();
-  }, [infoRows, pluginConfig, savePluginConfig, toast]);
+  }, [infoRows, pluginConfig, savePluginConfig, toast, toggleEditor]);
 
   if (configIsLoading || configIsFetching || configIsMutating) {
     return <Loader />;
   }
-
-  const toggleEditor = (): void => {
-    setInfoRows(pluginConfig?.info?.["x-cortex-definition"]?.infoRows || []);
-    setIsEditorPage((prev) => !prev);
-  };
 
   return (
     <>
