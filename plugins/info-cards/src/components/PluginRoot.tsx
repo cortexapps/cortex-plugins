@@ -50,7 +50,7 @@ export default function PluginRoot(): JSX.Element {
             ...pluginConfig?.info,
             "x-cortex-definition": {
               ...(pluginConfig?.info?.["x-cortex-definition"] || {}),
-              infoRows,
+              infoRows: [...infoRows],
             },
           },
         });
@@ -82,6 +82,7 @@ export default function PluginRoot(): JSX.Element {
   }
 
   const toggleEditor = (): void => {
+    setInfoRows(pluginConfig?.info?.["x-cortex-definition"]?.infoRows || []);
     setIsEditorPage((prev) => !prev);
   };
 
