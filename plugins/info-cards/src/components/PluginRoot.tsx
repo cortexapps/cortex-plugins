@@ -9,7 +9,7 @@ import type { InfoRowI } from "../typings";
 import LandingPage from "./LandingPage";
 import LayoutBuilder from "./LayoutBuilder";
 
-import { usePluginConfig } from "../hooks";
+import { useEntityDescriptor } from "../hooks";
 
 export default function PluginRoot(): JSX.Element {
   const [isEditorPage, setIsEditorPage] = useState(false);
@@ -17,9 +17,13 @@ export default function PluginRoot(): JSX.Element {
 
   const {
     isLoading: configIsLoading,
-    pluginConfig,
-    savePluginConfig,
-  } = usePluginConfig();
+    isFetching: configIsFetching,
+    isMutating: configIsMutating,
+    entity: pluginConfig,
+    updateEntity: savePluginConfig,
+  } = useEntityDescriptor({
+    entityTag: "info-cards-plugin-config",
+  });
 
   const toast = useToast();
 
@@ -37,16 +41,21 @@ export default function PluginRoot(): JSX.Element {
     return Boolean(isModified);
   }, [infoRows, pluginConfig]);
 
+  const toggleEditor = useCallback(() => {
+    setInfoRows(pluginConfig?.info?.["x-cortex-definition"]?.infoRows || []);
+    setIsEditorPage((prev) => !prev);
+  }, [pluginConfig, setInfoRows, setIsEditorPage]);
+
   const handleSubmit = useCallback(() => {
     const doSave = async (): Promise<void> => {
       try {
-        await savePluginConfig({
+        savePluginConfig({
           ...pluginConfig,
           info: {
             ...pluginConfig?.info,
             "x-cortex-definition": {
               ...(pluginConfig?.info?.["x-cortex-definition"] || {}),
-              infoRows,
+              infoRows: [...infoRows],
             },
           },
         });
@@ -71,15 +80,11 @@ export default function PluginRoot(): JSX.Element {
     };
 
     void doSave();
-  }, [infoRows, pluginConfig, savePluginConfig, toast]);
+  }, [infoRows, pluginConfig, savePluginConfig, toast, toggleEditor]);
 
-  if (configIsLoading) {
+  if (configIsLoading || configIsFetching || configIsMutating) {
     return <Loader />;
   }
-
-  const toggleEditor = (): void => {
-    setIsEditorPage((prev) => !prev);
-  };
 
   return (
     <>
