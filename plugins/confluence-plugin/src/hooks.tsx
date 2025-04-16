@@ -215,15 +215,15 @@ export const useConfluencePageContent = (
           const response = await fetch(
             `${baseConfluenceUrl}/wiki/api/v2/pages/${
               page.id as string
-            }?body-format=styled_view`
+            }?body-format=export_view`
           );
           const content = await response.json();
-          if (content.title && content.body?.styled_view?.value) {
+          if (content.title && content.body?.export_view?.value) {
             setContents((prev) => ({
               ...prev,
               [page.id]: {
                 title: content.title,
-                body: content.body.styled_view.value,
+                body: content.body.export_view.value,
               },
             }));
           } else if (content.errors) {

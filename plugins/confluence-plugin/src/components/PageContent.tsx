@@ -17,6 +17,89 @@ import {
 
 import "../baseStyles.css";
 
+const addTargetBlank = (htmlString: string): string => {
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, "text/html");
+
+    doc.querySelectorAll("a").forEach((link) => {
+      link.setAttribute("target", "_blank");
+    });
+
+    return doc.body.innerHTML;
+  } catch (error) {
+    console.error("Error parsing HTML string in addTargetBlank:", error);
+    return htmlString;
+  }
+};
+
+const makeLinksAbsolute = (htmlString: string, host: string): string => {
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, "text/html");
+
+    // Loop over all <a> tags
+    doc.querySelectorAll("a").forEach((link) => {
+      const href = link.getAttribute("href");
+      if (href) {
+        // Check if the link is relative by testing for absolute URL prefixes
+        if (!href.match(/^https?:\/\//) && !href.startsWith("//")) {
+          // Create an absolute URL by resolving against the provided host
+          const absoluteUrl = new URL(href, host).href;
+          link.setAttribute("href", absoluteUrl);
+        }
+      }
+    });
+
+    // Loop over all <img> tags
+    doc.querySelectorAll("img").forEach((img) => {
+      const src = img.getAttribute("src");
+      if (src) {
+        // Check if the src is relative by testing for absolute URL prefixes
+        if (!src.match(/^https?:\/\//) && !src.startsWith("//")) {
+          // Create an absolute URL by resolving against the provided host
+          const absoluteUrl = new URL(src, host).href;
+          img.setAttribute("src", absoluteUrl);
+        }
+      }
+    });
+    // Loop over all <link> tags
+    doc.querySelectorAll("link").forEach((link) => {
+      const href = link.getAttribute("href");
+      if (href) {
+        // Check if the href is relative by testing for absolute URL prefixes
+        if (!href.match(/^https?:\/\//) && !href.startsWith("//")) {
+          // Create an absolute URL by resolving against the provided host
+          const absoluteUrl = new URL(href, host).href;
+          link.setAttribute("href", absoluteUrl);
+        }
+      }
+    });
+    // Loop over all <script> tags
+    doc.querySelectorAll("script").forEach((script) => {
+      const src = script.getAttribute("src");
+      if (src) {
+        // Check if the src is relative by testing for absolute URL prefixes
+        if (!src.match(/^https?:\/\//) && !src.startsWith("//")) {
+          // Create an absolute URL by resolving against the provided host
+          const absoluteUrl = new URL(src, host).href;
+          script.setAttribute("src", absoluteUrl);
+        }
+      }
+    });
+
+    return doc.body.innerHTML;
+  } catch (error) {
+    console.error("Error parsing HTML string in makeLinksAbsolute:", error);
+    return htmlString;
+  }
+};
+
+const fixHtml = (htmlString: string, host: string): string => {
+  const updatedHtmlString = makeLinksAbsolute(htmlString, host);
+  return addTargetBlank(updatedHtmlString);
+};
+
 const PageContent: React.FC = () => {
   const [entityPage, setEntityPage] = useState<EntityPageI>();
   const [errorStr, setErrorStr] = useState<string>("");
@@ -102,6 +185,19 @@ const PageContent: React.FC = () => {
       </Notice>
     );
   }
+
+  if (!contents[`${entityPage.id}`]?.body) {
+    return (
+      <Notice>
+        Confluence page not found. Please check the page ID in the entity.
+      </Notice>
+    );
+  }
+
+  contents[`${entityPage.id}`].body = fixHtml(
+    contents[`${entityPage.id}`].body,
+    baseConfluenceUrl
+  );
 
   return (
     <Box w="full" minH={600}>
